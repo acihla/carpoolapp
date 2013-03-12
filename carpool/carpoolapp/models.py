@@ -47,3 +47,10 @@ class Route(models.Model):
     arrive_lg = models.CharField(max_length=200)
     status = models.BooleanField(default=0)
 
+class SampleKey(models.Model):
+    name = models.CharField(max_length=200)
+    
+class Sample(models.Model):
+    driver = models.ForeignKey(SampleKey)
+    rider = models.CharField(max_length=200)
+
