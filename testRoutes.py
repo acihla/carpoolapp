@@ -32,12 +32,12 @@ class TestNewRoute(testLib.RestTestCase):
         Check that the response data dictionary matches the expected values
         """
         expected = { 'errCode' : errCode }
-        if respData.get(count, None) is not None:
-            expected['count']  = count
+        #if respData.get(count, None) is not None:
+         #   expected['count']  = count
         self.assertDictEqual(expected, respData)
 
     def testAdd1(self):
-        respData = self.makeRequest("/addroute", method="POST", data = { 'user' : 'testUserAddRoute', 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        respData = self.makeRequest("driver/addRoute", method="POST", data = { 'user' : 'testUserAddRoute', 'start' : 'Berkeley', 'end' : 'San Jose'} )
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     
