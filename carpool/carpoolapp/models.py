@@ -45,7 +45,7 @@ class Route(models.Model):
     #depart_lg = models.CharField(max_length=200)
     #arrive_lat = models.CharField(max_length=200)
     #arrive_lg = models.CharField(max_length=200)
-    maps_info = models.CharField()
+    maps_info = models.CharField(max_length=5000)
     status = models.BooleanField(default=0)
 
 class SampleKey(models.Model):
