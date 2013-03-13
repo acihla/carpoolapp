@@ -36,6 +36,7 @@ def setRoute(request):
     username = rdata.get("user", "")
     start = rdata.get("start", "")
     end = rdata.get("end", "")
+    depart = rdata.get("edt", "")
     try:
         currentRoute = gmaps.directions(start, end)
         route = currentRoute['routes'][0]
@@ -59,6 +60,10 @@ def setRoute(request):
                 indstep = indstep.replace('<div class="google_note">', ' *** ')
                 indstep = indstep.replace('</div>', ' *** ')
                 print indstep"""
+
+        
+        newRoute = Route(driver = username, rider = "", depart_time = depart, maps_info = currentRoute, status = 0)
+        newRoute.save()
 
         resp = {"errCode" : SUCCESS}
 

@@ -40,11 +40,12 @@ class Route(models.Model):
     driver = models.ForeignKey(User)
     rider = models.CharField(max_length=200)
     depart_time = models.DateTimeField()
-    arrival_time = models.DateTimeField()
-    depart_lat = models.CharField(max_length=200)
-    depart_lg = models.CharField(max_length=200)
-    arrive_lat = models.CharField(max_length=200)
-    arrive_lg = models.CharField(max_length=200)
+    #arrival_time = models.DateTimeField()
+    #depart_lat = models.CharField(max_length=200)
+    #depart_lg = models.CharField(max_length=200)
+    #arrive_lat = models.CharField(max_length=200)
+    #arrive_lg = models.CharField(max_length=200)
+    maps_info = models.CharField()
     status = models.BooleanField(default=0)
 
 class SampleKey(models.Model):
