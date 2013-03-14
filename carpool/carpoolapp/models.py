@@ -24,6 +24,7 @@ class User(models.Model):
         rtn["username"] = self.username
         rtn["email"] = self.email
         rtn["dob"] = self.dob
+        rtn["sex"] = self.sex
         rtn["password"] = self.password
         rtn["cellphone"] = self.cellphone
         rtn["driverOrRider"] = self.driverOrRider
