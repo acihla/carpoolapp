@@ -34,19 +34,26 @@ MAX_LENGTH_IN = 200  #max length for all datums in our db
 
 @csrf_exempt
 def search(request):
-    resp = {"error":"Success"}
+    try:
+        rdata = json.loads(request.body)
+    except Exception, err:
+        print str(err)
+    #TODO Parse json here.
+    resp = {"errCode":SUCCESS}
     try:
         routes = Route.objects.all()
         resp["size"] = len(routes)
         rides = []
         for route in routes:
+            #TODO filter routes to fit request.
             entry = route.to_dict()
-            rides.append(entry)
+            if entry.get("status", "true") == "false":
+                rides.append(entry)
 
         resp["rides"] = rides
         #return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
-            resp["error"] = "Error"
+            resp["errCode"] = "Error"
             print str(err)
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
