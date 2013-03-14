@@ -23,27 +23,27 @@ from googlemaps import GoogleMaps
 gmaps = GoogleMaps("AIzaSyAGf-Mbj40HtzmRmOvPWZX4RnE2RIG_tzc")
 
 def search(request):
-	routes = Route.objects.all()
-	resp = {"error":"Success"}
-	rides = []
-	for route in routes:
-		entry = {}
-		entry["driver"] = route.driver
-		entry["rider"] = route.rider
-		entry["depart_time"] = route.depart_time
-		#entry["arrival_time"] = route.depart_time
-		#entry["depart_lat"] = route.depart_lat
-		#entry["depart_lg"] = route.depart_lg
-		#entry["arrive_lat"] = route.arrive_lat
-		#entry["arrive_lg"] = route.arrive_lg
+    routes = Route.objects.all()
+    resp = {"error":"Success", "size":len(routes)}
+    rides = []
+    for route in routes:
+        entry = {}
+        driverinfo = models.instance_dict(route.driver)
+        driverinfo["driver"] = models.instance_dict(route.driver.driver)
+        entry["driver"] = driverinfo
+        entry["rider"] = route.rider
+        entry["depart_time"] = route.depart_time
+        #entry["arrival_time"] = route.depart_time
+        #entry["depart_lat"] = route.depart_lat
+        #entry["depart_lg"] = route.depart_lg
+        #entry["arrive_lat"] = route.arrive_lat
+        #entry["arrive_lg"] = route.arrive_lg
         entry["maps_info"] = route.maps_info
-		entry["status"] = route.status
+        entry["status"] = route.status
+        rides.append(entry)
 
-		rides.append(entry)
-
-
-	resp["rides"] = rides
-	return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    resp["rides"] = rides
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 def addroute(request):
     rdata = json.loads(request.body)

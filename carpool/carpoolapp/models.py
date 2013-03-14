@@ -23,7 +23,7 @@ class DriverInfo(models.Model):
     license_exp = models.DateField()
     car_make = models.CharField(max_length=200)
     car_type = models.CharField(max_length=200)
-    car_mileage = models.CharField(max_length=200)
+    car_mileage = models.IntegerField(max_length=200)
     max_passengers = models.IntegerField(null=True)
 
     def __unicode__(self):
@@ -54,4 +54,43 @@ class SampleKey(models.Model):
 class Sample(models.Model):
     driver = models.ForeignKey(SampleKey)
     rider = models.CharField(max_length=200)
+
+
+#from http://djangosnippets.org/snippets/199/
+def instance_dict(instance, key_format=None):
+    """
+    Returns a dictionary containing field names and values for the given
+    instance
+    """
+    from django.db.models.fields import DateField
+    from django.db.models.fields.related import ForeignKey
+    if key_format:
+        assert '%s' in key_format, 'key_format must contain a %s'
+    key = lambda key: key_format and key_format % key or key
+
+    pk = instance._get_pk_val()
+    d = {}
+    for field in instance._meta.fields:
+        attr = field.name
+        if hasattr(instance, attr):  # django filer broke without this check
+            value = getattr(instance, attr)
+            if value is not None:
+                if isinstance(field, ForeignKey):
+                    fkey_values = instance_dict(value)
+                    for k, v in fkey_values.items():
+                        d['%s.%s' % (key(attr), k)] = v
+                        continue
+                elif isinstance(field, DateField):
+                    value = value.strftime('%Y-%m-%d')
+        else:
+            value = None
+        d[key(attr)] = value
+    for field in instance._meta.many_to_many:
+        if pk:
+            d[key(field.name)] = [
+            obj._get_pk_val()
+            for obj in getattr(instance, field.attname).all()]
+        else:
+            d[key(field.name)] = []
+    return d
 
