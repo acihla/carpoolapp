@@ -33,27 +33,27 @@ MAX_LENGTH_IN = 200  #max length for all datums in our db
 
 
 def search(request):
-	routes = Route.objects.all()
-	resp = {"error":"Success"}
-	rides = []
-	for route in routes:
-		entry = {}
-		entry["driver"] = route.driver
-		entry["rider"] = route.rider
-		entry["depart_time"] = route.depart_time
-		#entry["arrival_time"] = route.depart_time
-		#entry["depart_lat"] = route.depart_lat
-		#entry["depart_lg"] = route.depart_lg
-		#entry["arrive_lat"] = route.arrive_lat
-		#entry["arrive_lg"] = route.arrive_lg
+    routes = Route.objects.all()
+    resp = {"error":"Success", "size":len(routes)}
+    rides = []
+    for route in routes:
+        entry = {}
+        driverinfo = models.instance_dict(route.driver)
+        driverinfo["driver"] = models.instance_dict(route.driver.driver)
+        entry["driver"] = driverinfo
+        entry["rider"] = route.rider
+        entry["depart_time"] = route.depart_time
+        #entry["arrival_time"] = route.depart_time
+        #entry["depart_lat"] = route.depart_lat
+        #entry["depart_lg"] = route.depart_lg
+        #entry["arrive_lat"] = route.arrive_lat
+        #entry["arrive_lg"] = route.arrive_lg
         entry["maps_info"] = route.maps_info
-		entry["status"] = route.status
+        entry["status"] = route.status
+        rides.append(entry)
 
-		rides.append(entry)
-
-
-	resp["rides"] = rides
-	return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    resp["rides"] = rides
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 def addroute(request):
     rdata = json.loads(request.body)
@@ -65,41 +65,41 @@ def addroute(request):
     if (validDatums != 1):
     	resp = {"errCode" : validDatums}
     else:
-    	try:
-	        currentRoute = gmaps.directions(start, end)
-	        route = currentRoute['routes'][0]
-	        legs = route['legs']
+        try:
+            currentRoute = gmaps.directions(start, end)
+            route = currentRoute['routes'][0]
+            legs = route['legs']
 
-	        #dealing with possible multiple legs due to utilization of a waypoint
-	        for trip in legs:
-	            #print primRoute['routes'][end_location]
-	            #printing time and distance of route
-	            routeTime = trip['duration']['value'] / 60
-	            routeDist = trip['distance']['value'] * 0.000621371
-	            #formatting and printing each step
-	            directions[]
-	            count = 0
-	            #for adding turn by turn directions later
-	            for step in trip['steps']:
-	                indstep = step['html_instructions']
-	                indstep = indstep.replace('</b>', '')
-	                indstep = indstep.replace('<b>', '')
-	                indstep = indstep.replace('/<wbr/>', '')
-	                indstep = indstep.replace('<div style="font-size:0.9em">', ' *** ')
-	                indstep = indstep.replace('<div class="">', ' *** ')
-	                indstep = indstep.replace('<div class="google_note">', ' *** ')
-	                indstep = indstep.replace('</div>', ' *** ')
-	                directions[count] = indstep
-	                count++
+            #dealing with possible multiple legs due to utilization of a waypoint
+            for trip in legs:
+                #print primRoute['routes'][end_location]
+                #printing time and distance of route
+                routeTime = trip['duration']['value'] / 60
+                routeDist = trip['distance']['value'] * 0.000621371
+                #formatting and printing each step
+                directions=[]
+                count = 0
+                #for adding turn by turn directions later
+                for step in trip['steps']:
+                    indstep = step['html_instructions']
+                    indstep = indstep.replace('</b>', '')
+                    indstep = indstep.replace('<b>', '')
+                    indstep = indstep.replace('/<wbr/>', '')
+                    indstep = indstep.replace('<div style="font-size:0.9em">', ' *** ')
+                    indstep = indstep.replace('<div class="">', ' *** ')
+                    indstep = indstep.replace('<div class="google_note">', ' *** ')
+                    indstep = indstep.replace('</div>', ' *** ')
+                    directions[count] = indstep
+                    count += 1
 
-	        
-	        newRoute = Route(driver = uid, rider = "", depart_time = depart, maps_info = currentRoute, status = 0)
-	        newRoute.save()
+            
+            newRoute = Route(driver = uid, rider = "", depart_time = depart, maps_info = currentRoute, status = 0)
+            newRoute.save()
 
-	        resp = {"errCode" : 1}
+            resp = {"errCode" : 1}
 
-	    except Exception, err:
-	        resp = {"errCode" : err}
+        except Exception, err:
+            resp = {"errCode" : err}
     
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
