@@ -24,7 +24,7 @@ class DriverInfo(models.Model):
     car_make = models.CharField(max_length=200)
     car_type = models.CharField(max_length=200)
     car_mileage = models.CharField(max_length=200)
-    max_passengers = models.IntegerField()
+    max_passengers = models.IntegerField(null=True)
 
     def __unicode__(self):
         return self.license_no
@@ -37,8 +37,8 @@ class Rating(models.Model):
 
 
 class Route(models.Model):
-    driver = models.ForeignKey(User)
-    rider = models.CharField(max_length=200)
+    driver = models.ForeignKey(DriverInfo)
+    rider = models.ForeignKey(User, null=True)
     depart_time = models.DateTimeField()
     #arrival_time = models.DateTimeField()
     #depart_lat = models.CharField(max_length=200)
