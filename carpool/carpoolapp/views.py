@@ -30,6 +30,8 @@ ERR_BAD_DESTINATION       =  -2  # : Destination location is not valid
 ERR_BAD_USERID      =  -3  # : UID does not exist in db, or is not a driver
 ERR_BAD_TIME     =  -4   #format for time is bad
 ERR_DATABASE_SEARCH_ERROR   = -5  
+ERR_BAD_HEADER=-6
+ERR_BAD_SERVER_RESPONSE =-7
 MAX_LENGTH_IN = 200  #max length for all datums in our db
 
 sample_date = date(1992,4,17)
@@ -137,13 +139,13 @@ def select_ride(request):
 
 
   except KeyError:
-    return HttpResponse(json.dumps({'errCode':-1}),content_type="application/json")
+    return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
   try:
     send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
   except BadHeaderError:
-    return HttpResponse('bad header found')
+    return HttpResponse(json.dumps({'errCode':ERR_BAD HEADER}),content_type="application/json",
 
-  return HttpResponse(json.dumps({'errCode':1}),content_type="application/json")
+  return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
 
 @csrf_exempt
 def accept_ride(request):
@@ -165,7 +167,7 @@ def accept_ride(request):
         raise Exception("Invalid response")
   except Exception, err:
     print str(err)
-    return HttpResponse(json.dumps({'errCode':-1}),content_type="application/json")
+    return HttpResponse(json.dumps({'errCode':ERR_BAD_SERVER_RESPONSE}),content_type="application/json")
 
   return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
 

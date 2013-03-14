@@ -9,6 +9,7 @@ from django.test import TestCase
 import testLib
 import os
 
+
 class TestUnit(testLib.RestTestCase):
     """Issue a REST API request to run the unit tests, and analyze the result"""
     def testUnit(self):
@@ -71,3 +72,43 @@ class SearchTest(testLib.RestTestCase):
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         print(respData)
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
+class Select_RideTest(testLib.RestTestCase):
+  def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
+        #Check that the response data dictionary matches the expected values
+        expected = { 'errCode' : errCode }
+        #if respData.get(count, None) is not None:
+        #   expected['count']  = count
+        self.assertDictEqual(expected, respData)
+
+  def testSelect_Good_Ride(self):
+    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 2} )
+
+    print(respData)
+    self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
+
+  def testSelect_BAD_Ride(self):
+    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 2000} )
+
+    print(respData)
+    self.assertResponse(respData, testLib.RestTestCase.ERR_DATABASE_SEARCH_ERROR)
+
+class Accept_OR_Deny_RideTest(testLib.RestTestCase):
+  def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
+        #Check that the response data dictionary matches the expected values
+        expected = { 'errCode' : errCode }
+        #if respData.get(count, None) is not None:
+        #   expected['count']  = count
+        self.assertDictEqual(expected, respData)
+
+  def test_Accept_Good_Ride(self):
+    respData = self.makeRequest("/driver/accept", method="GET", data = { 'route_id' : 2} )
+
+    print(respData)
+    self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
+
+  def test_Accept_BAD_Ride(self):
+    respData = self.makeRequest("/driver/accept", method="GET", data = {  'route_id' : 2000} )
+
+    print(respData)
+    self.assertResponse(respData, testLib.RestTestCase.ERR_DATABASE_SEARCH_ERROR)
+
