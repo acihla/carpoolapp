@@ -2,8 +2,11 @@ from django.utils import simplejson as json
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.serializers.json import DjangoJSONEncoder
+from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import  send_mail,BadHeaderError
 
-from carpoolapp.models import User, DriverInfo, Rating, Route
+from carpoolapp.models import *
+from carpoolapp.unitTest import *
 
 from django.core.serializers.json import DjangoJSONEncoder
 import os
@@ -14,7 +17,6 @@ import traceback
 import re
 import StringIO
 import unittest
-from polls.unitTest import UnitTest
 from googlemaps import GoogleMaps
 
 #connecting using api key for alex.cihla@gmail.com
@@ -82,6 +84,32 @@ def addroute(request):
         resp = {"errCode" : err}
     
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+
+@csrf_exempt
+def select_ride(request):
+  
+  try:
+    data = json.loads(request.raw_post_data)
+    rider_id = data['rider_id']
+    print rider_id
+    route_id = data['route_id']
+    print route_id
+    rider = User.objects.get(id=rider_id)
+    route = Route.objects.get(id=route_id)
+    driver_info =route.driver
+    driver_email = driver_info.driver.email
+    print driver_email
+    route.rider = rider
+    route.save()
+  except KeyError:
+    return HttpResponse(simplejson.dumps({'errCode':-1}),content_type="application/json")
+  try:
+    send_mail('email from my app','so it is working','carpoolcs169@gmail.com',[driver_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+  except BadHeaderError:
+    return HttpResponse('bad header found')
+
+  return HttpResponse(simplejson.dumps({'errCode':1}),content_type="application/json")
 
 
 
