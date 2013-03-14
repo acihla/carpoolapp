@@ -6,15 +6,15 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+import testLib
 
-
-class SimpleTest(TestCase):
-	def assertResponse(self, respData, count = 1, errCode = testLib.RestTestCase.SUCCESS):
+class SimpleTest(testLib.RestTestCase):
+    def assertResponse(self, respData, count = 1, errCode = testLib.RestTestCase.SUCCESS):
     	#Check that the response data dictionary matches the expected values
-    	expected = { 'errCode' : errCode }
+        expected = { 'errCode' : errCode }
         #if respData.get(count, None) is not None:
-         #   expected['count']  = count
-        self.assertDictEqual(expected, respData)
+	#   expected['count']  = count
+	self.assertDictEqual(expected, respData)
 
     def test_basic_addition(self):
         """
