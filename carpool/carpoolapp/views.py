@@ -39,10 +39,11 @@ def search(request):
         resp["size"] = len(routes)
         rides = []
         for route in routes:
-            entry = {}
-            driverinfo = models.instance_dict(route.driver)
-            driverinfo["driver"] = models.instance_dict(route.driver.driver)
-            entry["driver"] = driverinfo
+            entry = route.to_dict()
+            #driverinfo = models.instance_dict(route.driver_info)
+            #driverinfo["driver"] = models.instance_dict(route.driver_info.driver)
+            '''
+            entry["driver_info"] = driverinfo
             entry["rider"] = route.rider
             entry["depart_time"] = route.depart_time
             #entry["arrival_time"] = route.depart_time
@@ -52,11 +53,12 @@ def search(request):
             #entry["arrive_lg"] = route.arrive_lg
             entry["maps_info"] = route.maps_info
             entry["status"] = route.status
+            '''
             rides.append(entry)
 
         resp["rides"] = rides
-        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-    except:
+        #return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    except Exception, err:
             resp["error"] = "ERROR"
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
