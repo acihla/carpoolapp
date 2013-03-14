@@ -21,7 +21,7 @@ class RestTestCase(unittest.TestCase):
     ERR_BAD_PASSWORD    = -4
     
     # Lookup the name of the server to test
-    serverToTest = "localhost:5000"
+    serverToTest = "http://127.0.0.1:8000/"
     if "TEST_SERVER" in os.environ:
         serverToTest = os.environ["TEST_SERVER"]
 
