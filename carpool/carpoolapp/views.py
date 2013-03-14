@@ -41,11 +41,12 @@ def search(request):
 		entry["driver"] = route.driver
 		entry["rider"] = route.rider
 		entry["depart_time"] = route.depart_time
-		entry["arrival_time"] = route.depart_time
-		entry["depart_lat"] = route.depart_lat
-		entry["depart_lg"] = route.depart_lg
-		entry["arrive_lat"] = route.arrive_lat
-		entry["arrive_lg"] = route.arrive_lg
+		#entry["arrival_time"] = route.depart_time
+		#entry["depart_lat"] = route.depart_lat
+		#entry["depart_lg"] = route.depart_lg
+		#entry["arrive_lat"] = route.arrive_lat
+		#entry["arrive_lg"] = route.arrive_lg
+        entry["maps_info"] = route.maps_info
 		entry["status"] = route.status
 
 		rides.append(entry)
