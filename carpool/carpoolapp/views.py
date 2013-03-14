@@ -18,6 +18,7 @@ import re
 import StringIO
 import unittest
 from googlemaps import GoogleMaps
+from datetime import *
 
 #connecting using api key for alex.cihla@gmail.com
 gmaps = GoogleMaps("AIzaSyAGf-Mbj40HtzmRmOvPWZX4RnE2RIG_tzc")
@@ -31,7 +32,7 @@ ERR_BAD_TIME     =  -4   #format for time is bad
 MAX_LENGTH_IN = 200  #max length for all datums in our db
 
 
-
+@csrf_exempt
 def search(request):
     resp = {"error":"Success"}
     try:
@@ -62,18 +63,22 @@ def search(request):
             resp["error"] = "ERROR"
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
+@csrf_exempt
 def addroute(request):
     rdata = json.loads(request.body)
     uid = rdata.get("user", "")
     start = rdata.get("start", "")
     end = rdata.get("end", "")
-    departTime = rdata.get("edt", "")
-    validDatums = handleRouteData(uid, start, end, depart)
+    departTime = date(1992,4,17) #rdata.get("edt", "")
+    validDatums = 1; #handleRouteData(uid, start, end, depart)
     if (validDatums != 1):
     	resp = {"errCode" : validDatums}
     else:
         try:
+
+            
             currentRoute = gmaps.directions(start, end)
+            directions= ""
             route = currentRoute['routes'][0]
             legs = route['legs']
 
@@ -84,8 +89,8 @@ def addroute(request):
                 routeTime = trip['duration']['value'] / 60
                 routeDist = trip['distance']['value'] * 0.000621371
                 #formatting and printing each step
-                directions=[]
-                count = 0
+                
+                
                 #for adding turn by turn directions later
                 for step in trip['steps']:
                     indstep = step['html_instructions']
@@ -96,14 +101,15 @@ def addroute(request):
                     indstep = indstep.replace('<div class="">', ' *** ')
                     indstep = indstep.replace('<div class="google_note">', ' *** ')
                     indstep = indstep.replace('</div>', ' *** ')
-                    directions[count] = indstep
-                    count += 1
-
+                    directions += indstep 
+                    
             
-            newRoute = Route(driver = uid, rider = "", depart_time = depart, maps_info = currentRoute, status = 0)
+
+            newRoute = Route(driver_info = DriverInfo.objects.get(id = 1), rider = None, depart_time = departTime, maps_info = directions, status = False)
             newRoute.save()
 
-            resp = {"errCode" : 1}
+            resp = {"errCode" : SUCCESS}
+            
 
         except Exception, err:
             resp = {"errCode" : err}

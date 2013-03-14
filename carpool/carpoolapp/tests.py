@@ -23,19 +23,19 @@ class SimpleTest(testLib.RestTestCase):
         self.assertEquals(1 + 1, 2)
 
     def testAdd1(self):
-        respData = self.makeRequest("driver/addroute", method="POST", data = { 'user' : 'testUserAddRoute', 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 'testUserAddRoute', 'start' : 'Berkeley', 'end' : 'San Jose'} )
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     
     def testAdd2(self):
-        respData = self.makeRequest("driver/addroute", method="POST", data = { 'user' : 'testUserAddRoute', 'start' : '7075 Brooktree Way, San Jose, CA', 'end' : '6583 Jeremie Drive San Jose'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 'testUserAddRoute', 'start' : '7075 Brooktree Way, San Jose, CA', 'end' : '6583 Jeremie Drive San Jose'} )
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     def testAdd3(self):
-        respData = self.makeRequest("driver/addroute", method="POST", data = { 'user' : 'testUserAddRoute3', 'start' : 'Berkeley', 'end' : '6583 Jeremie Drive San Jose'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 'testUserAddRoute3', 'start' : 'Berkeley', 'end' : '6583 Jeremie Drive San Jose'} )
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     def testAdd4(self):
-        respData = self.makeRequest("driver/addroute", method="POST", data = { 'user' : 'testUserAddRoute4', 'start' : 'berkeley', 'end' : 'new york'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 'testUserAddRoute4', 'start' : 'berkeley', 'end' : 'new york'} )
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 

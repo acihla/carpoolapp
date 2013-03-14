@@ -22,7 +22,7 @@ class RestTestCase(unittest.TestCase):
     
     # Lookup the name of the server to test
 
-    serverToTest = "http://127.0.0.1:8000"
+    serverToTest = "127.0.0.1:8000"
 
     if "TEST_SERVER" in os.environ:
         serverToTest = os.environ["TEST_SERVER"]
