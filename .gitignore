@@ -1,7 +1,6 @@
 venv
 *.pyc
 python2.7
-settings.py
 _init_.py
 settings.py
 migrations
