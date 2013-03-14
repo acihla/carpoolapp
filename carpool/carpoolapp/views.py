@@ -60,7 +60,7 @@ def search(request):
         resp["rides"] = rides
         #return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
-            resp["error"] = "ERROR"
+            resp["error"] = str(err)
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
