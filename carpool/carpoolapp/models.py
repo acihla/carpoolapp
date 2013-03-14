@@ -25,6 +25,20 @@ class User(models.Model):
         rtn["email"] = self.email
         rtn["dob"] = self.dob
         rtn["sex"] = self.sex
+        rtn["cellphone"] = self.cellphone
+        rtn["driverOrRider"] = self.driverOrRider
+        rtn["comments"] = self.comments
+        rtn["avg_rating"] = self.avg_rating
+        return rtn
+
+    def to_dict_unsecure(self):
+        rtn = {}
+        rtn["firstname"] = self.firstname
+        rtn["lastname"] = self.lastname
+        rtn["username"] = self.username
+        rtn["email"] = self.email
+        rtn["dob"] = self.dob
+        rtn["sex"] = self.sex
         rtn["password"] = self.password
         rtn["cellphone"] = self.cellphone
         rtn["driverOrRider"] = self.driverOrRider

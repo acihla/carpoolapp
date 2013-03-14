@@ -6,6 +6,7 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+import simplejson as json
 import testLib
 import os
 
@@ -69,6 +70,7 @@ class SearchTest(testLib.RestTestCase):
 
 
     def testSearch1(self):
+<<<<<<< HEAD
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         print(respData)
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
@@ -112,3 +114,27 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
     print(respData)
     self.assertResponse(respData, testLib.RestTestCase.ERR_DATABASE_SEARCH_ERROR)
 
+=======
+        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        print "testSearch1"
+        self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.SUCCESS)
+
+    def testSearch2(self):
+        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        print "testSearch2"
+        t = (respData.get("size", -1) >= 0)
+        self.assertEquals(t, True)
+
+    def testSearch3(self):
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'start' : 'Berkeley', 'end' : '6583 Jeremie Drive San Jose'} )
+        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        print "testSearch3"
+        size = len(respData.get("rides",[]))
+        t = (size > 0)
+        self.assertEquals(t, True)
+
+    def testSearch4(self):
+        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        print "testSearch4"
+        self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.SUCCESS)
+>>>>>>> ea02d5d30bea2224eff5b96d663bdfb4dc8a63bf
