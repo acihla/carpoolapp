@@ -21,7 +21,7 @@ class RestTestCase(unittest.TestCase):
     ERR_BAD_PASSWORD    = -4
     
     # Lookup the name of the server to test
-    serverToTest = "http://127.0.0.1:8000/"
+    serverToTest = "127.0.0.1:8000"
     if "TEST_SERVER" in os.environ:
         serverToTest = os.environ["TEST_SERVER"]
 
@@ -79,7 +79,7 @@ class RestTestCase(unittest.TestCase):
         
     def setUp(self):
         self.conn = httplib.HTTPConnection(RestTestCase.serverToTest, timeout=1)
-        self.makeRequest("/TESTAPI/resetFixture", method="GET")
+        #self.makeRequest("/TESTAPI/resetFixture", method="GET")
         
     def tearDown(self):
         self.conn.close ()
