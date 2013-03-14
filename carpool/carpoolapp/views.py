@@ -124,19 +124,19 @@ def select_ride(request):
     print route_id
     rider = User.objects.get(id=rider_id)
     route = Route.objects.get(id=route_id)
-    driver_info =route.driver
+    driver_info =route.driver_info
     driver_email = driver_info.driver.email
     print driver_email
     route.rider = rider
     route.save()
   except KeyError:
-    return HttpResponse(simplejson.dumps({'errCode':-1}),content_type="application/json")
+    return HttpResponse(json.dumps({'errCode':-1}),content_type="application/json")
   try:
     send_mail('email from my app','so it is working','carpoolcs169@gmail.com',[driver_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
   except BadHeaderError:
     return HttpResponse('bad header found')
 
-  return HttpResponse(simplejson.dumps({'errCode':1}),content_type="application/json")
+  return HttpResponse(json.dumps({'errCode':1}),content_type="application/json")
 
 
 def handleRouteData(uid, start, end, depart):
