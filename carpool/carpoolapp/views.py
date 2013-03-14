@@ -116,6 +116,7 @@ def addroute(request):
 
 
 @csrf_exempt
+<<<<<<< HEAD
 def select_ride(request):
   
   try:
