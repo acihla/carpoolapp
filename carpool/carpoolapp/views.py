@@ -29,24 +29,33 @@ ERR_BAD_DEPARTURE  =  -1  # : Departure location is not valid
 ERR_BAD_DESTINATION       =  -2  # : Destination location is not valid
 ERR_BAD_USERID      =  -3  # : UID does not exist in db, or is not a driver
 ERR_BAD_TIME     =  -4   #format for time is bad
+ERR_DATABASE_SEARCH_ERROR   = -5  
 MAX_LENGTH_IN = 200  #max length for all datums in our db
 
 sample_date = date(1992,4,17)
 @csrf_exempt
 def search(request):
-    resp = {"error":"Success"}
+    try:
+        rdata = json.loads(request.body)
+    except Exception, err:
+        print str(err)
+    #TODO Parse json here.
+    resp = {"errCode":SUCCESS}
     try:
         routes = Route.objects.all()
-        resp["size"] = len(routes)
         rides = []
         for route in routes:
+            #TODO filter routes to fit request.
             entry = route.to_dict()
-            rides.append(entry)
+            if entry.get("status", "True") == "False":
+                rides.append(entry)
 
         resp["rides"] = rides
+        resp["size"] = len(rides)
         #return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
-            resp["error"] = "Error"
+            resp["errCode"] = ERR_DATABASE_SEARCH_ERROR
+            resp["errMsg"] = str(err)
             print str(err)
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 

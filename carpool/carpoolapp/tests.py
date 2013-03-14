@@ -28,13 +28,13 @@ class TestUnit(testLib.RestTestCase):
 
 
 
-class SimpleTest(testLib.RestTestCase):
+class AddRouteTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
-    	#Check that the response data dictionary matches the expected values
+        #Check that the response data dictionary matches the expected values
         expected = { 'errCode' : errCode }
         #if respData.get(count, None) is not None:
-	#   expected['count']  = count
-	self.assertDictEqual(expected, respData)
+        #   expected['count']  = count
+        self.assertDictEqual(expected, respData)
 
 
     def testAdd1(self):
@@ -58,3 +58,16 @@ class SimpleTest(testLib.RestTestCase):
         print(respData)
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
+class SearchTest(testLib.RestTestCase):
+    def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
+        #Check that the response data dictionary matches the expected values
+        expected = { 'errCode' : errCode }
+        #if respData.get(count, None) is not None:
+        #   expected['count']  = count
+        self.assertDictEqual(expected, respData)
+
+
+    def testSearch1(self):
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        print(respData)
+        self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
