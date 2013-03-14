@@ -33,26 +33,33 @@ MAX_LENGTH_IN = 200  #max length for all datums in our db
 
 
 def search(request):
-    routes = Route.objects.all()
-    resp = {"error":"Success", "size":len(routes)}
-    rides = []
-    for route in routes:
-        entry = {}
-        driverinfo = models.instance_dict(route.driver)
-        driverinfo["driver"] = models.instance_dict(route.driver.driver)
-        entry["driver"] = driverinfo
-        entry["rider"] = route.rider
-        entry["depart_time"] = route.depart_time
-        #entry["arrival_time"] = route.depart_time
-        #entry["depart_lat"] = route.depart_lat
-        #entry["depart_lg"] = route.depart_lg
-        #entry["arrive_lat"] = route.arrive_lat
-        #entry["arrive_lg"] = route.arrive_lg
-        entry["maps_info"] = route.maps_info
-        entry["status"] = route.status
-        rides.append(entry)
+    resp = {"error":"Success"}
+    try:
+        routes = Route.objects.all()
+        resp["size"] = len(routes)
+        rides = []
+        for route in routes:
+            entry = route.to_dict()
+            #driverinfo = models.instance_dict(route.driver_info)
+            #driverinfo["driver"] = models.instance_dict(route.driver_info.driver)
+            '''
+            entry["driver_info"] = driverinfo
+            entry["rider"] = route.rider
+            entry["depart_time"] = route.depart_time
+            #entry["arrival_time"] = route.depart_time
+            #entry["depart_lat"] = route.depart_lat
+            #entry["depart_lg"] = route.depart_lg
+            #entry["arrive_lat"] = route.arrive_lat
+            #entry["arrive_lg"] = route.arrive_lg
+            entry["maps_info"] = route.maps_info
+            entry["status"] = route.status
+            '''
+            rides.append(entry)
 
-    resp["rides"] = rides
+        resp["rides"] = rides
+        #return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    except Exception, err:
+            resp["error"] = "ERROR"
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 def addroute(request):
