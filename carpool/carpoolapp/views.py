@@ -146,13 +146,13 @@ def handleRouteData(uid, start, end, depart):
 		return ERR_BAD_USERID
 	return SUCCESS
 
-
+@csrf_exempt
 def TESTAPI_resetFixture(request):
-    #need to clear db here !!!
+    #need to clear db here !!! Not necessary if running python manage.py test carpoolapp
     resp = {"errCode" : SUCCESS}
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
-
+@csrf_exempt
 def TESTAPI_unitTests(request):
     buffer = StringIO.StringIO()
     suite = unittest.TestLoader().loadTestsFromTestCase(UnitTest)
