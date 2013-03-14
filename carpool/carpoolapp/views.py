@@ -31,7 +31,7 @@ ERR_BAD_USERID      =  -3  # : UID does not exist in db, or is not a driver
 ERR_BAD_TIME     =  -4   #format for time is bad
 MAX_LENGTH_IN = 200  #max length for all datums in our db
 
-
+sample_date = date(1992,4,17)
 @csrf_exempt
 def search(request):
     resp = {"error":"Success"}
@@ -56,7 +56,7 @@ def addroute(request):
     uid = rdata.get("user", "")
     start = rdata.get("start", "")
     end = rdata.get("end", "")
-    departTime = date(1992,4,17) #rdata.get("edt", "")
+    departTime = sample_date #rdata.get("edt", "")
     validDatums = 1; #handleRouteData(uid, start, end, depart)
     if (validDatums != 1):
     	resp = {"errCode" : validDatums}
@@ -131,13 +131,13 @@ def select_ride(request):
 
 
 def handleRouteData(uid, start, end, depart):
-	if(start.length > MAX_LENGTH_IN):
-		return ERR_BAD_DEPARTURE
-	if(end.length > MAX_LENGTH_IN):
-		return ERR_BAD_DESTINATION
-	if(DriverInfo.objects.get(driver = uid)):
-		return ERR_BAD_USERID
-	return SUCCESS
+	if(len(start) > MAX_LENGTH_IN):
+		return ERR_BAD_DEPARTURE #-1
+	if(len(end) > MAX_LENGTH_IN):
+		return ERR_BAD_DESTINATION #-2
+	if not (DriverInfo.objects.get(id = uid)):
+		return ERR_BAD_USERID #-3
+	return SUCCESS #1
 
 @csrf_exempt
 def TESTAPI_resetFixture(request):

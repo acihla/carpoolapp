@@ -19,7 +19,7 @@ class TestUnit(testLib.RestTestCase):
         self.assertTrue('totalTests' in respData)
         print "***** Reported "+str(respData['totalTests'])+" unit tests"
         # When we test the actual project, we require at least 10 unit tests
-        minimumTests = 10
+        minimumTests = 40
         if "SAMPLE_APP" in os.environ:
             minimumTests = 4
         self.assertTrue(respData['totalTests'] >= minimumTests,
