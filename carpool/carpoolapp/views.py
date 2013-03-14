@@ -114,60 +114,59 @@ def addroute(request):
 
 
 @csrf_exempt
-def select_ride(request):
-  
-  try:
-    data = json.loads(request.raw_post_data)
-    rider_id = data['rider_id']
-    print rider_id
-    route_id = data['route_id']
-    print route_id
-    rider = User.objects.get(id=rider_id)
-    route = Route.objects.get(id=route_id)
-    driver_info =route.driver_info
-    driver_email = driver_info.driver.email
-    print driver_email
-    route.rider = rider
-    route.save()
-    url = "http://127.0.0.1:8000/driver/accept"
-    url += "?route_id=" + str(route_id)
-    yesUrl = url + "&response=1"
-    noUrl = url + "&response=0"
-    message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
+def select_ride(request): 
+    try:
+        data = json.loads(request.raw_post_data)
+        rider_id = data['rider_id']
+        print rider_id
+        route_id = data['route_id']
+        print route_id
+        rider = User.objects.get(id=rider_id)
+        route = Route.objects.get(id=route_id)
+        driver_info =route.driver_info
+        driver_email = driver_info.driver.email
+        print driver_email
+        route.rider = rider
+        route.save()
+        url = "http://127.0.0.1:8000/driver/accept"
+        url += "?route_id=" + str(route_id)
+        yesUrl = url + "&response=1"
+        noUrl = url + "&response=0"
+        message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
 
 
-  except KeyError:
-    return HttpResponse(json.dumps({'errCode':-1}),content_type="application/json")
-  try:
-    send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
-  except BadHeaderError:
-    return HttpResponse('bad header found')
+    except KeyError:
+        return HttpResponse(json.dumps({'errCode':-1}),content_type="application/json")
+    try:
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+    except BadHeaderError:
+        return HttpResponse('bad header found')
 
-  return HttpResponse(json.dumps({'errCode':1}),content_type="application/json")
+    return HttpResponse(json.dumps({'errCode':1}),content_type="application/json")
 
 @csrf_exempt
 def accept_ride(request):
-  print 'in accept ride'
-  try:
-    r = request.GET
-    route_id = r.get("route_id", -1)
-    response = r.get("response", -1)
-    print "route id: " + str(route_id)
-    print "response: " + str(response)
-    route = Route.objects.get(id=route_id)
-    if response == "1":
-        route.status='True'
-        route.save()
-    elif response == "0":
-        route.status = 'False'
-        route.save()
-    else:
-        raise Exception("Invalid response")
-  except Exception, err:
-    print str(err)
-    return HttpResponse(json.dumps({'errCode':-1}),content_type="application/json")
+    print 'in accept ride'
+    try:
+        r = request.GET
+        route_id = r.get("route_id", -1)
+        response = r.get("response", -1)
+        print "route id: " + str(route_id)
+        print "response: " + str(response)
+        route = Route.objects.get(id=route_id)
+        if response == "1":
+            route.status='True'
+            route.save()
+        elif response == "0":
+            route.status = 'False'
+            route.save()
+        else:
+            raise Exception("Invalid response")
+    except Exception, err:
+        print str(err)
+        return HttpResponse(json.dumps({'errCode':-1}),content_type="application/json")
 
-  return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
+    return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
 
 
 def handleRouteData(uid, start, end, depart):
