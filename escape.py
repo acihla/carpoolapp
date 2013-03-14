@@ -52,6 +52,8 @@ try:
 
 	#making googlemaps directions request and finding the list of possible legs of travel
 	primRoute = gmaps.directions(start, end, mode, waypoint)
+	print primRoute
+	"""
 	route = primRoute['routes'][0]
 	legs = route['legs']
 
@@ -91,5 +93,5 @@ except Exception, err:
 	print "\n \n***************************************************************************************************************************************************************"
 	print "Your locations are not recognized by the system... " +start+ " to " +end+ " is not a known legitimate route! Try entering less specific information"
 	print "*************************************************************************************************************************************************************** \n \n"
-	print "The specific error is... " +str(err)
+	print "The specific error is... " +str(err)"""
 	
