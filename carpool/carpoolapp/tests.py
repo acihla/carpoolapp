@@ -28,7 +28,7 @@ class TestUnit(testLib.RestTestCase):
 
 
 
-class SimpleTest(testLib.RestTestCase):
+class AddRouteTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
     	#Check that the response data dictionary matches the expected values
         expected = { 'errCode' : errCode }
