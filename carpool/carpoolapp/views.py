@@ -22,6 +22,16 @@ from googlemaps import GoogleMaps
 #connecting using api key for alex.cihla@gmail.com
 gmaps = GoogleMaps("AIzaSyAGf-Mbj40HtzmRmOvPWZX4RnE2RIG_tzc")
 
+#responses to be handled by application
+SUCCESS               =   1  # : a success
+ERR_BAD_DEPARTURE  =  -1  # : Departure location is not valid
+ERR_BAD_DESTINATION       =  -2  # : Destination location is not valid
+ERR_BAD_USERID      =  -3  # : UID does not exist in db, or is not a driver
+ERR_BAD_TIME     =  -4   #format for time is bad
+MAX_LENGTH_IN = 200  #max length for all datums in our db
+
+
+
 def search(request):
     routes = Route.objects.all()
     resp = {"error":"Success", "size":len(routes)}
@@ -47,42 +57,49 @@ def search(request):
 
 def addroute(request):
     rdata = json.loads(request.body)
-    username = rdata.get("user", "")
+    uid = rdata.get("user", "")
     start = rdata.get("start", "")
     end = rdata.get("end", "")
-    depart = rdata.get("edt", "")
-    try:
-        currentRoute = gmaps.directions(start, end)
-        route = currentRoute['routes'][0]
-        legs = route['legs']
+    departTime = rdata.get("edt", "")
+    validDatums = handleRouteData(uid, start, end, depart)
+    if (validDatums != 1):
+    	resp = {"errCode" : validDatums}
+    else:
+    	try:
+	        currentRoute = gmaps.directions(start, end)
+	        route = currentRoute['routes'][0]
+	        legs = route['legs']
 
-        #dealing with possible multiple legs due to utilization of a waypoint
-        for trip in legs:
-            #print primRoute['routes'][end_location]
-            #printing time and distance of route
-            routeTime = trip['duration']['value'] / 60
-            routeDist = trip['distance']['value'] * 0.000621371
-            #formatting and printing each step
+	        #dealing with possible multiple legs due to utilization of a waypoint
+	        for trip in legs:
+	            #print primRoute['routes'][end_location]
+	            #printing time and distance of route
+	            routeTime = trip['duration']['value'] / 60
+	            routeDist = trip['distance']['value'] * 0.000621371
+	            #formatting and printing each step
+	            directions[]
+	            count = 0
+	            #for adding turn by turn directions later
+	            for step in trip['steps']:
+	                indstep = step['html_instructions']
+	                indstep = indstep.replace('</b>', '')
+	                indstep = indstep.replace('<b>', '')
+	                indstep = indstep.replace('/<wbr/>', '')
+	                indstep = indstep.replace('<div style="font-size:0.9em">', ' *** ')
+	                indstep = indstep.replace('<div class="">', ' *** ')
+	                indstep = indstep.replace('<div class="google_note">', ' *** ')
+	                indstep = indstep.replace('</div>', ' *** ')
+	                directions[count] = indstep
+	                count++
 
-            """for step in trip['steps']:
-                indstep = step['html_instructions']
-                indstep = indstep.replace('</b>', '')
-                indstep = indstep.replace('<b>', '')
-                indstep = indstep.replace('/<wbr/>', '')
-                indstep = indstep.replace('<div style="font-size:0.9em">', ' *** ')
-                indstep = indstep.replace('<div class="">', ' *** ')
-                indstep = indstep.replace('<div class="google_note">', ' *** ')
-                indstep = indstep.replace('</div>', ' *** ')
-                print indstep"""
+	        
+	        newRoute = Route(driver = uid, rider = "", depart_time = depart, maps_info = currentRoute, status = 0)
+	        newRoute.save()
 
-        
-        newRoute = Route(driver = username, rider = "", depart_time = depart, maps_info = currentRoute, status = 0)
-        newRoute.save()
+	        resp = {"errCode" : 1}
 
-        resp = {"errCode" : SUCCESS}
-
-    except Exception, err:
-        resp = {"errCode" : err}
+	    except Exception, err:
+	        resp = {"errCode" : err}
     
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
@@ -112,6 +129,15 @@ def select_ride(request):
 
   return HttpResponse(simplejson.dumps({'errCode':1}),content_type="application/json")
 
+
+def handleRouteData(uid, start, end, depart):
+	if(start.length > MAX_LENGTH_IN):
+		return ERR_BAD_DEPARTURE
+	if(end.length > MAX_LENGTH_IN):
+		return ERR_BAD_DESTINATION
+	if(DriverInfo.objects.get(driver = uid)):
+		return ERR_BAD_USERID
+	return SUCCESS
 
 
 def TESTAPI_resetFixture(request):
