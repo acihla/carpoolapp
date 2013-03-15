@@ -21,7 +21,7 @@ class TestUnit(testLib.RestTestCase):
         self.assertTrue('totalTests' in respData)
         print "***** Reported "+str(respData['totalTests'])+" unit tests"
         # When we test the actual project, we require at least 10 unit tests
-        minimumTests = 40
+        minimumTests = 20
         if "SAMPLE_APP" in os.environ:
             minimumTests = 4
         self.assertTrue(respData['totalTests'] >= minimumTests,
@@ -188,7 +188,7 @@ class Select_RideTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
 
   def testSelect_Good_Ride(self):
-    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 2} )
+    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 4} )
     print("testSelect_Good_Ride")
     self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
@@ -206,7 +206,7 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
 
   def test_Accept_Good_Ride(self):
-    respData = self.makeRequest("/driver/accept", method="GET", data = { 'route_id' : 2} )
+    respData = self.makeRequest("/driver/accept", method="GET", data = { 'route_id' : 4} )
     print("test_Accept_Good_Ride")
     self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
