@@ -103,6 +103,46 @@ class UnitTest(unittest.TestCase):
         #def testSelectRoute(self):
         """
 
+    def testUnitModelUserToDict(self):
+        #Test if to_dict method works properly
+        users = models.User.objects.all()
+        if len(users) > 0:
+            user = users[0]
+            dic = user.to_dict()
+            fields = ["firstname", "lastname", "username", "email", "dob", "sex", "cellphone", "driverOrRider", "comments", "avg_rating"]
+            for field in fields:
+                self.assertEquals(dic.get(field,None), eval("user."+field))
+
+    def testUnitModelUserToDictUnsecure(self):
+        #Test if to_dict method works properly
+        users = models.User.objects.all()
+        if len(users) > 0:
+            user = users[0]
+            dic = user.to_dict_unsecure()
+            fields = ["firstname", "lastname", "username", "email", "dob", "sex", "cellphone", "driverOrRider", "comments", "avg_rating", "password"]
+            for field in fields:
+                self.assertEquals(dic.get(field,None), eval("user."+field))
+
+    def testUnitModelDriverInfoToDict(self):
+        #Test if to_dict method works properly
+        di = models.DriverInfo.objects.all()
+        if len(di) > 0:
+            di= di[0]
+            dic = di.to_dict()
+            fields = ["license_no", "license_exp", "car_make", "car_type", "car_mileage", "max_passengers"]
+            for field in fields:
+                self.assertEquals(dic.get(field,None), eval("di."+field))
+
+    def testUnitModelRouteToDict(self):
+        #Test if to_dict method works properly
+        routes = models.Route.objects.all()
+        if len(routes) > 0:
+            route= routes[0]
+            dic = route.to_dict()
+            fields = ["depart_time", "depart_lat", "depart_lg", "arrive_lat", "arrive_lg", "maps_info", "status"]
+            for field in fields:
+                self.assertEquals(dic.get(field,None), eval("route."+field))
+
 # If this file is invoked as a Python script, run the tests in this module
 if __name__ == "__main__":
     # Add a verbose argument
