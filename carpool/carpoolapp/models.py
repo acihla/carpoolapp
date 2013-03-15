@@ -95,6 +95,10 @@ class Route(models.Model):
         if self.rider != None:
             rtn["rider"] = self.rider.to_dict()
         rtn["depart_time"] = self.depart_time
+        rtn["depart_lat"] = self.depart_lat
+        rtn["depart_lg"] = self.depart_lg
+        rtn["arrive_lat"] = self.arrive_lat
+        rtn["arrive_lg"] = self.arrive_lg
         rtn["maps_info"] = self.maps_info
         rtn["status"] = self.status
         return rtn
