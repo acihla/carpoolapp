@@ -166,21 +166,21 @@ def select_ride(request):
 def accept_ride(request):
   print 'in accept ride'
   try:
-    r = json.loads(request.body)
+    r = request.GET
     route_id = r.get("route_id", -1)
     response = r.get("response", "") #-1) What is going on here? this is request right? Why do we have a response segment?
     print "route id: " + str(route_id)
     print "response: " + str(response)
     route = Route.objects.get(id=route_id)
-    """if response == "1":
-        route.status='True'
+    if response == "1":
+        route.status="True"
         route.save()
     elif response == "0":
-        route.status = 'False'
+        route.status = "False"
         route.save()
     else:
         raise Exception("Invalid response" + str(response))
-    """
+    
   except Exception, err:
     print str(err)
     return HttpResponse(json.dumps({'errCode':ERR_BAD_SERVER_RESPONSE}),content_type="application/json")
