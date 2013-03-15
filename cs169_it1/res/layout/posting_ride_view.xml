@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/start_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Route" />
+
+        <Button
+            android:id="@+id/map_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Map Me" />
+
+    </TableRow>
+
+<!-- 
+    <TableRow>
+
+        <TextView
+            android:id="@+id/compensation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/compensation" />
+
+        <EditText
+            android:id="@+id/compensation_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" >
+        </EditText>
+    </TableRow> -->
+
+<!--     <TableRow>
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/date" />
+
+        <EditText
+            android:id="@+id/date_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date" >
+        </EditText>
+    </TableRow> -->
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/time_depart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_depart" />
+
+        <EditText
+            android:id="@+id/time_depart_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" >
+        </EditText>
+    </TableRow>
+
+ <!--    <TableRow>
+
+        <TextView
+            android:id="@+id/car_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/car_type" />
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/car_make"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/car_make" />
+
+        <EditText
+            android:id="@+id/car_make_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text" />
+    </TableRow>
+    <TableRow>
+
+        <TextView
+            android:id="@+id/car_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/car_model" />
+
+        <EditText
+            android:id="@+id/car_model_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text" />
+    </TableRow>
+    <TableRow>
+
+        <TextView
+            android:id="@+id/car_mileage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/car_mileage" />
+
+        <EditText
+            android:id="@+id/car_mileage_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text" />
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/max_riders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/max_riders" />
+
+        <EditText
+            android:id="@+id/max_riders_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" >
+        </EditText>
+    </TableRow>
+ -->
+    <Button
+        android:id="@+id/post_ride_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/post_ride_button" />
+
+</TableLayout>
