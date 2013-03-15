@@ -30,8 +30,8 @@ ERR_BAD_DESTINATION       =  -2  # : Destination location is not valid
 ERR_BAD_USERID      =  -3  # : UID does not exist in db, or is not a driver
 ERR_BAD_TIME     =  -4   #format for time is bad
 ERR_DATABASE_SEARCH_ERROR   = -5  
-ERR_BAD_HEADER=-6
-ERR_BAD_SERVER_RESPONSE =-7
+ERR_BAD_HEADER= -6
+ERR_BAD_SERVER_RESPONSE = -7
 MAX_LENGTH_IN = 200  #max length for all datums in our db
 
 sample_date = date(1992,4,17)
@@ -65,13 +65,26 @@ def search(request):
 def addroute(request):
     rdata = json.loads(request.body)
     uid = rdata.get("user", "")
-    start = rdata.get("start", "")
-    end = rdata.get("end", "")
+    #start = rdata.get("start", "")
+    #end = rdata.get("end", "")
+
+    departLocLong = rdata.get("depart-long", "")
+    departLocLat = rdata.get("depart-lat", "")
+
+    destinationLocLong = rdata.get("dest-long", "")
+    destinationLocLat = rdata.get("dest-lat", "")
+
     departTime = sample_date #rdata.get("edt", "")
     validDatums = 1; #handleRouteData(uid, start, end, depart)
     if (validDatums != 1):
     	resp = {"errCode" : validDatums}
+
     else:
+        newRoute = Route(driver_info = DriverInfo.objects.get(id = 1), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = departTime, status = False) #maps_info = directions, 
+        newRoute.save()
+
+        resp = {"errCode" : SUCCESS}
+        """
         try:
 
             
@@ -103,69 +116,70 @@ def addroute(request):
                     
             
 
-            newRoute = Route(driver_info = DriverInfo.objects.get(id = 1), rider = None, depart_time = departTime, maps_info = directions, status = False)
-            newRoute.save()
-
-            resp = {"errCode" : SUCCESS}
+            
             
 
         except Exception, err:
             resp = {"errCode" : err}
+    """
+    
     
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 
 @csrf_exempt
-<<<<<<< HEAD
 def select_ride(request):
-  
-  try:
-    data = json.loads(request.raw_post_data)
-    rider_id = data['rider_id']
-    print rider_id
-    route_id = data['route_id']
-    print route_id
-    rider = User.objects.get(id=rider_id)
-    route = Route.objects.get(id=route_id)
-    driver_info =route.driver_info
-    driver_email = driver_info.driver.email
-    print driver_email
-    route.rider = rider
-    route.save()
-    url = "http://127.0.0.1:8000/driver/accept"
-    url += "?route_id=" + str(route_id)
-    yesUrl = url + "&response=1"
-    noUrl = url + "&response=0"
-    message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
+    try:
+        data = json.loads(request.raw_post_data)
+        rider_id = data['rider_id']
+        print rider_id
+        route_id = data['route_id']
+        print route_id
+        rider = User.objects.get(id=rider_id)
+        route = Route.objects.get(id=route_id)
+        driver_info =route.driver_info
+        driver_email = driver_info.driver.email
+        print driver_email
+        route.rider = rider
+        route.save()
+        url = "http://127.0.0.1:8000/driver/accept"
+        url += "?route_id=" + str(route_id)
+        yesUrl = url + "&response=1"
+        noUrl = url + "&response=0"
+        message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
 
 
-  except KeyError:
-    return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
-  try:
-    send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
-  except BadHeaderError:
-    return HttpResponse(json.dumps({'errCode':ERR_BAD HEADER}),content_type="application/json",
+    except KeyError:
+        return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
-  return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
+    except Exception, err:
+        return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
+    try:
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+    except BadHeaderError:
+        return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="application/json")
+
+    return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
 
 @csrf_exempt
 def accept_ride(request):
   print 'in accept ride'
   try:
-    r = request.GET
+    r = json.loads(request.body)
     route_id = r.get("route_id", -1)
-    response = r.get("response", -1)
+    response = r.get("response", "") #-1) What is going on here? this is request right? Why do we have a response segment?
     print "route id: " + str(route_id)
     print "response: " + str(response)
     route = Route.objects.get(id=route_id)
-    if response == "1":
+    """if response == "1":
         route.status='True'
         route.save()
     elif response == "0":
         route.status = 'False'
         route.save()
     else:
-        raise Exception("Invalid response")
+        raise Exception("Invalid response" + str(response))
+    """
   except Exception, err:
     print str(err)
     return HttpResponse(json.dumps({'errCode':ERR_BAD_SERVER_RESPONSE}),content_type="application/json")

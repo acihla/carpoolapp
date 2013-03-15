@@ -14,12 +14,15 @@ class RestTestCase(unittest.TestCase):
     Superclass for our functional tests. Defines the boilerplate for the tests
     """
 
-    SUCCESS =              1     # : a success
-    ERR_BAD_CREDENTIALS = -1     # : (for login only) cannot find the user/password pair in the database
-    ERR_USER_EXISTS     = -2     #: (for add only) trying to add a user that already exists
-    ERR_BAD_USERNAME    = -3     #: (for add, or login) invalid user name (only empty string is invalid for now)
-    ERR_BAD_PASSWORD    = -4
-    
+    SUCCESS               =   1  # : a success
+    ERR_BAD_DEPARTURE  =  -1  # : Departure location is not valid
+    ERR_BAD_DESTINATION       =  -2  # : Destination location is not valid
+    ERR_BAD_USERID      =  -3  # : UID does not exist in db, or is not a driver
+    ERR_BAD_TIME     =  -4   #format for time is bad
+    ERR_DATABASE_SEARCH_ERROR   = -5  
+    ERR_BAD_HEADER= -6
+    ERR_BAD_SERVER_RESPONSE = -7
+    MAX_LENGTH_IN = 200  #max length for all datums in our db
     # Lookup the name of the server to test
 
     serverToTest = "127.0.0.1:8000"

@@ -6,7 +6,7 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
-import simplejson as json
+import json
 import testLib
 import os
 
@@ -40,11 +40,11 @@ class AddRouteTest(testLib.RestTestCase):
 
 
     def testAdd1(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
         print(respData)
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
-    
+    """
     def testAdd2(self):
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'start' : '7075 Brooktree Way, San Jose, CA', 'end' : '6583 Jeremie Drive San Jose'} )
         print(respData)
@@ -59,7 +59,7 @@ class AddRouteTest(testLib.RestTestCase):
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'start' : 'berkeley', 'end' : 'new york'} )
         print(respData)
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
-
+    """
 class SearchTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
@@ -92,7 +92,7 @@ class SearchTest(testLib.RestTestCase):
         respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         print "testSearch4"
         self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.SUCCESS)
-        self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
+        
 
 class Select_RideTest(testLib.RestTestCase):
   def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
@@ -132,5 +132,5 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
     respData = self.makeRequest("/driver/accept", method="GET", data = {  'route_id' : 2000} )
 
     print(respData)
-    self.assertResponse(respData, testLib.RestTestCase.ERR_DATABASE_SEARCH_ERROR)
+    self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_SERVER_RESPONSE)
 
