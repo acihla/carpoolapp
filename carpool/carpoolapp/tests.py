@@ -169,10 +169,12 @@ class Select_RideTest(testLib.RestTestCase):
 
   def testSelect_Good_Ride(self):
     respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 2} )
+    print("testSelect_Good_Ride")
     self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
   def testSelect_BAD_Ride(self):
     respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 2000} )
+    print("testSelect_BAD_Ride")
     self.assertResponse(respData, testLib.RestTestCase.ERR_DATABASE_SEARCH_ERROR)
 
 class Accept_OR_Deny_RideTest(testLib.RestTestCase):
@@ -185,9 +187,11 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
 
   def test_Accept_Good_Ride(self):
     respData = self.makeRequest("/driver/accept", method="GET", data = { 'route_id' : 2} )
+    print("test_Accept_Good_Ride")
     self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
   def test_Accept_BAD_Ride(self):
     respData = self.makeRequest("/driver/accept", method="GET", data = {  'route_id' : 2000} )
+    print("test_Accept_BAD_Ride")
     self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_SERVER_RESPONSE)
 
