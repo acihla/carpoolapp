@@ -82,12 +82,12 @@ class Route(models.Model):
     rider = models.ForeignKey(User, null=True)
     depart_time = models.DateTimeField()
     #arrival_time = models.DateTimeField()
-    depart_lat = models.CharField(max_length=200, null=True)
-    depart_lg = models.CharField(max_length=200, null=True)
-    arrive_lat = models.CharField(max_length=200, null=True)
-    arrive_lg = models.CharField(max_length=200, null=True)
-    maps_info = models.CharField(max_length=5000)
-    status = models.CharField(max_length=64)
+    depart_lat = models.CharField(max_length=15, null=True)
+    depart_lg = models.CharField(max_length=15, null=True)
+    arrive_lat = models.CharField(max_length=15, null=True)
+    arrive_lg = models.CharField(max_length=15, null=True)
+    maps_info = models.CharField(max_length=1000, default="")
+    status = models.CharField(max_length=64, default=False)
 
     def to_dict(self):
         rtn = {}

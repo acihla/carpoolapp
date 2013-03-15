@@ -33,6 +33,7 @@ ERR_DATABASE_SEARCH_ERROR   = -5
 ERR_BAD_HEADER= -6
 ERR_BAD_SERVER_RESPONSE = -7
 MAX_LENGTH_IN = 200  #max length for all datums in our db
+COORD_LENGTH_IN = 15 # max length of coordinates
 
 sample_date = date(1992,4,17)
 @csrf_exempt
@@ -75,7 +76,7 @@ def addroute(request):
     destinationLocLat = rdata.get("dest-lat", "")
 
     departTime = sample_date #rdata.get("edt", "")
-    validDatums = 1; #handleRouteData(uid, start, end, depart)
+    validDatums = handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
     if (validDatums != 1):
     	resp = {"errCode" : validDatums}
 
@@ -186,15 +187,21 @@ def accept_ride(request):
 
   return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
 
-
-def handleRouteData(uid, start, end, depart):
-	if(len(start) > MAX_LENGTH_IN):
+#handles that coordinates are legit and uid exists in db
+def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat):
+    if (len(departLocLat) > COORD_LENGTH_IN) | (len(departLocLong) > COORD_LENGTH_IN) | (not (90.0 >= float(departLocLat) >= -90.0)) | (not (180.0 >= float(departLocLong) >= -180.0)) :
 		return ERR_BAD_DEPARTURE #-1
-	if(len(end) > MAX_LENGTH_IN):
-		return ERR_BAD_DESTINATION #-2
-	if not (DriverInfo.objects.get(id = uid)):
+	
+    if (len(destinationLocLong) > COORD_LENGTH_IN) | (len(destinationLocLat) > COORD_LENGTH_IN) | (not (90.0 >= float(destinationLocLat) >= -90.0)) | (not (180.0 >= float(destinationLocLong) >= -180.0)) :
+        return ERR_BAD_DESTINATION #-2
+	
+    try:
+        if not (DriverInfo.objects.get(id = uid)):
 		return ERR_BAD_USERID #-3
-	return SUCCESS #1
+    except Exception:
+        return ERR_BAD_USERID #-3
+    
+    return SUCCESS
 
 @csrf_exempt
 def TESTAPI_resetFixture(request):

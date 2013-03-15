@@ -38,28 +38,28 @@ class AddRouteTest(testLib.RestTestCase):
         #   expected['count']  = count
         self.assertDictEqual(expected, respData)
 
-
+    #generic first add route test with legitimate coordinates
     def testAdd1(self):
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
         print(respData)
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
-    """
+    
     def testAdd2(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'start' : '7075 Brooktree Way, San Jose, CA', 'end' : '6583 Jeremie Drive San Jose'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
         print(respData)
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     def testAdd3(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'start' : 'Berkeley', 'end' : '6583 Jeremie Drive San Jose'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
         print(respData)
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     def testAdd4(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'start' : 'berkeley', 'end' : 'new york'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
         print(respData)
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
-    """
+
 class SearchTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
