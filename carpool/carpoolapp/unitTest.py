@@ -28,17 +28,15 @@ class UnitTest(unittest.TestCase):
 
         
     def testAddRoute(self):
-        """
-        Tests that adding a user works
-        """
+        #Tests that adding a user works
         self.assertEquals(1, views.handleRouteData(1, "fremont", "san jose", test_date))
-    def testSelectRoute(self):
-      """
-        Tests that i can select a route
-      """
-      self.assertEquals(1, views.select_ride({"rider_id":1, "route_id"=2})
 
-    def testSelectRoute(self):
+    """def testSelectRoute(self):
+        #Tests that i can select a route
+        self.assertEquals(1, views.select_ride({"rider_id":1, "route_id":2})
+
+    #def testSelectRoute(self):
+    """
 
 # If this file is invoked as a Python script, run the tests in this module
 if __name__ == "__main__":
