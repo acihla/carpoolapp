@@ -132,30 +132,50 @@ class SearchTest(testLib.RestTestCase):
 
     
     def testSearch1(self):
-        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         print "testSearch1"
+        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.SUCCESS)
 
     def testSearch2(self):
-        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         print "testSearch2"
+        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         t = (respData.get("size", -1) >= 0)
         self.assertEquals(t, True)
 
-    """
     def testSearch3(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'start' : 'Berkeley', 'end' : '6583 Jeremie Drive San Jose'} )
-        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         print "testSearch3"
-        size = len(respData.get("rides",[]))
-        t = (size > 0)
-        self.assertEquals(t, True)
-    """
+        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        t = (respData.get("size", -1) > 0)
+        if t:
+            rides = respData.get("rides", None)
+            self.assertTrue(rides != None);
+            for ride in rides:
+                status = ride.get("status", None)
+                self.assertEquals(status, "False")
 
     def testSearch4(self):
-        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         print "testSearch4"
-        self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.SUCCESS)
+        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        t = (respData.get("size", -1) > 0)
+        if t:
+            rides = respData.get("rides", None)
+            self.assertTrue(rides != None);
+            for ride in rides:
+                driver_info = ride.get("driver_info", None)
+                self.assertTrue(driver_info != None)
+
+    def testSearch5(self):
+        print "testSearch5"
+        respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
+        t = (respData.get("size", -1) > 0)
+        if t:
+            rides = respData.get("rides", None)
+            self.assertTrue(rides != None);
+            for ride in rides:
+                driver_info = ride.get("driver_info", None)
+                self.assertTrue(driver_info != None)
+                driver = driver_info.get("driver", None)
+                self.assertTrue(driver != None)
 
         
 
@@ -168,7 +188,7 @@ class Select_RideTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
 
   def testSelect_Good_Ride(self):
-    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 2} )
+    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 4} )
     self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
   def testSelect_BAD_Ride(self):
@@ -184,7 +204,7 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
 
   def test_Accept_Good_Ride(self):
-    respData = self.makeRequest("/driver/accept", method="GET", data = { 'route_id' : 2} )
+    respData = self.makeRequest("/driver/accept", method="GET", data = { 'route_id' : 4} )
     self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
   def test_Accept_BAD_Ride(self):
