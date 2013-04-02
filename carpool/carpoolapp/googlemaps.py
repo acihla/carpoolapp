@@ -44,7 +44,7 @@ def fetch_json(query_url, params, headers={}):       # pylint: disable-msg=W0102
     :rtype: (string, dict or array)
     
     """  
-    url = query_url + params 
+    url = query_url + str(params) 
     return json.load(urllib.urlopen(url))
 
         

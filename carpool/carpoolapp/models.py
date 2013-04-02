@@ -4,13 +4,14 @@ from django.db import models
 class User(models.Model):
     firstname = models.CharField(max_length=200)
     lastname = models.CharField(max_length=200)
-    username = models.CharField(max_length=200)
+    #username = models.CharField(max_length=200)
     email = models.CharField(max_length=200)
     dob = models.DateField()
     sex = models.CharField(max_length=10)
     password = models.CharField(max_length=200)
     cellphone = models.CharField(max_length=200)
-    driverOrRider = models.CharField(max_length=64, default = "rider")
+    #driverOrRider = models.CharField(max_length=64, default = "rider")
+    driver = models.BooleanField(default=0)
     comments = models.CharField(max_length=200)
     avg_rating = models.FloatField()
 

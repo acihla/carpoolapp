@@ -36,6 +36,90 @@ MAX_LENGTH_IN = 200  #max length for all datums in our db
 COORD_LENGTH_IN = 15 # max length of coordinates
 
 sample_date = date(1992,4,17)
+
+@csrf_exempt
+def signup(request):
+    try:
+        rdata = json.loads(request.body)
+    except Exception, err:
+        print str(err)
+
+    resp = {"errCode":SUCCESS}
+    if (sanitizeSignupData(rdata)): 
+        firstname = rdata.get("firstname", "")
+        lastname = rdata.get("lastname", "")
+        email = rdata.get("email", "")
+        dob = rdata.get("dob", "")
+        sex = rdata.get("sex", "")
+        password = rdata.get("password", "")
+        cellphone = rdata.get("cellphone", "")
+        driver = rdata.get("driver", "")
+        newUser = User(firstname = firstname, lastname = lastname, email = email, dob = dob, sex = sex, password = password, cellphone = cellphone, driver = driver)
+        newUser.save()
+        if (driver):
+            license_no = rdata.get("license_no", "")
+            license_exp = rdata.get("license_exp", "")
+            car_make = rdata.get("car_make", "")
+            car_type = rdata.get("car_type", "")
+            car_mileage = rdata.get("car_mileage", "")
+            max_passengers = rdata.get("max_passengers", "")
+            newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_exp, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
+            newDriverInfo.save()
+    else:
+        resp["errCode"] = ERR_BAD_SERVER_RESPONSE #vague for now...should be made more descriptive later
+
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+
+@csrf_exempt
+def login(request):
+    try:
+        rdata = json.loads(request.body)
+    except Exception, err:
+        print str(err)
+
+    resp = {"errCode":SUCCESS}
+    email = rdata.get("email", "")
+    password = rdata.get("password", "")
+    if (checkLoginValidityNaive(email, password)):
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    else:
+        resp["errCode"] = ERR_BAD_SERVER_RESPONSE #vague and needs to be made more descriptive!!!
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
+def filter(request):
+    try:
+        rdata = json.loads(request.body)
+    except Exception, err:
+        print str(err)
+
+    resp = {"errCode":SUCCESS}
+    eta = rdata.get("eta", "")
+    etd = rdata.get("etd", "")
+    depart_loc = rdata.get("depart_loc", "")
+    arrive_loc = rdata.get("arrive_loc", "")
+    #distance_proximity = rdata.get("distance_proximity", "") possibly of use in the future
+    requested_etd = rdata.get("requested_etd", "")
+
+    try:
+        routes = Route.objects.all()
+        rides = []
+        for route in routes: 
+            entry = route.to_dict()
+            rides.append(entry)
+
+        #algorithm here!
+
+        resp["rides"] = rides
+        resp["size"] = len(rides)
+    except Exception, err:
+            resp["errCode"] = ERR_DATABASE_SEARCH_ERROR
+            resp["errMsg"] = str(err)
+            print str(err)
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json") 
+
+
 @csrf_exempt
 def search(request):
     try:
