@@ -143,7 +143,6 @@ def filter(request):
 
 @csrf_exempt
 def search(request):
-    distThresh = 10000 #miles
     resp = {"errCode":SUCCESS}
     departloc = ""
     destloc = ""
@@ -161,6 +160,7 @@ def search(request):
     print destloc
     date = rdata.get("date", "")
     departtime = rdata.get("time-depart", "")
+    distThresh = int(rdata.get("dist-thresh", "1000"))
     departlat = departloc.get("lat", "0")
     departlong = departloc.get("long", "0")
     destlat = destloc.get("lat", "0")
