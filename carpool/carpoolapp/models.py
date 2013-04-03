@@ -2,14 +2,14 @@ from django.db import models
 
 
 class User(models.Model):
-    firstname = models.CharField(max_length=200)
-    lastname = models.CharField(max_length=200)
+    firstname = models.CharField(max_length=20)
+    lastname = models.CharField(max_length=20)
     #username = models.CharField(max_length=200)
-    email = models.CharField(max_length=200)
+    email = models.CharField(max_length=50)
     dob = models.DateField()
-    sex = models.CharField(max_length=10)
-    password = models.CharField(max_length=200)
-    cellphone = models.CharField(max_length=200)
+    sex = models.BooleanField()
+    password = models.CharField(max_length=20)
+    cellphone = models.CharField(max_length=10)
     #driverOrRider = models.CharField(max_length=64, default = "rider")
     driver = models.BooleanField(default=0)
     comments = models.CharField(max_length=200)
@@ -22,12 +22,12 @@ class User(models.Model):
         rtn = {}
         rtn["firstname"] = self.firstname
         rtn["lastname"] = self.lastname
-        rtn["username"] = self.username
+        #rtn["username"] = self.username
         rtn["email"] = self.email
         rtn["dob"] = self.dob
         rtn["sex"] = self.sex
         rtn["cellphone"] = self.cellphone
-        rtn["driverOrRider"] = self.driverOrRider
+        rtn["driver"] = self.driverOrRider
         rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
         return rtn
@@ -36,13 +36,13 @@ class User(models.Model):
         rtn = {}
         rtn["firstname"] = self.firstname
         rtn["lastname"] = self.lastname
-        rtn["username"] = self.username
+        #rtn["username"] = self.username
         rtn["email"] = self.email
         rtn["dob"] = self.dob
         rtn["sex"] = self.sex
         rtn["password"] = self.password
         rtn["cellphone"] = self.cellphone
-        rtn["driverOrRider"] = self.driverOrRider
+        rtn["driver"] = self.driver
         rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
         return rtn
