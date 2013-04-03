@@ -199,7 +199,6 @@ def filter(request):
 
 @csrf_exempt
 def search(request):
-    distThresh = 10000 #miles
     resp = {"errCode":SUCCESS}
     departloc = ""
     destloc = ""
@@ -217,6 +216,7 @@ def search(request):
     print destloc
     date = rdata.get("date", "")
     departtime = rdata.get("time-depart", "")
+    distThresh = int(rdata.get("dist-thresh", "1000"))
     departlat = departloc.get("lat", "0")
     departlong = departloc.get("long", "0")
     destlat = destloc.get("lat", "0")
@@ -416,6 +416,8 @@ def distance(lat1, lon1, lat2, lon2):
 def deleteRides(request):
     resp = {"errCode":SUCCESS}
     Route.objects.all().delete()
+    DriverInfo.objects.all().delete()
+    User.objects.all().delete()
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
