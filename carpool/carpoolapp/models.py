@@ -49,12 +49,12 @@ class User(models.Model):
 
 class DriverInfo(models.Model):
     driver = models.ForeignKey(User)
-    license_no = models.CharField(max_length=200)
+    license_no = models.CharField(max_length=50)
     license_exp = models.DateField()
-    car_make = models.CharField(max_length=200)
-    car_type = models.CharField(max_length=200)
-    car_mileage = models.IntegerField(max_length=200)
-    max_passengers = models.IntegerField(null=True)
+    car_make = models.CharField(max_length=20)
+    car_type = models.CharField(max_length=20)
+    car_mileage = models.IntegerField(max_length=3)
+    max_passengers = models.CharField(null=True, max_length=3)
 
     def __unicode__(self):
         return self.license_no
