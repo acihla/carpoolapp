@@ -7,6 +7,7 @@ from django.core.mail import  send_mail,BadHeaderError
 
 from carpoolapp.models import *
 from carpoolapp.unitTest import *
+import testUtils
 
 from django.core.serializers.json import DjangoJSONEncoder
 import os
@@ -19,6 +20,7 @@ import StringIO
 import unittest
 from googlemaps import GoogleMaps
 from datetime import *
+import math
 
 #connecting using api key for alex.cihla@gmail.com
 gmaps = GoogleMaps("AIzaSyAGf-Mbj40HtzmRmOvPWZX4RnE2RIG_tzc")
@@ -32,26 +34,50 @@ ERR_BAD_TIME     =  -4   #format for time is bad
 ERR_DATABASE_SEARCH_ERROR   = -5  
 ERR_BAD_HEADER= -6
 ERR_BAD_SERVER_RESPONSE = -7
+ERR_BAD_JSON = -8
+ERR_BAD_INPUT = -9
 MAX_LENGTH_IN = 200  #max length for all datums in our db
 COORD_LENGTH_IN = 15 # max length of coordinates
 
 sample_date = date(1992,4,17)
+
+
 @csrf_exempt
 def search(request):
+    distThresh = 10000 #miles
+    resp = {"errCode":SUCCESS}
+    departloc = ""
+    destloc = ""
+    rdata = {}
     try:
         rdata = json.loads(request.body)
     except Exception, err:
+        resp = {"errCode":ERR_BAD_JSON}
         print str(err)
     #TODO Parse json here.
-    resp = {"errCode":SUCCESS}
+    departloc = json.loads(rdata.get("depart-loc", "{}"))
+    destloc = json.loads(rdata.get("dest-loc", "{}"))
+    print rdata
+    print departloc 
+    print destloc
+    date = rdata.get("date", "")
+    departtime = rdata.get("time-depart", "")
+    departlat = departloc.get("lat", "0")
+    departlong = departloc.get("long", "0")
+    destlat = destloc.get("lat", "0")
+    destlong = destloc.get("long", "0")
+
     try:
         routes = Route.objects.all()
         rides = []
         for route in routes:
             #TODO filter routes to fit request.
             entry = route.to_dict()
+            departDist = distance(float(departlat), float(departlong), float(entry.get("depart_lat","0")), float(entry.get("depart_lg","0")))
+            #destDist = distance(float(destlat), float(destlon), float(entry.get("arrive_lat","0")), float(entry.get("arrive_lg","0")))
             if entry.get("status", "True") == "False":
-                rides.append(entry)
+                if departDist < distThresh: #and destDist < distThresh:
+                    rides.append(entry)
 
         resp["rides"] = rides
         resp["size"] = len(rides)
@@ -217,3 +243,32 @@ def TESTAPI_unitTests(request):
 
     rv = {"totalTests": result.testsRun, "nrFailed": len(result.failures), "output": buffer.getvalue()}
     return HttpResponse(json.dumps(rv), content_type = "application/json")
+
+#from https://gist.github.com/rochacbruno/2883505
+def distance(lat1, lon1, lat2, lon2):
+    radius = 3959 #miles or 6371 km
+ 
+    dlat = math.radians(lat2-lat1)
+    dlon = math.radians(lon2-lon1)
+    a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(math.radians(lat1)) \
+        * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    d = radius * c
+ 
+    return d
+
+@csrf_exempt
+def deleteRides(request):
+    resp = {"errCode":SUCCESS}
+    Route.objects.all().delete()
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
+def generateExamples(request):
+    resp = {"errCode":SUCCESS}
+    r = request.GET
+    num = int(r.get("num", 0))
+    resp['num'] = num
+    for i in xrange(0,num):
+        testUtils.genRide()
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
