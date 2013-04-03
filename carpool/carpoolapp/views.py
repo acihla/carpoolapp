@@ -40,41 +40,97 @@ MAX_LENGTH_IN = 200  #max length for all datums in our db
 COORD_LENGTH_IN = 15 # max length of coordinates
 ERR_BAD_KEY = -8
 ERR_NOT_USER = -9
+ERR_BAD_EMAIL = -10
+ERR_BAD_INPUT_OR_LENGTH = -11
+ERR_BAD_DOB = -12
 sample_date = date(1992,4,17)
-
 
 @csrf_exempt
 def signup(request):
+    sex_attr = ['male','female']
     try:
         rdata = json.loads(request.body)
     except Exception, err:
         print str(err)
 
-    resp = {"errCode":SUCCESS}
-    if (sanitizeSignupData(rdata)): 
-        firstname = rdata.get("firstname", "")
-        lastname = rdata.get("lastname", "")
-        email = rdata.get("email", "")
-        dob = rdata.get("dob", "")
-        sex = rdata.get("sex", "")
-        password = rdata.get("password", "")
-        cellphone = rdata.get("cellphone", "")
-        driver = rdata.get("driver", "")
+      resp = sanitizeSignupData(rdata): 
+      if resp["errCode"] == SUCCESS:
         newUser = User(firstname = firstname, lastname = lastname, email = email, dob = dob, sex = sex, password = password, cellphone = cellphone, driver = driver)
         newUser.save()
         if (driver):
-            license_no = rdata.get("license_no", "")
-            license_exp = rdata.get("license_exp", "")
-            car_make = rdata.get("car_make", "")
-            car_type = rdata.get("car_type", "")
-            car_mileage = rdata.get("car_mileage", "")
-            max_passengers = rdata.get("max_passengers", "")
+          resp1 = driver_check(rdata)
+          if resp1["errCode"]== SUCCESS:
             newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_exp, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
             newDriverInfo.save()
-    else:
-        resp["errCode"] = ERR_BAD_SERVER_RESPONSE #vague for now...should be made more descriptive later
+          else:
+            return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
+      else:
 
-    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+def  sanitizeSignupData(rdata): 
+    firstname = rdata.get("firstname", "")
+    lastname = rdata.get("lastname", "")
+    email = rdata.get("email", "")
+    dob = rdata.get("dob", "")
+    sex = rdata.get("sex", "")
+    password = rdata.get("password", "")
+    cellphone = rdata.get("cellphone", "")
+    driver = rdata.get("driver", "")
+    #validate not null and not too long firstname
+    if(not firstname or len(firstname)> MAX_LENGTH_FIRST_LAST_PASS):
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    #validate not null and not too long lastname
+    if(not lastname or len(lastname)> MAX_LENGTH_FIRST_LAST_PASS):
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    #validate good email
+    try:
+        validate_email(email)
+    except validationError:
+        resp["errCode"] = ERR_BAD_EMAIL
+    #validate good date of birth
+    if type(dob) is not datetime.date:
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    #validate sex
+    if sex not in sex_list:
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    #validate password
+    if(not password or len(password)> MAX_LENGTH_FIRST_LAST_PASS):
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    #validate phone us phone number
+    phonePattern = re.match(r'^(\d{3})-(\d{3})-(]d{4}$',cellphone)
+    if phonePattern == None:
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    #validate if driver boolean type
+    if type(driver) is not bool:
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    else:
+        resp["errCode"] =SUCCESS
+    return resp 
+
+def driver_check(rdata):
+    license_no = rdata.get("license_no", "")
+    license_exp = rdata.get("license_exp", "")
+    car_make = rdata.get("car_make", "")
+    car_type = rdata.get("car_type", "")
+    car_mileage = rdata.get("car_mileage", "")
+    max_passengers = rdata.get("max_passengers", "")
+
+    if(not license_no or len(license_no)> MAX_LENGTH_FIRST_LAST_PASS):
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    if(not car_make or len(car_make)> MAX_LENGTH_FIRST_LAST_PASS):
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    if(not car_type or len(car_type)> MAX_LENGTH_FIRST_LAST_PASS):
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    if type(license_exp) is not datetime.date:
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    if type(car_mileage) is not int:
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    if type(max_passengers) is not int:
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    else:
+        resp["errCode"] = SUCCESS
+    return resp    
 
 
 @csrf_exempt

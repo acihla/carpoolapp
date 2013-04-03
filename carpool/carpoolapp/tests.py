@@ -239,47 +239,47 @@ class SignupTest(testLib.RestTestCase):
     def testSignupRider3(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'Longfirstnameiswayyyyywayyyytoolong', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs2.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '4088269366', 'driver' : False} )
         print("testSignupRider3")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a rider fails with long names 
     def testSignupRider4(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Longlastnameiswayyyyywayyyytoolong', 'email' : 'alex.cihla@bs3.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '4088269366', 'driver' : False} )
         print("testSignupRider4")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a rider fails with non-email
     def testSignupRider5(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla$berkeley.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '4088269366', 'driver' : False} )
         print("testSignupRider5")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL)
 
     #checks that standard input for setting up a rider fails with non-email
     def testSignupRider6(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs4', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '4088269366', 'driver' : False} )
         print("testSignupRider6")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL)
 
     #checks that standard input for setting up a rider fails with non-date format dob
     def testSignupRider7(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs5.edu', 'dob' : '0423423423553', 'sex' : True, 'password' : 'password', 'cellphone' : '4088269366', 'driver' : False} )
         print("testSignupRider7")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a rider fails with long password
     def testSignupRider8(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs6.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'passwordiswayyyywayyyywayyytoolong', 'cellphone' : '4088269366', 'driver' : False} )
         print("testSignupRider8")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a rider works with different cellphone number formats
     def testSignupRider9(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs7.com', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '(408)8269366', 'driver' : False} )
         print("testSignupRider9")
-        self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a rider works with different cellphone number formats
     def testSignupRider10(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs8.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '(408)-826-9366', 'driver' : False} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs8.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : False} )
         print("testSignupRider10")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
@@ -293,13 +293,13 @@ class SignupTest(testLib.RestTestCase):
     def testSignupRider11(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs10.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '408-826-93668', 'driver' : False} )
         print("testSignupRider11")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a rider fails because email already in use
-    def testSignupRider12(self):
+    """def testSignupRider12(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@yahoo.com', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : False} )
         print("testSignupRider12")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)"""
 
 
 
@@ -313,66 +313,152 @@ class SignupTest(testLib.RestTestCase):
     def testSignupDriver1(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs12.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sfesuperrrrrrrrrrdupperrrrrrrrrrrrrrlongggggggggggggggggggggggggggasdfghjasdfghjk', 'license_exp' : '03/12/2013', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
         print("testSignupDriver2")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a driver fails with wrong format for exp date 
     def testSignupDriver3(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs13.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02342322013', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
         print("testSignupDriver3")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a driver fails with long car make field
     def testSignupDriver4(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs14.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02/03/2013', 'car_make' : 'Honda Accord LONGCRAPLONGCRAPLONGCRAP', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
         print("testSignupDriver4")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a driver fails with long car type field
     def testSignupDriver5(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs15.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02/03/2013', 'car_make' : 'Honda Accord', 'car_type' : 'SedanLONGLONGLONGLONGCRAPPPPPP', 'car_mileage' : '30', 'max_passengers' : '2'} )
         print("testSignupDriver5")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a driver fails with long mileage field
     def testSignupDriver6(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs16.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02/03/2013', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '3034', 'max_passengers' : '2'} )
         print("testSignupDriver6")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a driver fails with long max passenger field
     def testSignupDriver7(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs17.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02/03/2013', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2453'} )
         print("testSignupDriver7")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a driver fails because email is already in use 
-    def testSignupDriver8(self):
+    """def testSignupDriver8(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@berkeley.edu', 'dob' : '04/17/1992', 'sex' : True, 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sfe', 'license_exp' : '03/12/2013', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
         print("testSignupDriver8")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)"""
+
+    #check good iput
+    def testSignup1(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':False})
+        print("signupTest1")
+        self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
+    #check too long firstname 
+    def testSignup2(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJAJAJAJAJAJAJAJAJAJAJAJAJAJAAJAJAJAJAJAJAJAJA','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':False})
+        print("signupTest2")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    #check too long lastname
+    def testSignup3(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihlacihlacihlacihlacihlacihlacihlacihlacihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':False})
+        print("signupTest3")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    #check invalid email 
+    def testSignup4(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihlayahoocom','dob':'04/17/1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':False})
+        print("signupTest1")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL)
+    #check invalid date type 
+    def testSignup5(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':False})
+        print("signupTest5")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    #check invalid SEX 
+    def testSignup6(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'garcon','password':'password','cellphone':'510-459-3078','driver':False})
+        print("signupTest6")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    #check too long password
+    def testSignup7(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'male','password':'passwordpasswordpasswordpasswordpasswordpasswordpasswordpassword','cellphone':'510-459-3078','driver':False})
+        print("signupTest7")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    #check invalid phone number 
+    def testSignup8(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'male','password':'password','cellphone':'5104593078','driver':False})
+        print("signupTest8")
+        self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
+    #check invalid driver type
+    def testSignup9(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':'vrai'})
+        print("signupTest9")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    # check valid driver info
+    def testSignup10(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblahblaha','license_exp':'05/15/2017','car_make':'mercedes_benz','car_type':'sedan','car_mileage':'100000','max_passengers':'2'})
+        print("signupTest10")
+        self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
+    #check too long license_no
+    def testSignup11(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblahblahablahblahblahblahblahblahblahblahblah','license_exp':'05/15/2017','car_make':'mercedes_benz','car_type':'sedan','car_mileage':'100000','max_passengers':'2'})
+        print("signupTest11")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    #check no car_make
+    def testSignup12(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblahbla','license_exp':'05/15/2017','car_make':'','car_type':'sedan','car_mileage':'100000','max_passengers':'2'})
+        print("signupTest12")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    #check null car_type
+    def testSignup13(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04/17/1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblah','license_exp':'05/15/2017','car_make':'mercedes_benz','car_type':'','car_mileage':'100000','max_passengers':'2'})
+        print("signupTest13")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    #check invalid expiration date
+    def testSignup14(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblah','license_exp':'05152017','car_make':'mercedes_benz','car_type':'','car_mileage':'100000','max_passengers':'2'})
+        print("signupTest14")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    #check invalid mileage type
+    def testSignup15(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblah','license_exp':'05/15/2017','car_make':'mercedes_benz','car_type':'suv','car_mileage':'aaaaa','max_passengers':'2'})
+        print("signupTest15")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+    #check invalid maxpassenger type
+    def testSignup16(self):
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblah','license_exp':'05/15/2017','car_make':'mercedes_benz','car_type':'suv','car_mileage':'100000','max_passengers':'aaaaa'})
+        print("signupTest16")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
 class LoginTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
-        #Check that the response data dictionary matches the expected values
         expected = { 'errCode' : errCode }
-        #if respData.get(count, None) is not None:
-        #   expected['count']  = count
         self.assertDictEqual(expected, respData)
-
-    #checks that standard input for setting up a rider works
+    #check we have good input
     def testLogin1(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'alex.cihla@berkeley.edu', 'password' : 'password'})
+        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'password'})
         print("testLogin1")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
-
-    #checks that standard input for setting up a rider fails because user has never registered
+    #check invalid email
     def testLogin2(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'alex.cihla@THISDOESNOTEXIST.edu', 'password' : 'password'})
+        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chilaberkeley.edu','password':'password'})
         print("testLogin2")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
-
-    #checks that standard input for setting up a rider fails because email format is bad
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL)
+    #check very long passwordi
     def testLogin3(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'email' : 'alex.cihla&sld.edu', 'password' : 'password'})
+        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'passwordpasswordpasswordpasswordpasswordpassword'})
         print("testLogin3")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_SOMETHING)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+
+    #check we have a wrong key
+    def testLogin4(self):
+        respData = self.makeRequest("/login",method="POST",data = {'email' :'douala@mbanga.yaounde','password':'password'})
+        print("testLogin4")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_KEY)
+    #check user exist
+    def testLogin5(self):
+        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'doualacameroun'})
+        print("testLogin5")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_NOT_USER)
