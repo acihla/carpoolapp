@@ -7,16 +7,16 @@ class User(models.Model):
     #username = models.CharField(max_length=200)
     email = models.CharField(max_length=50)
     dob = models.DateField()
-    sex = models.BooleanField()
+    sex = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
-    cellphone = models.CharField(max_length=10)
+    cellphone = models.CharField(max_length=20)
     #driverOrRider = models.CharField(max_length=64, default = "rider")
-    driver = models.BooleanField(default=0)
+    driver = models.BooleanField(default=False)
     comments = models.CharField(max_length=200)
     avg_rating = models.FloatField()
 
     def __unicode__(self):
-        return self.username
+        return self.email
 
     def to_dict(self):
         rtn = {}
@@ -27,7 +27,7 @@ class User(models.Model):
         rtn["dob"] = self.dob
         rtn["sex"] = self.sex
         rtn["cellphone"] = self.cellphone
-        rtn["driver"] = self.driverOrRider
+        rtn["driver"] = self.driver
         rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
         return rtn
@@ -53,7 +53,7 @@ class DriverInfo(models.Model):
     license_exp = models.DateField()
     car_make = models.CharField(max_length=20)
     car_type = models.CharField(max_length=20)
-    car_mileage = models.IntegerField(max_length=3)
+    car_mileage = models.IntegerField()
     max_passengers = models.CharField(null=True, max_length=3)
 
     def __unicode__(self):
