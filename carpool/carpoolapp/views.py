@@ -34,7 +34,8 @@ ERR_BAD_HEADER= -6
 ERR_BAD_SERVER_RESPONSE = -7
 MAX_LENGTH_IN = 200  #max length for all datums in our db
 COORD_LENGTH_IN = 15 # max length of coordinates
-
+ERR_BAD_KEY = -8
+ERR_NOT_USER = -9
 sample_date = date(1992,4,17)
 
 @csrf_exempt
@@ -75,13 +76,24 @@ def signup(request):
 def login(request):
     try:
         rdata = json.loads(request.body)
-    except Exception, err:
-        print str(err)
+# except Exception, err:
+# print str(err)
 
-    resp = {"errCode":SUCCESS}
-    email = rdata.get("email", "")
-    password = rdata.get("password", "")
+        resp = {"errCode":SUCCESS}
+        email = rdata.get("email", "")
+        password = rdata.get("password", "")
+    except KeyError:
+        resp["errCode"] = ERR_BAD_KEY
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     if (checkLoginValidityNaive(email, password)):
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    else:
+      try:
+        u = User.objects.get(em =email,passwd = password)
+        resp["errCode"] =SUCCESS
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+      except User.DoesNotExist:
+        resp["errCode"] = ERR_NOT_USER
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     else:
         resp["errCode"] = ERR_BAD_SERVER_RESPONSE #vague and needs to be made more descriptive!!!
