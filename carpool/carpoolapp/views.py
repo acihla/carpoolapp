@@ -360,6 +360,8 @@ def distance(lat1, lon1, lat2, lon2):
 def deleteRides(request):
     resp = {"errCode":SUCCESS}
     Route.objects.all().delete()
+    DriverInfo.objects.all().delete()
+    User.objects.all().delete()
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt

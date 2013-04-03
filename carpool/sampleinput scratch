@@ -6,3 +6,12 @@ dob = date(1995,2,15); u2 = User(firstname = "Steph",lastname = "Ku",username = 
 dob = date(1991,2,15); u3 = User(firstname = "Sam",lastname = "Vu",username = "svu",  email = "samvu@gmail.com", dob = dob, sex = "male", password = "asdf", cellphone = "4583848-3", driverOrRider = "rider", comments = "I iz Sam", avg_rating = 3);u3.save();l_exp = date(2016,1,11); driver3 = DriverInfo(driver = u3, license_no = "BAEWKWE", license_exp = l_exp, car_make = "Toyota", car_type = "Coupe", car_mileage = "13123", max_passengers = 4); driver3.save();depart_t = datetime.now();route = Route(driver_info=driver3, rider=None, depart_time=depart_t, depart_lat="45.2323", depart_lg="130.3242", arrive_lat="45.999", arrive_lg="130.888", maps_info = "MAPPS INFOO", status = False); route.save();
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d ' {"rider_id":1,"route_id":2}'  http://127.0.0.1:8000/rider/select > response.html
+
+
+{“date” : “02-06-2013”,“time-depart” : “1600” ,“depart-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}“destt-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}}
+
+
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d ' {“date” : “02-06-2013”,“time-depart” : “1600” ,“depart-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}“destt-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}}'  http://127.0.0.1:8000/rider/search > response.html
+
+
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d ' {“date” : “02-06-2013”,“time-depart” : “1600” ,“depart-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}“destt-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}}'  http://ancient-eyrie-5373.herokuapp.com//rider/search > response.html

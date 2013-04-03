@@ -4,13 +4,13 @@ from carpoolapp.models import *
 import string
 import random
 
-def genUser(driver = 0):
+def genUser(driver = False):
 	first = id_gen(1, string.ascii_uppercase) + id_gen(random.randint(1,10), string.ascii_lowercase)
 	last = id_gen(1, string.ascii_uppercase) + id_gen(random.randint(1,10), string.ascii_lowercase)
 	email = id_gen(random.randint(5,10), string.ascii_lowercase+string.digits) + "@carpoolapp.com"
 	year = 1930 + random.randint(0,70)
 	month = random.randint(1,12)
-	day = random.randint(1,30)
+	day = random.randint(1,28)
 	dob = date(year, month, day)
 	s = ["male", "female"]
 	sex = random.choice(s)
@@ -25,7 +25,7 @@ def genUser(driver = 0):
 	return u
 
 def genDriver():
-	user = genUser(1)
+	user = genUser(True)
 	year = 2013
 	month = 4
 	day = random.randint(1,3)
@@ -43,7 +43,8 @@ def genDriver():
 
 def genRide():
 	driver = genDriver()
-	depart_t = datetime.now()
+	delta = timedelta(days=random.randint(1,2), hours = random.randint(-23,23), minutes=random.randint(0,59))
+	depart_t = datetime.now() + delta
 	dlat = str(37.8717 + random.uniform(-1, 1))[0:10]
 	dlong = str(122.2728 + random.uniform(-1, 1))[0:10]
 	alat = str(37.8717 + random.uniform(-1, 1))[0:10]
