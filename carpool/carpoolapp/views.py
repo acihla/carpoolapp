@@ -67,16 +67,17 @@ def signup(request):
             newUser = User(firstname = firstname, lastname = lastname, email = email, dob = dob, sex = sex, password = password, cellphone = cellphone, driver = driver)
             newUser.save()
             if (driver):
-                license_no = rdata.get("license_no", "")
-                license_exp = rdata.get("license_exp", "")
-                car_make = rdata.get("car_make", "")
-                car_type = rdata.get("car_type", "")
-                car_mileage = rdata.get("car_mileage", "")
-                max_passengers = rdata.get("max_passengers", "")
                 resp1 = driver_check(rdata)
                 if resp1["errCode"]== SUCCESS:
+                    license_no = rdata.get("license_no", "")
+                    license_exp = rdata.get("license_exp", "")
+                    car_make = rdata.get("car_make", "")
+                    car_type = rdata.get("car_type", "")
+                    car_mileage = rdata.get("car_mileage", "")
+                    max_passengers = rdata.get("max_passengers", "")
                     newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_exp, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
                     newDriverInfo.save()
+                    return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
                 else:
                     return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
         else:
@@ -84,7 +85,7 @@ def signup(request):
     except Exception, err:
         print str(err)
 
-    return resp
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 def  sanitizeSignupData(rdata): 
     firstname = rdata.get("firstname", "")
