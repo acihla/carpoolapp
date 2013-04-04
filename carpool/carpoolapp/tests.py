@@ -97,12 +97,6 @@ class SignupTest(testLib.RestTestCase):
         print("testSignupRider10")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
-    #checks that standard input for setting up a rider works with different cellphone number formats
-    def testSignupRider10(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs9.edu', 'dob' : '1992-04-17', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : False} )
-        print("testSignupRider10")
-        self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
-
     #checks that standard input for setting up a rider fails with improperly formatted number
     def testSignupRider11(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@bs10.edu', 'dob' : '1992-04-17', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-93668', 'driver' : False} )
