@@ -44,6 +44,7 @@ ERR_NOT_USER = -9
 ERR_BAD_EMAIL = -10
 ERR_BAD_INPUT_OR_LENGTH = -11
 ERR_BAD_DOB = -12
+ERR_BAD_JSON = -13
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
@@ -233,11 +234,11 @@ def search(request):
     print destloc
     date = rdata.get("date", "")
     departtime = rdata.get("time-depart", "")
-    distThresh = int(rdata.get("dist-thresh", "1000"))
-    departlat = departloc.get("lat", "0")
-    departlong = departloc.get("long", "0")
-    destlat = destloc.get("lat", "0")
-    destlong = destloc.get("long", "0")
+    distThresh = int(rdata.get("dist-thresh", "50"))
+    departlat = departloc.get("lat", "37.3041") #San Jose
+    departlong = departloc.get("long", "121.8727") #San Jose
+    destlat = destloc.get("lat", "37.3041")
+    destlong = destloc.get("long", "121.8727")
 
     try:
         routes = Route.objects.all()
