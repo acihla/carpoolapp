@@ -7,6 +7,7 @@ import httplib
 import sys
 import os
 import json
+import testUtils
 
 
 class RestTestCase(unittest.TestCase):
@@ -14,6 +15,7 @@ class RestTestCase(unittest.TestCase):
     Superclass for our functional tests. Defines the boilerplate for the tests
     """
 
+    #responses to be handled by application
     SUCCESS               =   1  # : a success
     ERR_BAD_DEPARTURE  =  -1  # : Departure location is not valid
     ERR_BAD_DESTINATION       =  -2  # : Destination location is not valid
@@ -23,6 +25,15 @@ class RestTestCase(unittest.TestCase):
     ERR_BAD_HEADER= -6
     ERR_BAD_SERVER_RESPONSE = -7
     MAX_LENGTH_IN = 200  #max length for all datums in our db
+    MAX_LENGTH_FIRST_LAST_PASS = 20 #max length for first and last name and password
+    MAX_LENGTH_EMAIL = 50  #max length email
+    COORD_LENGTH_IN = 15 # max length of coordinates
+    ERR_BAD_KEY = -8
+    ERR_NOT_USER = -9
+    ERR_BAD_EMAIL = -10
+    ERR_BAD_INPUT_OR_LENGTH = -11
+    ERR_BAD_DOB = -12
+    
     # Lookup the name of the server to test
 
     serverToTest = "127.0.0.1:8000"
@@ -84,6 +95,11 @@ class RestTestCase(unittest.TestCase):
         
     def setUp(self):
         self.conn = httplib.HTTPConnection(RestTestCase.serverToTest, timeout=1)
+        testUtils.genUser
+        testUtils.genUser
+        testUtils.genDriver
+        testUtils.genRide
+        testUtils.genRide
         #self.makeRequest("/TESTAPI/resetFixture", method="GET")
         
     def tearDown(self):

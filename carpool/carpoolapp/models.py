@@ -12,8 +12,8 @@ class User(models.Model):
     cellphone = models.CharField(max_length=20)
     #driverOrRider = models.CharField(max_length=64, default = "rider")
     driver = models.BooleanField(default=False)
-    comments = models.CharField(max_length=200)
-    avg_rating = models.FloatField()
+    comments = models.CharField(default="", max_length=200)
+    avg_rating = models.FloatField(default = 0)
 
     def __unicode__(self):
         return self.email
