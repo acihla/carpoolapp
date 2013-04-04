@@ -50,7 +50,6 @@ sex_list = ['male','female']
 
 @csrf_exempt
 def signup(request):
-    resp = {"errCode":SUCCESS}
     try:
         rdata = json.loads(request.body)
         resp = sanitizeSignupData(rdata)
@@ -107,8 +106,8 @@ def  sanitizeSignupData(rdata):
     #if !(validate_email(email)):
      #   resp["errCode"] = ERR_BAD_EMAIL
     #validate good date of birth
-    if type(dob) is not datetime.date:
-        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    #if type(dob) is not datetime.date:
+     #   resp["errCode"] = ERR_BAD_DOB
     #validate sex
     if sex not in sex_list:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
@@ -122,8 +121,7 @@ def  sanitizeSignupData(rdata):
     #validate if driver boolean type
     if type(driver) is not bool:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
-    else:
-        resp["errCode"] =SUCCESS
+
     return resp 
 
 def driver_check(rdata):
@@ -173,7 +171,7 @@ def login(request):
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     if(len(email)<=MAX_LENGTH_EMAIL):
         try:
-            u = User.objects.get(em =email,passwd = password)
+            u = User.objects.get(email =email,password = password)
             resp["errCode"] =SUCCESS
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
         except User.DoesNotExist:

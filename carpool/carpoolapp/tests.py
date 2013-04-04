@@ -9,6 +9,7 @@ from django.test import TestCase
 import json
 import testLib
 import os
+import testUtils
 
 
 class TestUnit(testLib.RestTestCase):
@@ -246,7 +247,10 @@ class LoginTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
     #check we have good input
     def testLogin1(self):
-        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@yahoo.com','password':'password'})
+        testUser = testUtils.genUser()
+        email = testUser.email
+        password = testUser.password
+        respData = self.makeRequest("/login",method="POST",data = {'email' : email,'password': password})
         print("testLogin1")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
     #check invalid email
@@ -256,18 +260,20 @@ class LoginTest(testLib.RestTestCase):
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL) """
     #check very long passwordi
     def testLogin3(self):
-        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'passwordpasswordpasswordpasswordpasswordpassword'})
+        testUser = testUtils.genUser()
+        respData = self.makeRequest("/login",method="POST",data = {'email' :testUser.email,'password':'passwordpasswordpasswordpasswordpasswordpassword'})
         print("testLogin3")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #check we have a wrong key
     def testLogin4(self):
-        respData = self.makeRequest("/login",method="POST",data = {'email' :'douala@mbanga.yaounde','password':'password'})
+        testUser = testUtils.genUser()
+        respData = self.makeRequest("/login",method="POST",data = {'email' : testUser.email,'password':'password'})
         print("testLogin4")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_KEY)
     #check user exist
     def testLogin5(self):
-        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'doualacameroun'})
+        respData = self.makeRequest("/login",method="POST",data = {'email' : 'bse23423' ,'password':'doualacameroun'})
         print("testLogin5")
         self.assertResponse(respData, testLib.RestTestCase.ERR_NOT_USER) 
 
@@ -284,22 +290,26 @@ class AddRouteTest(testLib.RestTestCase):
 
     #generic first add route test with legitimate coordinates
     def testAddGood1(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
+        testDriver = testUtils.genDriver
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : testDriver, 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
         print("testAddGood1")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
     
     def testAddGood2(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-142.080078', 'depart-lat' : '27.50233', 'dest-long' : '-12.000078', 'dest-lat' : '-37.509413'} )
+        testDriver = testUtils.genDriver
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : testDriver, 'depart-long' : '-142.080078', 'depart-lat' : '27.50233', 'dest-long' : '-12.000078', 'dest-lat' : '-37.509413'} )
         print("testAddGood2")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     def testAddGood3(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '-122.080078', 'depart-lat' : '-37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '-37.509413'} )
+        testDriver = testUtils.genDriver
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : testDriver, 'depart-long' : '-122.080078', 'depart-lat' : '-37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '-37.509413'} )
         print("testAddGood3")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     def testAddGood4(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
+        testDriver = testUtils.genDriver
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : testDriver, 'depart-long' : '-122.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
         print("testAddGood4")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
