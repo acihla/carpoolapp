@@ -54,29 +54,32 @@ def signup(request):
     resp = {"errCode":SUCCESS}
     try:
         rdata = json.loads(request.body)
+        #import pdb;pdb.set_trace()
         resp = sanitizeSignupData(rdata)
         if resp["errCode"] == SUCCESS:
             firstname = rdata.get("firstname", "")
             lastname = rdata.get("lastname", "")
-            email = rdata.get("email", "")
+            email = rdata.get("email", None)
             dob = rdata.get("dob", "")
             sex = rdata.get("sex", "")
             password = rdata.get("password", "")
             cellphone = rdata.get("cellphone", "")
-            driver = rdata.get("driver", "")
+            driver = rdata.get("driver", False)
 
-            newUser = User(firstname = firstname, lastname = lastname, email = email, dob = dob, sex = sex, password = password, cellphone = cellphone, driver = driver)
+            date_obj = datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
+            newUser = User(firstname = firstname, lastname = lastname, email = email, dob = date_obj, sex = sex, password = password, cellphone = cellphone, driver = driver)
             newUser.save()
             if (driver):
-                license_no = rdata.get("license_no", "")
-                license_exp = rdata.get("license_exp", "")
-                car_make = rdata.get("car_make", "")
-                car_type = rdata.get("car_type", "")
-                car_mileage = rdata.get("car_mileage", "")
-                max_passengers = rdata.get("max_passengers", "")
                 resp1 = driver_check(rdata)
                 if resp1["errCode"]== SUCCESS:
-                    newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_exp, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
+                    license_no = rdata.get("license_no", "")
+                    license_exp = rdata.get("license_exp", "")
+                    car_make = rdata.get("car_make", "")
+                    car_type = rdata.get("car_type", "")
+                    car_mileage = rdata.get("car_mileage", "")
+                    max_passengers = rdata.get("max_passengers", "")
+                    license_date_obj = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
+                    newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
                     newDriverInfo.save()
                 else:
                     return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
@@ -85,17 +88,17 @@ def signup(request):
     except Exception, err:
         print str(err)
 
-    return resp
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 def  sanitizeSignupData(rdata): 
     firstname = rdata.get("firstname", "")
     lastname = rdata.get("lastname", "")
-    email = rdata.get("email", "")
+    email = rdata.get("email", None)
     dob = rdata.get("dob", "")
     sex = rdata.get("sex", "")
     password = rdata.get("password", "")
     cellphone = rdata.get("cellphone", "")
-    driver = rdata.get("driver", "")
+    driver = rdata.get("driver", False)
     resp = {"errCode":SUCCESS}
     #validate not null and not too long firstname
     if(not firstname or len(firstname)> MAX_LENGTH_FIRST_LAST_PASS):
@@ -104,10 +107,14 @@ def  sanitizeSignupData(rdata):
     if(not lastname or len(lastname)> MAX_LENGTH_FIRST_LAST_PASS):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
     #validate good email
-    #if !(validate_email(email)):
-     #   resp["errCode"] = ERR_BAD_EMAIL
+    #if not (email or validate_email(email)):
+    if not (email):
+        resp["errCode"] = ERR_BAD_EMAIL
     #validate good date of birth
-    if type(dob) is not datetime.date:
+    #dob format mm-dd-yyyy e.g 04-17-1992
+    try:
+        datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
+    except ValueError,SyntaxError:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
     #validate sex
     if sex not in sex_list:
@@ -116,15 +123,13 @@ def  sanitizeSignupData(rdata):
     if(not password or len(password)> MAX_LENGTH_FIRST_LAST_PASS):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
     #validate phone us phone number
-    #phonePattern = re.match(r'^(\d{3})-(\d{3})-(]d{4}$',cellphone))
-    #if phonePattern == None:
-     #   resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    phonePattern = re.match(r'^\d{3}-\d{3}-\d{4}$',cellphone)
+    if phonePattern == None:
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
     #validate if driver boolean type
     if type(driver) is not bool:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
-    else:
-        resp["errCode"] =SUCCESS
-    return resp 
+    return resp
 
 def driver_check(rdata):
     license_no = rdata.get("license_no", "")
@@ -141,15 +146,16 @@ def driver_check(rdata):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
     if(not car_type or len(car_type)> MAX_LENGTH_FIRST_LAST_PASS):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
-    if type(license_exp) is not datetime.date:
+    try:
+        datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
+    except ValueError,SyntaxError:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+
     if type(car_mileage) is not int:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
     if type(max_passengers) is not int:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
-    else:
-        resp["errCode"] = SUCCESS
-    return resp    
+    return resp
 
 
 @csrf_exempt
