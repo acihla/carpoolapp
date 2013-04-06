@@ -109,7 +109,7 @@ class UnitTest(unittest.TestCase):
         if len(users) > 0:
             user = users[0]
             dic = user.to_dict()
-            fields = ["firstname", "lastname", "username", "email", "dob", "sex", "cellphone", "driverOrRider", "comments", "avg_rating"]
+            fields = ["firstname", "lastname", "email", "dob", "sex", "cellphone", "driver", "comments", "avg_rating"]
             for field in fields:
                 self.assertEquals(dic.get(field,None), eval("user."+field))
 
@@ -119,7 +119,7 @@ class UnitTest(unittest.TestCase):
         if len(users) > 0:
             user = users[0]
             dic = user.to_dict_unsecure()
-            fields = ["firstname", "lastname", "username", "email", "dob", "sex", "cellphone", "driverOrRider", "comments", "avg_rating", "password"]
+            fields = ["firstname", "lastname",  "email", "dob", "sex", "password", "cellphone", "driver", "comments", "avg_rating"]
             for field in fields:
                 self.assertEquals(dic.get(field,None), eval("user."+field))
 

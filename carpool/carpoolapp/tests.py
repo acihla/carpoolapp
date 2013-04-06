@@ -9,7 +9,7 @@ from django.test import TestCase
 import json
 import testLib
 import os
-
+from datetime import *
 
 class TestUnit(testLib.RestTestCase):
     """Issue a REST API request to run the unit tests, and analyze the result"""
@@ -28,7 +28,7 @@ class TestUnit(testLib.RestTestCase):
                         "at least "+str(minimumTests)+" unit tests. Found only "+str(respData['totalTests'])+". use SAMPLE_APP=1 if this is the sample app")
         self.assertEquals(0, respData['nrFailed'])
 
-
+'''
 class SignupTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
@@ -270,7 +270,7 @@ class LoginTest(testLib.RestTestCase):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'doualacameroun'})
         print("testLogin5")
         self.assertResponse(respData, testLib.RestTestCase.ERR_NOT_USER) 
-
+'''
 
 
 
@@ -284,85 +284,85 @@ class AddRouteTest(testLib.RestTestCase):
 
     #generic first add route test with legitimate coordinates
     def testAddGood1(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413',"edt":str(datetime.now())} )
         print("testAddGood1")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
     
     def testAddGood2(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-142.080078', 'depart-lat' : '27.50233', 'dest-long' : '-12.000078', 'dest-lat' : '-37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-142.080078', 'depart-lat' : '27.50233', 'dest-long' : '-12.000078', 'dest-lat' : '-37.509413',"edt":str(datetime.now())} )
         print("testAddGood2")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     def testAddGood3(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '-122.080078', 'depart-lat' : '-37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '-37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '-122.080078', 'depart-lat' : '-37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '-37.509413', "edt":str(datetime.now())} )
         print("testAddGood3")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     def testAddGood4(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413', "edt":str(datetime.now())} )
         print("testAddGood4")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     #checks that coordinates on departure are good
     def testAddBadDep5(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '-192.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '-192.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413', "edt":str(datetime.now())} )
         print("testAddBadDep5")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DEPARTURE)
 
     def testAddBadDep6(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '100.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '100.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413', "edt":str(datetime.now())} )
         print("testAddBadDep6")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DEPARTURE)
 
     def testAddBadDep7(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '182.080078', 'depart-lat' : '97.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '182.080078', 'depart-lat' : '97.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413', "edt":str(datetime.now())} )
         print("testAddBadDep8")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DEPARTURE)
 
     def testAddBadDep8(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-192.080078', 'depart-lat' : '-92.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-192.080078', 'depart-lat' : '-92.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413', "edt":str(datetime.now())} )
         print("testAddBadDep8")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DEPARTURE)
 
     #checks that coordinates on destination are good
     def testAddBadDest9(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '-142.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-182.000078', 'dest-lat' : '37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '-142.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-182.000078', 'dest-lat' : '37.509413', "edt":str(datetime.now())} )
         print("testAddBadDest9")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DESTINATION)
 
     def testAddBadDest10(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '60.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '97.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '60.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '97.509413', "edt":str(datetime.now())} )
         print("testAddBadDest10")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DESTINATION)
 
     def testAddBadDest11(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '122.080078', 'depart-lat' : '47.579234413', 'dest-long' : '-192.000078', 'dest-lat' : '-97.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '122.080078', 'depart-lat' : '47.579234413', 'dest-long' : '-192.000078', 'dest-lat' : '-97.509413', "edt":str(datetime.now())} )
         print("testAddBadDest11")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DESTINATION)
 
     def testAddBadDest12(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-132.080078', 'depart-lat' : '-12.579234413', 'dest-long' : '182.000078', 'dest-lat' : '137.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-132.080078', 'depart-lat' : '-12.579234413', 'dest-long' : '182.000078', 'dest-lat' : '137.509413', "edt":str(datetime.now())} )
         print("testAddBadDest12")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DESTINATION)
 
     #to check that adding route only works for established drivers
     def testAddGoodUser13(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '-142.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '-142.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413', "edt":str(datetime.now())} )
         print("testAddGoodUser13")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     def testAddBadUser14(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : -1234, 'depart-long' : '-122.080078', 'depart-lat' : '60.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '17.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : -1234, 'depart-long' : '-122.080078', 'depart-lat' : '60.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '17.509413', "edt":str(datetime.now())} )
         print("testAddBadUser14")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_USERID)
 
     def testAddBadUser15(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 99999999, 'depart-long' : '122.080078', 'depart-lat' : '47.579234413', 'dest-long' : '-132.000078', 'dest-lat' : '-37.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 99999999, 'depart-long' : '122.080078', 'depart-lat' : '47.579234413', 'dest-long' : '-132.000078', 'dest-lat' : '-37.509413', "edt":str(datetime.now())} )
         print("testAddBadUser15")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_USERID)
 
     def testAddBadUser16(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : -1, 'depart-long' : '-123.080078', 'depart-lat' : '-12.579234413', 'dest-long' : '132.000078', 'dest-lat' : '27.509413'} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : -1, 'depart-long' : '-123.080078', 'depart-lat' : '-12.579234413', 'dest-long' : '132.000078', 'dest-lat' : '27.509413', "edt":str(datetime.now())} )
         print("testAddBadUser16")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_USERID)
 

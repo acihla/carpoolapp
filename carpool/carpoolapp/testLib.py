@@ -33,6 +33,7 @@ class RestTestCase(unittest.TestCase):
     ERR_BAD_EMAIL = -10
     ERR_BAD_INPUT_OR_LENGTH = -11
     ERR_BAD_DOB = -12
+    ERR_BAD_JSON = -13
     
     # Lookup the name of the server to test
 
