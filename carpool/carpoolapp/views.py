@@ -44,6 +44,7 @@ ERR_NOT_USER = -9
 ERR_BAD_EMAIL = -10
 ERR_BAD_INPUT_OR_LENGTH = -11
 ERR_BAD_DOB = -12
+ERR_BAD_JSON = -13
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
@@ -320,7 +321,7 @@ def addroute(request):
 
         except Exception, err:
             resp = {"errCode" : err}
-    """
+        """
     
     
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
