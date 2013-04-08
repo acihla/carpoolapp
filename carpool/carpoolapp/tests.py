@@ -28,7 +28,6 @@ class TestUnit(testLib.RestTestCase):
                         "at least "+str(minimumTests)+" unit tests. Found only "+str(respData['totalTests'])+". use SAMPLE_APP=1 if this is the sample app")
         self.assertEquals(0, respData['nrFailed'])
 
-
 class SignupTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
@@ -230,32 +229,32 @@ class SignupTest(testLib.RestTestCase):
         respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.cihla@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblah','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'suv','car_mileage':100000,'max_passengers':'aaaaa'})
         print("signupTest16")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
-'''
+
 class LoginTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         expected = { 'errCode' : errCode }
         self.assertDictEqual(expected, respData)
     #check we have good input
     def testLogin1(self):
-        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@yahoo.com','password':'password'})
+        respData = self.makeRequest("/login",method="POST",data = {'email' :'nadapeter@gmail.com','password':'asdf'})
         print("testLogin1")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
-    #check invalid email
-    """def testLogin2(self):
-        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chilaberkeley.edu','password':'password'})
+    #check invalid iput with no  email
+    def testLogin2(self):
+        respData = self.makeRequest("/login",method="POST",data = {'email':'','password':'password'})
         print("testLogin2")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL) """
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL)
     #check very long passwordi
     def testLogin3(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'passwordpasswordpasswordpasswordpasswordpassword'})
         print("testLogin3")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
-    #check we have a wrong key
+    #check we have a wrong match
     def testLogin4(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'douala@mbanga.yaounde','password':'password'})
         print("testLogin4")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_KEY)
+        self.assertResponse(respData, testLib.RestTestCase.ERR_NOT_USER)
     #check user exist
     def testLogin5(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'doualacameroun'})
@@ -449,4 +448,4 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
     respData = self.makeRequest("/driver/accept?route_id=-1&response=1", method="GET")
     print("test_Accept_BAD_Ride")
     self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_SERVER_RESPONSE)
-'''
+

@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import  send_mail,BadHeaderError
-from django.core.validators import validate_email
+from validate_email import validate_email
 
 from carpoolapp.models import *
 from carpoolapp.unitTest import *
@@ -163,32 +163,36 @@ def login(request):
     resp = {"errCode":SUCCESS}
     try:
         rdata = json.loads(request.body)
-# except Exception, err:
-# print str(err)
-
-        email = rdata.get("email", "")
-        password = rdata.get("password", "")
-        #if !(validate_email(email)):
-         #   resp["errCode"] = ERR_BAD_EMAIL
-          #  return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-        if(len(password)>MAX_LENGTH_FIRST_LAST_PASS):
-            resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+        resp= check_credentials(rdata)
+        if resp["errCode"] == SUCCESS:
+          email = rdata.get("email", "")
+          password = rdata.get("password", "")
+          try:
+            u = User.objects.get(email =email,password = password)
+            resp["errCode"] =SUCCESS
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+          except User.DoesNotExist:
+            resp["errCode"] = ERR_NOT_USER
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+        else:
+          return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except KeyError:
         resp["errCode"] = ERR_BAD_KEY
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-    if(len(email)<=MAX_LENGTH_EMAIL):
-        try:
-            u = User.objects.get(em =email,passwd = password)
-            resp["errCode"] =SUCCESS
-            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-        except User.DoesNotExist:
-            resp["errCode"] = ERR_NOT_USER
-            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-    else:
-        resp["errCode"] = ERR_BAD_SERVER_RESPONSE #vague and needs to be made more descriptive!!!
-        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
+def check_credentials(rdata):
+  
+  email = rdata.get("email", "")
+  password = rdata.get("password", "")
+  resp = {"errCode":SUCCESS}
+  if not (email):
+    resp["errCode"] = ERR_BAD_EMAIL
+  if( len(email) > MAX_LENGTH_EMAIL):
+    resp["errCode"] = ERR_BAD_EMAIL
+  if(len(password)>MAX_LENGTH_FIRST_LAST_PASS):
+    resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+
+  return resp
 @csrf_exempt
 def filter(request):
     try:
