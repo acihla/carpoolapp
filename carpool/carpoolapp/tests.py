@@ -60,11 +60,17 @@ class SignupTest(testLib.RestTestCase):
         print("testSignupRider4")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
-    #checks that standard input for setting up a rider fails with non-email
+    #checks that standard input for setting up a rider fails with bad -email format
     def testSignupRider6(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : False} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password','email':'aime.com', 'cellphone' : '408-826-9366', 'driver' : False} )
         print("testSignupRider6")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL)
+    #cheks that standard input for for setting up a rider fails with non-email
+    def testSignupRidernoemail(self):
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'email':'','cellphone' : '408-826-9366', 'driver' : False} )
+        print("testSignupRidernoemail")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL)
+    #
     #checks that standard input for setting up a rider fails with non-date format dob
     def testSignupRider7(self):
         respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.panick@bs5.edu', 'dob' : '03-23-423553', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : False} )

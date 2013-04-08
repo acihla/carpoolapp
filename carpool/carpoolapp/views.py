@@ -107,7 +107,6 @@ def  sanitizeSignupData(rdata):
       u = User.objects.get(email =email)
       resp["errCode"] = ERR_USER_EXISTS
     except User.DoesNotExist:
-
       #validate not null and not too long firstname
       if(not firstname or len(firstname)> MAX_LENGTH_FIRST_LAST_PASS):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
@@ -116,9 +115,15 @@ def  sanitizeSignupData(rdata):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
       #validate good email
       #if not (email or validate_email(email)):
-      if not (email):
+      #if not (email):
+      #resp["errCode"] = ERR_BAD_EMAIL
+
+      emailPattern = re.match("^[a-zA-Z0-9._%-+]+@[a-zA-Z0-9._%-]+.[       a-zA-Z]{2,6}$", email) 
+
+      if (emailPattern == None ):
         resp["errCode"] = ERR_BAD_EMAIL
-      #validate good date of birth
+
+      #validate gooe date of birth
       #dob format mm-dd-yyyy e.g 04-17-1992
 
       try:
