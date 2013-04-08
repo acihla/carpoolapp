@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import  send_mail,BadHeaderError
-from validate_email import validate_email
+#from validate_email import validate_email
 
 from carpoolapp.models import *
 from carpoolapp.unitTest import *
