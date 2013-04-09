@@ -52,7 +52,6 @@ sex_list = ['male','female']
 
 @csrf_exempt
 def signup(request):
-    resp = {"errCode":SUCCESS}
     try:
         rdata = json.loads(request.body)
         #import pdb;pdb.set_trace()
