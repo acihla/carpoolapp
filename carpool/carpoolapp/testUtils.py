@@ -46,9 +46,9 @@ def genRide():
 	delta = timedelta(days=random.randint(1,2), hours = random.randint(-23,23), minutes=random.randint(0,59))
 	depart_t = datetime.now() + delta
 	dlat = str(37.8717 + random.uniform(-1, 1))[0:10]
-	dlong = str(122.2728 + random.uniform(-1, 1))[0:10]
+	dlong = str(-122.2728 + random.uniform(-1, 1))[0:10]
 	alat = str(37.8717 + random.uniform(-1, 1))[0:10]
-	along = str(122.2728 + random.uniform(-1, 1))[0:10]
+	along = str(-122.2728 + random.uniform(-1, 1))[0:10]
 	route = Route(driver_info=driver, rider=None, depart_time=depart_t, depart_lat=dlat, depart_lg=dlong, arrive_lat=alat, arrive_lg=along, maps_info = "MAPPS INFO...", status = False)
 	route.save()
 	return route
