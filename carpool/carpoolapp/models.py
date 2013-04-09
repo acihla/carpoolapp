@@ -20,6 +20,7 @@ class User(models.Model):
 
     def to_dict(self):
         rtn = {}
+        rtn["id"] = self.id
         rtn["firstname"] = self.firstname
         rtn["lastname"] = self.lastname
         #rtn["username"] = self.username
@@ -34,6 +35,7 @@ class User(models.Model):
 
     def to_dict_unsecure(self):
         rtn = {}
+        rtn["id"] = self.id
         rtn["firstname"] = self.firstname
         rtn["lastname"] = self.lastname
         #rtn["username"] = self.username
@@ -61,6 +63,7 @@ class DriverInfo(models.Model):
 
     def to_dict(self):
         rtn = {}
+        rtn["id"] = self.id
         rtn["driver"] = self.driver.to_dict()
         rtn["license_no"] = self.license_no
         rtn["license_exp"] = self.license_exp
@@ -77,6 +80,15 @@ class Rating(models.Model):
     rating = models.IntegerField()
     comment = models.CharField(max_length=400)
 
+    def to_dict(self):
+        rtn = {}
+        rtn["id"] = self.id
+        rtn["owner"] = self.owner
+        rtn["author"] = self.author
+        rtn["rating"] = self.rating
+        rtn["comment"] =  self.comment
+        return rtn
+
 
 class Route(models.Model):
     driver_info = models.ForeignKey(DriverInfo)
@@ -92,6 +104,7 @@ class Route(models.Model):
 
     def to_dict(self):
         rtn = {}
+        rtn["id"] = self.id
         rtn["driver_info"] = self.driver_info.to_dict()
         if self.rider != None:
             rtn["rider"] = self.rider.to_dict()
