@@ -14,4 +14,8 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d ' {“date” : “02-06-2013”,“time-depart” : “1600” ,“depart-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}“destt-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}}'  http://127.0.0.1:8000/rider/search > response.html
 
 
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d ' {“date” : “02-06-2013”,“time-depart” : “1600” ,“depart-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}“destt-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}}'  http://ancient-eyrie-5373.herokuapp.com//rider/search > response.html
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d ' {“date” : “02-06-2013”,“time-depart” : “1600” ,“depart-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}“destt-loc” : {“lat” : “37.579413”,“long” : “-122.080078” 	}}'  http://ancient-eyrie-5373.herokuapp.com/rider/search > response.html
+
+
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"dist-thresh":100000,time-depart":"23:51 ","date":"4-8-2013 ","dest-loc":{"long":"-122.30118468403816","lat":"37.8561168666441"},"depart-loc":{"long":"-122.31431074440479","lat":"37.89882638080173"}}'  http://127.0.0.1:8000/rider/search > response.html
+
