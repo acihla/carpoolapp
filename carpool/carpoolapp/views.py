@@ -260,9 +260,9 @@ def search(request):
     departtime = rdata.get("time-depart", "")
     distThresh = int(rdata.get("dist-thresh", "50"))
     departlat = departloc.get("lat", "37.3041") #San Jose
-    departlong = departloc.get("long", "121.8727") #San Jose
+    departlong = departloc.get("long", "-121.8727") #San Jose
     destlat = destloc.get("lat", "37.3041")
-    destlong = destloc.get("long", "121.8727")
+    destlong = destloc.get("long", "-121.8727")
     try:
         routes = Route.objects.all()
         rides = []
