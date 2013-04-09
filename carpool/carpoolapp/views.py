@@ -291,11 +291,11 @@ def addroute(request):
     #start = rdata.get("start", "")
     #end = rdata.get("end", "")
 
-    departLocLong = rdata.get("depart-long", "")
-    departLocLat = rdata.get("depart-lat", "")
+    departLocLong = lenSafe(rdata.get("depart-long", ""),COORD_LENGTH_IN)
+    departLocLat = lenSafe(rdata.get("depart-lat", ""), COORD_LENGTH_IN)
 
-    destinationLocLong = rdata.get("dest-long", "")
-    destinationLocLat = rdata.get("dest-lat", "")
+    destinationLocLong = lenSafe(rdata.get("dest-long", ""), COORD_LENGTH_IN)
+    destinationLocLat = lenSafe(rdata.get("dest-lat", ""), COORD_LENGTH_IN)
 
     departTime = rdata.get("edt", "")
     validDatums = handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
@@ -303,7 +303,7 @@ def addroute(request):
     	resp = {"errCode" : validDatums}
 
     else:
-        newRoute = Route(driver_info = DriverInfo.objects.get(id = 1), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = departTime, status = False) #maps_info = directions, 
+        newRoute = Route(driver_info = DriverInfo.objects.get(id = uid), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = departTime, status = False) #maps_info = directions, 
         newRoute.save()
 
         resp = {"errCode" : SUCCESS}
@@ -411,10 +411,10 @@ def accept_ride(request):
 
 #handles that coordinates are legit and uid exists in db
 def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat):
-    if (len(departLocLat) > COORD_LENGTH_IN) | (len(departLocLong) > COORD_LENGTH_IN) | (not (90.0 >= float(departLocLat) >= -90.0)) | (not (180.0 >= float(departLocLong) >= -180.0)) :
+    if (not (90.0 >= float(departLocLat) >= -90.0)) | (not (180.0 >= float(departLocLong) >= -180.0)) :
 		return ERR_BAD_DEPARTURE #-1
 	
-    if (len(destinationLocLong) > COORD_LENGTH_IN) | (len(destinationLocLat) > COORD_LENGTH_IN) | (not (90.0 >= float(destinationLocLat) >= -90.0)) | (not (180.0 >= float(destinationLocLong) >= -180.0)) :
+    if (not (90.0 >= float(destinationLocLat) >= -90.0)) | (not (180.0 >= float(destinationLocLong) >= -180.0)) :
         return ERR_BAD_DESTINATION #-2
 	
     try:
@@ -470,3 +470,9 @@ def generateExamples(request):
     for i in xrange(0,num):
         testUtils.genRide()
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+def lenSafe(string, length):
+    if len(string) > length:
+        return string[0:length]
+    else:
+        return string
