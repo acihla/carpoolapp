@@ -20,7 +20,7 @@ import re
 import StringIO
 import unittest
 from googlemaps import GoogleMaps
-from datetime import *
+from datetime import date, datetime, time, timedelta
 import math
 
 #connecting using api key for alex.cihla@gmail.com
@@ -297,13 +297,26 @@ def addroute(request):
     destinationLocLong = lenSafe(rdata.get("dest-long", ""), COORD_LENGTH_IN)
     destinationLocLat = lenSafe(rdata.get("dest-lat", ""), COORD_LENGTH_IN)
 
-    departTime = rdata.get("edt", "")
+    try:
+        departTime = rdata.get("edt", "")
+        departDate = rdata.get("date","")
+        departTime = departTime.strip()
+        departDate = departDate.strip()
+        departDate = datetime.strptime("".join(departDate.split("-")),'%m%d%Y')
+        hhmm = departTime.split(':')
+        date_obj = departDate + timedelta(hours= int(hhmm[0]), minutes= int(hhmm[1]))
+        #date_obj =  datetime.combine(departDate, departTime)
+    except Exception, err:
+        print str(err)
+        print departDate
+        print departTime
+
     validDatums = handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
     if (validDatums != 1):
     	resp = {"errCode" : validDatums}
 
     else:
-        newRoute = Route(driver_info = DriverInfo.objects.get(id = uid), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = departTime, status = False) #maps_info = directions, 
+        newRoute = Route(driver_info = DriverInfo.objects.get(id = uid), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False) #maps_info = directions, 
         newRoute.save()
 
         resp = {"errCode" : SUCCESS}
