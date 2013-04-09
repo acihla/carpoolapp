@@ -242,17 +242,18 @@ def filter(request):
 @csrf_exempt
 def search(request):
     resp = {"errCode":SUCCESS}
-    departloc = ""
-    destloc = ""
+    departloc = {}
+    destloc = {}
     rdata = {}
     try:
         rdata = json.loads(request.body)
+        departloc = rdata.get("depart-loc", "{}")
+        destloc = rdata.get("dest-loc", "{}")
     except Exception, err:
         resp = {"errCode":ERR_BAD_JSON}
         print str(err)
     #TODO Parse json here.
-    departloc = json.loads(rdata.get("depart-loc", "{}"))
-    destloc = json.loads(rdata.get("dest-loc", "{}"))
+
     print rdata
     print departloc 
     print destloc
@@ -263,7 +264,6 @@ def search(request):
     departlong = departloc.get("long", "121.8727") #San Jose
     destlat = destloc.get("lat", "37.3041")
     destlong = destloc.get("long", "121.8727")
-
     try:
         routes = Route.objects.all()
         rides = []
