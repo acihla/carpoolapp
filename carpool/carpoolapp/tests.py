@@ -442,7 +442,7 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
 
   def test_Accept_Good_Ride(self):
-    respData = self.makeRequest("/driver/accept?route_id=1&response=1", method="GET")
+    respData = self.makeRequest("/driver/accept?from_first=Peter&from_last=Lee&to_first=Peter&to_last=Lee&rider_email=nadapeter@gmail.com&route_id=1&response=1", method="GET")
     print("test_Accept_Good_Ride")
     self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 

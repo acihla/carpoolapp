@@ -118,9 +118,12 @@ def  sanitizeSignupData(rdata):
       #if not (email):
       #resp["errCode"] = ERR_BAD_EMAIL
 
-      emailPattern = re.match("^[a-zA-Z0-9._%-+]+@[a-zA-Z0-9._%-]+.[       a-zA-Z]{2,6}$", email) 
+      #emailPattern = re.match("^[a-zA-Z0-9._%-+]+@[a-zA-Z0-9._%-]+.[       a-zA-Z]{2,6}$", email) 
+      is_valid = validate_email(email)
+      #is_valid = validate_email(email,verify=True)
 
-      if (emailPattern == None ):
+      if not is_valid:
+      #if (emailPattern == None ):
         resp["errCode"] = ERR_BAD_EMAIL
 
       #validate gooe date of birth
@@ -362,12 +365,25 @@ def select_ride(request):
         rider = User.objects.get(id=rider_id)
         route = Route.objects.get(id=route_id)
         driver_info =route.driver_info
+        rider_email = rider.email
+        print 'rider email is:' + rider_email
         driver_email = driver_info.driver.email
+        driver_firstname = driver_info.driver.firstname
+        driver_lastname  = driver_info.driver.lastname
         print driver_email
+        print rider.firstname
+        print rider.lastname
+        print driver_firstname
+        print driver_lastname
         route.rider = rider
         route.save()
         url = "http://127.0.0.1:8000/driver/accept"
-        url += "?route_id=" + str(route_id)
+        url += "?from_first=" + rider.firstname
+        url += "&from_last=" + rider.lastname
+        url += "&to_first=" + driver_firstname
+        url += "&to_last=" +  driver_lastname
+        url += "&rider_email=" + rider_email
+        url += "&route_id=" + str(route_id)
         yesUrl = url + "&response=1"
         noUrl = url + "&response=0"
         message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
@@ -379,7 +395,9 @@ def select_ride(request):
     except Exception, err:
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
     try:
-        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email,'aimechicago@berkeley.edu','aimechicago5@yahoo.fr'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+        #send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+        #send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago5@yahoo.fr'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
     except BadHeaderError:
         return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="application/json")
 
@@ -392,15 +410,36 @@ def accept_ride(request):
     r = request.GET
     route_id = r.get("route_id", -1)
     response = r.get("response", "") #-1) What is going on here? this is request right? Why do we have a response segment?
+    rider_email= r.get("rider_email","")
+    rider_firstname= r.get("from_first","")
+    rider_lastname= r.get("from_last","")
+    driver_firstname= r.get("to_first","")
+    driver_lastname= r.get("to_last","")
     print "route id: " + str(route_id)
     print "response: " + str(response)
+    print "rider_email:" + rider_email
+    print "rider_firstname:" + rider_firstname
+    print "rider_lastname:" +  rider_lastname
+    print "driver_firstname:"+ driver_firstname
+    print "driver_lastname:" + driver_lastname
     route = Route.objects.get(id=route_id)
     if response == "1":
         route.status="True"
         route.save()
+        message = "Congratulation " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that your trip is now confirmed with \n" + driver_firstname + " "+ driver_lastname
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu','aimechicago5@yahoo.fr'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+        #send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago5@yahoo.fr'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+        #send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+
     elif response == "0":
         route.status = "False"
         route.save()
+        message = "Sorry " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that the trip you selected with \n" + driver_firstname + " " +driver_lastname + "was denied please select another ride\n"
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago5@yahoo.fr'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+
+
     else:
         raise Exception("Invalid response" + str(response))
     
