@@ -110,43 +110,50 @@ class SignupTest(testLib.RestTestCase):
 
     #checks that standard input for setting up a driver works 
     def testSignupDriver1(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sfe', 'license_exp' : '03-12-2013', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sfe', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
         print("testSignupDriver1")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
+    #sign up with expired email
+    '''def testExpiredeMAIL(self):
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'Aime', 'lastname' : 'Ngongang', 'email' : 'marianikgatech@berkeley.edu', 'dob' : '04-17-1950', 'sex' : 'male', 'password' : 'password', 'cellphone' : '510-459-3078', 'driver' : True, 'license_no' : 'abcdefghij', 'license_exp' : '03-12-2008', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
+        print("testExpiredLicense")
+        self.assertResponse(respData, testLib.RestTestCase.ERR_EXPIRED_LICENSE)
+    '''
+
     #checks that standard input for setting up a driver fails with long license number 
     def testSignupDriver1(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.purdue@bs12.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sfesuperrrrrrrrrrdupperrrrrrrrrrrrrrlongggggggggggggggggggggggggggasdfghjasdfghjk', 'license_exp' : '03-12-2013', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.purdue@bs12.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sfesuperrrrrrrrrrdupperrrrrrrrrrrrrrlongggggggggggggggggggggggggggasdfghjasdfghjk', 'license_exp' : '03-12-2016', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
         print("testSignupDriver2")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
     
     #checks that standard input for setting up a driver fails with wrong format for exp date 
     def testSignupDriver3(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.chicago@bs13.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02342322013', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.chicago@bs13.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02342322017', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
         print("testSignupDriver3")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
     
     #checks that standard input for setting up a driver fails with long car make field
     def testSignupDriver4(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.guiness@bs14.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2013', 'car_make' : 'Honda Accord LONGCRAPLONGCRAPLONGCRAP', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.guiness@bs14.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2018', 'car_make' : 'Honda Accord LONGCRAPLONGCRAPLONGCRAP', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
         print("testSignupDriver4")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a driver fails with long car type field
     def testSignupDriver5(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.putain@bs15.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2013', 'car_make' : 'Honda Accord', 'car_type' : 'SedanLONGLONGLONGLONGCRAPPPPPP', 'car_mileage' : '30', 'max_passengers' : '2'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.putain@bs15.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2019', 'car_make' : 'Honda Accord', 'car_type' : 'SedanLONGLONGLONGLONGCRAPPPPPP', 'car_mileage' : '30', 'max_passengers' : '2'} )
         print("testSignupDriver5")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a driver fails with long mileage field
     def testSignupDriver6(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.adal@bs16.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2013', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '3034', 'max_passengers' : '2'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.adal@bs16.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2014', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '3034', 'max_passengers' : '2'} )
         print("testSignupDriver6")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a driver fails with long max passenger field
     def testSignupDriver7(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.bianca@bs17.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2013', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2453'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.bianca@bs17.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2020', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2453'} )
         print("testSignupDriver7")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
@@ -248,20 +255,18 @@ class LoginTest(testLib.RestTestCase):
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL)
     #check very long passwordi
     def testLogin3(self):
-        testUser = testUtils.genUser()
-        respData = self.makeRequest("/login",method="POST",data = {'email' :testUser.email,'password':'passwordpasswordpasswordpasswordpasswordpassword'})
+        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'passwordpasswordpasswordpasswordpasswordpassword'})
         print("testLogin3")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #check we have a wrong match
     def testLogin4(self):
-        testUser = testUtils.genUser()
-        respData = self.makeRequest("/login",method="POST",data = {'email' : testUser.email,'password':'password'})
+        respData = self.makeRequest("/login",method="POST",data = {'email' :'douala@mbanga.yaounde','password':'password'})
         print("testLogin4")
         self.assertResponse(respData, testLib.RestTestCase.ERR_NOT_USER)
     #check user exist
     def testLogin5(self):
-        respData = self.makeRequest("/login",method="POST",data = {'email' : 'bse23423' ,'password':'doualacameroun'})
+        respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'doualacameroun'})
         print("testLogin5")
         self.assertResponse(respData, testLib.RestTestCase.ERR_NOT_USER) 
 
@@ -278,20 +283,20 @@ class AddRouteTest(testLib.RestTestCase):
 
     #generic first add route test with legitimate coordinates
     def testAddGood1(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = {"edt":"0:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-09-2013","user":1,"dest-long":"-122.27281998842956"} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413',"edt":str(datetime.now())} )
         print("testAddGood1")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
     
     def testAddGood2(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = {"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"4-9-2013 ","user":1,"dest-long":"-122.27281998842956"} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-142.080078', 'depart-lat' : '27.50233', 'dest-long' : '-12.000078', 'dest-lat' : '-37.509413',"edt":str(datetime.now())} )
         print("testAddGood2")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     def testAddGood3(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = {"edt":"3:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"4-9-2013 ","user":1,"dest-long":"-122.27281998842956"} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 2, 'depart-long' : '-122.080078', 'depart-lat' : '-37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '-37.509413', "edt":str(datetime.now())} )
         print("testAddGood3")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
-"""
+
     def testAddGood4(self):
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : 1, 'depart-long' : '-122.080078', 'depart-lat' : '37.579234413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413', "edt":str(datetime.now())} )
         print("testAddGood4")
@@ -359,7 +364,7 @@ class AddRouteTest(testLib.RestTestCase):
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'user' : -1, 'depart-long' : '-123.080078', 'depart-lat' : '-12.579234413', 'dest-long' : '132.000078', 'dest-lat' : '27.509413', "edt":str(datetime.now())} )
         print("testAddBadUser16")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_USERID)
-"""
+
 class SearchTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
