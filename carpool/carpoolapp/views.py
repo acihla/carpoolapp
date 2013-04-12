@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import  send_mail,BadHeaderError
-from validate_email import validate_email
+#from validate_email import validate_email
 
 from carpoolapp.models import *
 from carpoolapp.unitTest import *
@@ -20,7 +20,7 @@ import re
 import StringIO
 import unittest
 from googlemaps import GoogleMaps
-from datetime import *
+from datetime import date, datetime, time, timedelta
 import math
 
 #connecting using api key for alex.cihla@gmail.com
@@ -52,7 +52,6 @@ sex_list = ['male','female']
 
 @csrf_exempt
 def signup(request):
-    resp = {"errCode":SUCCESS}
     try:
         rdata = json.loads(request.body)
         #import pdb;pdb.set_trace()
@@ -245,28 +244,28 @@ def filter(request):
 @csrf_exempt
 def search(request):
     resp = {"errCode":SUCCESS}
-    departloc = ""
-    destloc = ""
+    departloc = {}
+    destloc = {}
     rdata = {}
     try:
         rdata = json.loads(request.body)
+        departloc = rdata.get("depart-loc", "{}")
+        destloc = rdata.get("dest-loc", "{}")
     except Exception, err:
         resp = {"errCode":ERR_BAD_JSON}
         print str(err)
     #TODO Parse json here.
-    departloc = json.loads(rdata.get("depart-loc", "{}"))
-    destloc = json.loads(rdata.get("dest-loc", "{}"))
+
     print rdata
     print departloc 
     print destloc
     date = rdata.get("date", "")
     departtime = rdata.get("time-depart", "")
-    distThresh = int(rdata.get("dist-thresh", "1000"))
-    departlat = departloc.get("lat", "0")
-    departlong = departloc.get("long", "0")
-    destlat = destloc.get("lat", "0")
-    destlong = destloc.get("long", "0")
-
+    distThresh = int(rdata.get("dist-thresh", "50"))
+    departlat = departloc.get("lat", "37.3041") #San Jose
+    departlong = departloc.get("long", "-121.8727") #San Jose
+    destlat = destloc.get("lat", "37.3041")
+    destlong = destloc.get("long", "-121.8727")
     try:
         routes = Route.objects.all()
         rides = []
@@ -295,19 +294,32 @@ def addroute(request):
     #start = rdata.get("start", "")
     #end = rdata.get("end", "")
 
-    departLocLong = rdata.get("depart-long", "")
-    departLocLat = rdata.get("depart-lat", "")
+    departLocLong = lenSafe(rdata.get("depart-long", ""),COORD_LENGTH_IN)
+    departLocLat = lenSafe(rdata.get("depart-lat", ""), COORD_LENGTH_IN)
 
-    destinationLocLong = rdata.get("dest-long", "")
-    destinationLocLat = rdata.get("dest-lat", "")
+    destinationLocLong = lenSafe(rdata.get("dest-long", ""), COORD_LENGTH_IN)
+    destinationLocLat = lenSafe(rdata.get("dest-lat", ""), COORD_LENGTH_IN)
 
-    departTime = rdata.get("edt", "")
+    try:
+        departTime = rdata.get("edt", "")
+        departDate = rdata.get("date","")
+        departTime = departTime.strip()
+        departDate = departDate.strip()
+        departDate = datetime.strptime("".join(departDate.split("-")),'%m%d%Y')
+        hhmm = departTime.split(':')
+        date_obj = departDate + timedelta(hours= int(hhmm[0]), minutes= int(hhmm[1]))
+        #date_obj =  datetime.combine(departDate, departTime)
+    except Exception, err:
+        print str(err)
+        print departDate
+        print departTime
+
     validDatums = handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
     if (validDatums != 1):
     	resp = {"errCode" : validDatums}
 
     else:
-        newRoute = Route(driver_info = DriverInfo.objects.get(id = 1), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = departTime, status = False) #maps_info = directions, 
+        newRoute = Route(driver_info = DriverInfo.objects.get(id = uid), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False) #maps_info = directions, 
         newRoute.save()
 
         resp = {"errCode" : SUCCESS}
@@ -451,10 +463,10 @@ def accept_ride(request):
 
 #handles that coordinates are legit and uid exists in db
 def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat):
-    if (len(departLocLat) > COORD_LENGTH_IN) | (len(departLocLong) > COORD_LENGTH_IN) | (not (90.0 >= float(departLocLat) >= -90.0)) | (not (180.0 >= float(departLocLong) >= -180.0)) :
+    if (not (90.0 >= float(departLocLat) >= -90.0)) | (not (180.0 >= float(departLocLong) >= -180.0)) :
 		return ERR_BAD_DEPARTURE #-1
 	
-    if (len(destinationLocLong) > COORD_LENGTH_IN) | (len(destinationLocLat) > COORD_LENGTH_IN) | (not (90.0 >= float(destinationLocLat) >= -90.0)) | (not (180.0 >= float(destinationLocLong) >= -180.0)) :
+    if (not (90.0 >= float(destinationLocLat) >= -90.0)) | (not (180.0 >= float(destinationLocLong) >= -180.0)) :
         return ERR_BAD_DESTINATION #-2
 	
     try:
@@ -510,3 +522,9 @@ def generateExamples(request):
     for i in xrange(0,num):
         testUtils.genRide()
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+def lenSafe(string, length):
+    if len(string) > length:
+        return string[0:length]
+    else:
+        return string
