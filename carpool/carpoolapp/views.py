@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import  send_mail,BadHeaderError
-#from validate_email import validate_email
+from validate_email import validate_email
 
 from carpoolapp.models import *
 from carpoolapp.unitTest import *
@@ -20,7 +20,7 @@ import re
 import StringIO
 import unittest
 from googlemaps import GoogleMaps
-from datetime import date, datetime, time, timedelta
+from datetime import *
 import math
 
 #connecting using api key for alex.cihla@gmail.com
@@ -46,13 +46,15 @@ ERR_BAD_INPUT_OR_LENGTH = -11
 ERR_BAD_DOB = -12
 ERR_BAD_JSON = -13
 ERR_USER_EXISTS =-14
-ERR_BAD_APIKEY = -15
+ERR_EXPIRED_LICENSE =-15
+ERR_BAD_APIKEY = -16
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
 
 @csrf_exempt
 def signup(request):
+    resp = {"errCode":SUCCESS}
     try:
         rdata = json.loads(request.body)
         #import pdb;pdb.set_trace()
@@ -118,14 +120,9 @@ def  sanitizeSignupData(rdata):
       #validate not null and not too long lastname
       if(not lastname or len(lastname)> MAX_LENGTH_FIRST_LAST_PASS):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
-      #validate good email
-      #if not (email or validate_email(email)):
-      #if not (email):
-      #resp["errCode"] = ERR_BAD_EMAIL
+      is_valid = validate_email(email)
 
-      emailPattern = re.match("^[a-zA-Z0-9._%-+]+@[a-zA-Z0-9._%-]+.[       a-zA-Z]{2,6}$", email) 
-
-      if (emailPattern == None ):
+      if not is_valid:
         resp["errCode"] = ERR_BAD_EMAIL
 
       #validate gooe date of birth
@@ -151,6 +148,8 @@ def  sanitizeSignupData(rdata):
     return resp
 
 def driver_check(rdata):
+    present = datetime.now().date()
+    
     license_no = rdata.get("license_no", "")
     license_exp = rdata.get("license_exp", "")
     car_make = rdata.get("car_make", "")
@@ -166,10 +165,26 @@ def driver_check(rdata):
     if(not car_type or len(car_type)> MAX_LENGTH_FIRST_LAST_PASS):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
     try:
-        datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
+        datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date() 
+        #print "expiration date :" + exp_date
+        #print "now :" + present
+        #if exp_date < present:
+        #resp["errCode"]= ERR_EXPIRED_LICENSE
+
+
     except ValueError,SyntaxError:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    #print "expiration date :" + exp_date
+    #print "now :" + present
 
+    #check if license expired
+    #print present
+    '''if exp_date < present:
+        print "license expired"
+        print exp_date
+        print present
+        resp["errCode"] = ERR_EXPIRED_LICENSE
+    '''
     if type(car_mileage) is not int:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
     if type(max_passengers) is not int:
@@ -248,18 +263,17 @@ def filter(request):
 @csrf_exempt
 def search(request):
     resp = {"errCode":SUCCESS}
-    departloc = {}
-    destloc = {}
+    departloc = ""
+    destloc = ""
     rdata = {}
     try:
         rdata = json.loads(request.body)
-        departloc = rdata.get("depart-loc", "{}")
-        destloc = rdata.get("dest-loc", "{}")
     except Exception, err:
         resp = {"errCode":ERR_BAD_JSON}
         print str(err)
     #TODO Parse json here.
-
+    departloc = json.loads(rdata.get("depart-loc", "{}"))
+    destloc = json.loads(rdata.get("dest-loc", "{}"))
     print rdata
     print departloc 
     print destloc
@@ -270,6 +284,7 @@ def search(request):
     departlong = departloc.get("long", "-121.8727") #San Jose
     destlat = destloc.get("lat", "37.3041")
     destlong = destloc.get("long", "-121.8727")
+
     try:
         routes = Route.objects.all()
         rides = []
@@ -321,26 +336,12 @@ def addroute(request):
     #start = rdata.get("start", "")
     #end = rdata.get("end", "")
 
-    departLocLong = lenSafe(rdata.get("depart-long", ""),COORD_LENGTH_IN)
-    departLocLat = lenSafe(rdata.get("depart-lat", ""), COORD_LENGTH_IN)
+    departLocLong = rdata.get("depart-long", "")
+    departLocLat = rdata.get("depart-lat", "")
 
-    destinationLocLong = lenSafe(rdata.get("dest-long", ""), COORD_LENGTH_IN)
-    destinationLocLat = lenSafe(rdata.get("dest-lat", ""), COORD_LENGTH_IN)
-
-    try:
-        departTime = rdata.get("edt", "")
-        departDate = rdata.get("date","")
-        departTime = departTime.strip()
-        departDate = departDate.strip()
-        departDate = datetime.strptime("".join(departDate.split("-")),'%m%d%Y')
-        hhmm = departTime.split(':')
-        date_obj = departDate + timedelta(hours= int(hhmm[0]), minutes= int(hhmm[1]))
-        #date_obj =  datetime.combine(departDate, departTime)
-    except Exception, err:
-        print str(err)
-        print departDate
-        print departTime
-
+    destinationLocLong = rdata.get("dest-long", "")
+    destinationLocLat = rdata.get("dest-lat", "")
+    departTime = rdata.get("edt", "")
     validDatums = handleRouteData(user.id, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
     if (validDatums != 1):
     	resp = {"errCode" : validDatums}
@@ -410,12 +411,25 @@ def select_ride(request):
         rider = User.objects.get(id=rider_id)
         route = Route.objects.get(id=route_id)
         driver_info =route.driver_info
+        rider_email = rider.email
+        print 'rider email is:' + rider_email
         driver_email = driver_info.driver.email
+        driver_firstname = driver_info.driver.firstname
+        driver_lastname  = driver_info.driver.lastname
         print driver_email
+        print rider.firstname
+        print rider.lastname
+        print driver_firstname
+        print driver_lastname
         route.rider = rider
         route.save()
         url = "http://127.0.0.1:8000/driver/accept"
-        url += "?route_id=" + str(route_id)
+        url += "?from_first=" + rider.firstname
+        url += "&from_last=" + rider.lastname
+        url += "&to_first=" + driver_firstname
+        url += "&to_last=" +  driver_lastname
+        url += "&rider_email=" + rider_email
+        url += "&route_id=" + str(route_id)
         yesUrl = url + "&response=1"
         noUrl = url + "&response=0"
         message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
@@ -440,15 +454,31 @@ def accept_ride(request):
     r = request.GET
     route_id = r.get("route_id", -1)
     response = r.get("response", "") #-1) What is going on here? this is request right? Why do we have a response segment?
+    rider_email= r.get("rider_email","")
+    rider_firstname= r.get("from_first","")
+    rider_lastname= r.get("from_last","")
+    driver_firstname= r.get("to_first","")
+    driver_lastname= r.get("to_last","")
     print "route id: " + str(route_id)
     print "response: " + str(response)
+    print "rider_email:" + rider_email
+    print "rider_firstname:" + rider_firstname
+    print "rider_lastname:" +  rider_lastname
+    print "driver_firstname:"+ driver_firstname
+    print "driver_lastname:" + driver_lastname
     route = Route.objects.get(id=route_id)
     if response == "1":
         route.status="True"
         route.save()
+        message = "Congratulation " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that your trip is now confirmed with \n" + driver_firstname + " "+ driver_lastname
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+
     elif response == "0":
         route.status = "False"
         route.save()
+        message = "Sorry " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that the trip you selected with \n" + driver_firstname + " " +driver_lastname + "was denied please select another ride\n"
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+
     else:
         raise Exception("Invalid response" + str(response))
     
@@ -460,10 +490,10 @@ def accept_ride(request):
 
 #handles that coordinates are legit and uid exists in db
 def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat):
-    if (not (90.0 >= float(departLocLat) >= -90.0)) | (not (180.0 >= float(departLocLong) >= -180.0)) :
+    if (len(departLocLat) > COORD_LENGTH_IN) | (len(departLocLong) > COORD_LENGTH_IN) | (not (90.0 >= float(departLocLat) >= -90.0)) | (not (180.0 >= float(departLocLong) >= -180.0)) :
 		return ERR_BAD_DEPARTURE #-1
 	
-    if (not (90.0 >= float(destinationLocLat) >= -90.0)) | (not (180.0 >= float(destinationLocLong) >= -180.0)) :
+    if (len(destinationLocLong) > COORD_LENGTH_IN) | (len(destinationLocLat) > COORD_LENGTH_IN) | (not (90.0 >= float(destinationLocLat) >= -90.0)) | (not (180.0 >= float(destinationLocLong) >= -180.0)) :
         return ERR_BAD_DESTINATION #-2
 	
     try:
@@ -519,9 +549,3 @@ def generateExamples(request):
     for i in xrange(0,num):
         testUtils.genRide()
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-
-def lenSafe(string, length):
-    if len(string) > length:
-        return string[0:length]
-    else:
-        return string
