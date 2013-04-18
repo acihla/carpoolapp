@@ -21,3 +21,6 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"edt":"0:36 ","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"4-9-2013 ","user":733,"dest-long":"-122.27281998842956"}'  http://127.0.0.1:8000/rider/addroute > response.html
+
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"b7a2cf9544319f3002891649f980a3c9e875a3d8"}'  http://127.0.0.1:8000/rider/getProfile > response.html
+

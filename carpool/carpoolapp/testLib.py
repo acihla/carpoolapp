@@ -36,6 +36,8 @@ class RestTestCase(unittest.TestCase):
     ERR_BAD_JSON = -13
     ERR_USER_EXISTS=-14
     ERR_EXPIRED_LICENSE=-15
+    ERR_REQUEST_EXISTS=-16
+    ERR_KEY_VAL_DOES_NOT_EXISTS=-17
     # Lookup the name of the server to test
 
     serverToTest = "127.0.0.1:8000"

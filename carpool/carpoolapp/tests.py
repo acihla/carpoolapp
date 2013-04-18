@@ -138,45 +138,44 @@ class SignupTest(unittest.TestCase):
         self.assertResponse(respData, SUCCESS)
 
     #sign up with expired email
-    '''def testExpiredeMAIL(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'Aime', 'lastname' : 'Ngongang', 'email' : 'marianikgatech@berkeley.edu', 'dob' : '04-17-1950', 'sex' : 'male', 'password' : 'password', 'cellphone' : '510-459-3078', 'driver' : True, 'license_no' : 'abcdefghij', 'license_exp' : '03-12-2008', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
+    def test_ExpiredLicense(self):
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'Aime', 'lastname' : 'Ngongang', 'email' : 'marianikgatech@berkeley.edu', 'dob' : '04-17-1950', 'sex' : 'male', 'password' : 'password', 'cellphone' : '510-459-3078', 'driver' : 1, 'license_no' : 'abcdefghij', 'license_exp' : '03-12-2008', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
         print("testExpiredLicense")
         self.assertResponse(respData, ERR_EXPIRED_LICENSE)
-    '''
 
     #checks that standard input for setting up a driver fails with long license number 
     def testSignupDriver1(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.purdue@bs12.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sfesuperrrrrrrrrrdupperrrrrrrrrrrrrrlongggggggggggggggggggggggggggasdfghjasdfghjk', 'license_exp' : '03-12-2016', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.purdue@bs12.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sfesuperrrrrrrrrrdupperrrrrrrrrrrrrrlongggggggggggggggggggggggggggasdfghjasdfghjk', 'license_exp' : '03-12-2016', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
         print("testSignupDriver2")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     
     #checks that standard input for setting up a driver fails with wrong format for exp date 
     def testSignupDriver3(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.chicago@bs13.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02342322017', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.chicago@bs13.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '02342322017', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
         print("testSignupDriver3")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     
     #checks that standard input for setting up a driver fails with long car make field
     def testSignupDriver4(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.guiness@bs14.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2018', 'car_make' : 'Honda Accord LONGCRAPLONGCRAPLONGCRAP', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.guiness@bs14.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '02-03-2018', 'car_make' : 'Honda Accord LONGCRAPLONGCRAPLONGCRAP', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
         print("testSignupDriver4")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
 
     #checks that standard input for setting up a driver fails with long car type field
     def testSignupDriver5(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.putain@bs15.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2019', 'car_make' : 'Honda Accord', 'car_type' : 'SedanLONGLONGLONGLONGCRAPPPPPP', 'car_mileage' : '30', 'max_passengers' : '2'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.putain@bs15.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '02-03-2019', 'car_make' : 'Honda Accord', 'car_type' : 'SedanLONGLONGLONGLONGCRAPPPPPP', 'car_mileage' : 30, 'max_passengers' : 2} )
         print("testSignupDriver5")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
 
-    #checks that standard input for setting up a driver fails with long mileage field
+    #checks that standard input for setting up a driver fails with wrong mileage field
     def testSignupDriver6(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.adal@bs16.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2014', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '3034', 'max_passengers' : '2'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.adal@bs16.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '02-03-2014', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '3034', 'max_passengers' : 2} )
         print("testSignupDriver6")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
 
-    #checks that standard input for setting up a driver fails with long max passenger field
+    #checks that standard input for setting up a driver fails with wrong max passenger field
     def testSignupDriver7(self):
-        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.bianca@bs17.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2020', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '30', 'max_passengers' : '2453'} )
+        respData = self.makeRequest("/signup", method="POST", data = { 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.bianca@bs17.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : True, 'license_no' : '20934089sf', 'license_exp' : '02-03-2020', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : '2453'} )
         print("testSignupDriver7")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
 
@@ -188,17 +187,17 @@ class SignupTest(unittest.TestCase):
 
     #check good iput
     def testSignup1(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.larissa@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':False})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.larissa@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':0})
         print("signupTest1")
         self.assertResponse(respData, SUCCESS)
     #check too long firstname 
     def testSignup2(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJAJAJAJAJAJAJAJAJAJAJAJAJAJAAJAJAJAJAJAJAJAJA','lastname':'Cihla','email':'alex.corine@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':False})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJAJAJAJAJAJAJAJAJAJAJAJAJAJAAJAJAJAJAJAJAJAJA','lastname':'Cihla','email':'alex.corine@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':0})
         print("signupTest2")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     #check too long lastname
     def testSignup3(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihlacihlacihlacihlacihlacihlacihlacihlacihla','email':'alex.donald@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':False})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihlacihlacihlacihlacihlacihlacihlacihlacihla','email':'alex.donald@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':0})
         print("signupTest3")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     #check invalid email 
@@ -208,17 +207,17 @@ class SignupTest(unittest.TestCase):
         self.assertResponse(respData, ERR_BAD_EMAIL) """
     #check invalid date type 
     def testSignup5(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.bibi@yahoo.com','dob':'04311992','sex':'male','password':'password','cellphone':'510-459-3078','driver':False})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.bibi@yahoo.com','dob':'04311992','sex':'male','password':'password','cellphone':'510-459-3078','driver':0})
         print("signupTest5")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     #check invalid SEX 
     def testSignup6(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.evarist@yahoo.com','dob':'04-17-1992','sex':'garcon','password':'password','cellphone':'510-459-3078','driver':False})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.evarist@yahoo.com','dob':'04-17-1992','sex':'garcon','password':'password','cellphone':'510-459-3078','driver':0})
         print("signupTest6")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     #check too long password
     def testSignup7(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.monfrere@yahoo.com','dob':'04-17-1992','sex':'male','password':'passwordpasswordpasswordpasswordpasswordpasswordpasswordpassword','cellphone':'510-459-3078','driver':False})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.monfrere@yahoo.com','dob':'04-17-1992','sex':'male','password':'passwordpasswordpasswordpasswordpasswordpasswordpasswordpassword','cellphone':'510-459-3078','driver':0})
         print("signupTest7")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     #check invalid driver type
@@ -228,37 +227,37 @@ class SignupTest(unittest.TestCase):
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     # check valid driver info
     def testSignup10(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.parents@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblahblaha','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'sedan','car_mileage':100000,'max_passengers':2})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.parents@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblahblaha','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'sedan','car_mileage':100000,'max_passengers':2})
         print("signupTest10")
         self.assertResponse(respData, SUCCESS)
     #check too long license_no
     def testSignup11(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.etoo@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblahblahablahblahblahblahblahblahblahblahblah','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'sedan','car_mileage':100000,'max_passengers':2})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.etoo@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblahblahablahblahblahblahblahblahblahblahblah','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'sedan','car_mileage':100000,'max_passengers':2})
         print("signupTest11")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     #check no car_make
     def testSignup12(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.samuel@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblahbla','license_exp':'05-15-2017','car_make':'','car_type':'sedan','car_mileage':100000,'max_passengers':2})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.samuel@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblahbla','license_exp':'05-15-2017','car_make':'','car_type':'sedan','car_mileage':100000,'max_passengers':2})
         print("signupTest12")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     #check null car_type
     def testSignup13(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.song@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblah','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'','car_mileage':100000,'max_passengers':2})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.song@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblah','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'','car_mileage':100000,'max_passengers':2})
         print("signupTest13")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     #check invalid expiration date
     def testSignup14(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.alex@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblah','license_exp':'05152017','car_make':'mercedes_benz','car_type':'','car_mileage':100000,'max_passengers':2})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.alex@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblah','license_exp':'05152017','car_make':'mercedes_benz','car_type':'','car_mileage':100000,'max_passengers':2})
         print("signupTest14")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     #check invalid mileage type
     def testSignup15(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.makoun@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblah','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'suv','car_mileage':'aaaaa','max_passengers':2})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.makoun@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblah','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'suv','car_mileage':'aaaaa','max_passengers':2})
         print("signupTest15")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
     #check invalid maxpassenger type
     def testSignup16(self):
-        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.jean@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':True,'license_no':'blahblah','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'suv','car_mileage':100000,'max_passengers':'aaaaa'})
+        respData = self.makeRequest("/signup",method ="POST",data ={'firstname':'AJ','lastname':'Cihla','email':'alex.jean@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblah','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'suv','car_mileage':100000,'max_passengers':'aaaaa'})
         print("signupTest16")
         self.assertResponse(respData, ERR_BAD_INPUT_OR_LENGTH)
 
@@ -443,7 +442,40 @@ class SearchTest(unittest.TestCase):
                 driver = driver_info.get("driver", None)
                 self.assertTrue(driver != None)
 
+class RiderStatusTest(testLib.RestTestCase):
+    def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
+        #Check that the response data dictionary matches the expected values
+        expected = { 'errCode' : errCode }
+        #if respData.get(count, None) is not None:
+        #   expected['count']  = count
+        self.assertDictEqual(expected, respData)
+
+    
+    def testUserPendingRides(self):
+        print "testUserPendingRides"
+        self.makeRequest("/rider/select",method="POST",data={'rider_id':1,'route_id':20,'comment':"I would like a ride from you"})
+        self.makeRequest("/rider/select",method="POST",data={'rider_id':1,'route_id':60,'comment':"I would like a ride from you"})
         
+        expected_dict = {}
+        expected_dict[20]={'driver_firstname':"Peter",
+        'driver_lastname':"Lee",
+        'route_depart_lat':"27.50233",
+        'route_depart_lg':"-142.080078",
+        'route_arrive_lat':"-37.509413",
+        'route_arrive_lg':"-12.000078",
+        'departure_time':"2013-04-06 19:16:14.689763+00:00",
+        'comment':"I would like a ride from you"}
+        expected_dict[60]={'driver_firstname':"Peter",
+        'driver_lastname':"Lee",
+        'route_depart_lat':"27.50233",
+        'route_depart_lg':"-142.080078",
+        'route_arrive_lat':"-37.509413",
+        'route_arrive_lg':"-12.000078",
+        'departure_time':"2013-04-08 04:35:21.223602+00:00",
+        'comment':"I would like a ride from you"}
+        
+        respData = self.makeRequest("/rides/pending", method="POST", data = { 'rider_id':1} )
+        self.assertEquals(respData, expected_dict.values())
 
 class Select_RideTest(unittest.TestCase):
   def assertResponse(self, respData, errCode = SUCCESS):
@@ -454,12 +486,12 @@ class Select_RideTest(unittest.TestCase):
         self.assertDictEqual(expected, respData)
 
   def testSelect_Good_Ride(self):
-    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 4} )
+    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 3, 'route_id' : 50,'comment':''} )
     print("testSelect_Good_Ride")
     self.assertResponse(respData, SUCCESS)
 
   def testSelect_BAD_Ride(self):
-    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 2000} )
+    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 2000,'comment':''} )
     print("testSelect_BAD_Ride")
     self.assertResponse(respData, ERR_DATABASE_SEARCH_ERROR)
 
@@ -472,11 +504,11 @@ class Accept_OR_Deny_RideTest(unittest.TestCase):
         self.assertDictEqual(expected, respData)
 
   def test_Accept_Good_Ride(self):
-    respData = self.makeRequest("/driver/accept?from_first=Peter&from_last=Lee&to_first=Peter&to_last=Lee&rider_email=nadapeter@gmail.com&route_id=1&response=1", method="GET")
+    respData = self.makeRequest("/driver/accept?from=3&to=1&route_id=50&response=1", method="GET")
     print("test_Accept_Good_Ride")
     self.assertResponse(respData, SUCCESS)
 
   def test_Accept_BAD_Ride(self):
-    respData = self.makeRequest("/driver/accept?route_id=-1&response=1", method="GET")
+    respData = self.makeRequest("/driver/accept?from=-1&to=-10&route_id=0&response=0", method="GET")
     print("test_Accept_BAD_Ride")
     self.assertResponse(respData, ERR_BAD_SERVER_RESPONSE)
