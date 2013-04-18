@@ -46,6 +46,7 @@ ERR_BAD_INPUT_OR_LENGTH = -11
 ERR_BAD_DOB = -12
 ERR_BAD_JSON = -13
 ERR_USER_EXISTS =-14
+ERR_BAD_APIKEY = -15
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
@@ -69,11 +70,14 @@ def signup(request):
             date_obj = datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
 
             newUser = User(firstname = firstname, lastname = lastname, email = email, dob = date_obj, sex = sex, password = password, cellphone = cellphone, driver = driver)
-            newUser.apikey = newUser.generate_apikey()
+            apikey = newUser.generate_apikey()
+            newUser.apikey = apikey
             newUser.save()
+            resp["apikey"] = apikey
 
             if (driver):
               resp1 = driver_check(rdata)
+              resp1["apikey"] = apikey
               if resp1["errCode"]== SUCCESS:
                 license_no = rdata.get("license_no", "")
                 license_exp = rdata.get("license_exp", "")
@@ -295,7 +299,7 @@ def addroute(request):
     try:
         user = User.objects.get(apikey = apikey)
     except User.DoesNotExist:
-            resp["errCode"] = ERR_NOT_USER
+            resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
     #start = rdata.get("start", "")
@@ -326,7 +330,7 @@ def addroute(request):
     	resp = {"errCode" : validDatums}
 
     else:
-        newRoute = Route(driver_info = user, rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False) #maps_info = directions, 
+        newRoute = Route(driver_info = User.objects.get(apikey=apikey), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False) #maps_info = directions, 
         newRoute.save()
 
         resp = {"errCode" : SUCCESS}
@@ -377,8 +381,14 @@ def addroute(request):
 def select_ride(request):
     try:
         data = json.loads(request.raw_post_data)
-        rider_id = data['rider_id']
-        print rider_id
+        apikey = data.get("apikey", "")
+        user = None
+        try:
+            user = User.objects.get(apikey = apikey)
+        except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+        rider_id = user.id
         route_id = data['route_id']
         print route_id
         rider = User.objects.get(id=rider_id)
