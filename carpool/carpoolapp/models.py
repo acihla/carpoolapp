@@ -102,6 +102,7 @@ class Route(models.Model):
     maps_info = models.CharField(max_length=1000, default="")
     status = models.CharField(max_length=64, default=False)
 
+
     def to_dict(self):
         rtn = {}
         rtn["id"] = self.id
@@ -116,6 +117,12 @@ class Route(models.Model):
         rtn["maps_info"] = self.maps_info
         rtn["status"] = self.status
         return rtn
+class ride_request(models.Model):
+      rider = models.ForeignKey(User, null=True)
+      route_id = models.IntegerField()
+      status = models.CharField(max_length=64)
+      comment = models.CharField(max_length=400)
+
 
 class SampleKey(models.Model):
     name = models.CharField(max_length=200)
