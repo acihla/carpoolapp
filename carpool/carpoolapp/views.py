@@ -51,6 +51,7 @@ ERR_REQUEST_EXISTS =-17
 ERR_KEY_VAL_DOES_NOT_EXISTS =-18
 ERR_BAD_APIKEY = -16
 ERR_BAD_DRIVER_INFO = -19
+ERR_BAD_CREDENTIALS = -20
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
@@ -336,7 +337,6 @@ def getProfile(request):
     except User.DoesNotExist:
             resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-
     try:
         if user.driver:
             driver_info = DriverInfo.objects.get(driver=user.id)
@@ -344,6 +344,57 @@ def getProfile(request):
     except DriverInfo.DoesNotExist:
         resp["errCode"] = ERR_BAD_DRIVER_INFO
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
+def changePassword(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    password = rdata.get("password", "")
+    email = rdata.get("email", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        if user.password == password and user.email == email:
+            #Change password here
+
+            resp["errCode"] = SUCCESS
+        else:
+            resp["errCode"] = ERR_BAD_CREDENTIALS
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
+def changeUserInfo(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp = user.to_dict()
+        resp["errCode"] = SUCCESS
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
+def changeDriverInfo(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp = user.to_dict()
+        resp["errCode"] = SUCCESS
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
