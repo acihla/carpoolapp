@@ -69,7 +69,9 @@ def signup(request):
             date_obj = datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
 
             newUser = User(firstname = firstname, lastname = lastname, email = email, dob = date_obj, sex = sex, password = password, cellphone = cellphone, driver = driver)
+            newUser.apikey = newUser.generate_apikey()
             newUser.save()
+
             if (driver):
               resp1 = driver_check(rdata)
               if resp1["errCode"]== SUCCESS:
@@ -182,7 +184,8 @@ def login(request):
           password = rdata.get("password", "")
           try:
             u = User.objects.get(email =email,password = password)
-            resp["errCode"] =SUCCESS
+            resp["errCode"] = SUCCESS
+            resp["apikey"] = u.apikey
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
           except User.DoesNotExist:
             resp["errCode"] = ERR_NOT_USER
@@ -287,7 +290,14 @@ def search(request):
 @csrf_exempt
 def addroute(request):
     rdata = json.loads(request.body)
-    uid = rdata.get("user", "")
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_NOT_USER
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
     #start = rdata.get("start", "")
     #end = rdata.get("end", "")
 
@@ -311,12 +321,12 @@ def addroute(request):
         print departDate
         print departTime
 
-    validDatums = handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
+    validDatums = handleRouteData(user.id, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
     if (validDatums != 1):
     	resp = {"errCode" : validDatums}
 
     else:
-        newRoute = Route(driver_info = DriverInfo.objects.get(id = uid), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False) #maps_info = directions, 
+        newRoute = Route(driver_info = user, rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False) #maps_info = directions, 
         newRoute.save()
 
         resp = {"errCode" : SUCCESS}

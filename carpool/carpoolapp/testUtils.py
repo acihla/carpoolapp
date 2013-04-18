@@ -21,6 +21,7 @@ def genUser(driver = False):
 	comments = id_gen(50, string.ascii_lowercase+" ")
 	avg_rating = 5.0 * random.random()
 	u = User(firstname = first,lastname = last, email = email, dob = dob, sex = sex, password = password, cellphone = cellphone, driver = driver, comments = comments, avg_rating = avg_rating)
+	u.apikey = u.generate_apikey()
 	u.save()
 	return u
 

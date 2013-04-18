@@ -1,4 +1,5 @@
 from django.db import models
+import random, sha
 
 
 class User(models.Model):
@@ -14,6 +15,7 @@ class User(models.Model):
     driver = models.BooleanField(default=False)
     comments = models.CharField(default="", max_length=200)
     avg_rating = models.FloatField(default = 0)
+    apikey = models.CharField(max_length=40)
 
     def __unicode__(self):
         return self.email
@@ -47,7 +49,12 @@ class User(models.Model):
         rtn["driver"] = self.driver
         rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
+        rtn["apikey"] = self.apikey
         return rtn
+
+    def generate_apikey(self):
+        salt = sha.new(str(random.random())).hexdigest()[:5]
+        return sha.new(salt+self.email).hexdigest()
 
 class DriverInfo(models.Model):
     driver = models.ForeignKey(User)
