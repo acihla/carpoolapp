@@ -471,7 +471,7 @@ def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destin
 
 @csrf_exempt
 def TESTAPI_resetFixture(request):
-    #need to clear db here !!! Not necessary if running python manage.py test carpoolapp
+    
     resp = {"errCode" : SUCCESS}
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
