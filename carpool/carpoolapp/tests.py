@@ -27,7 +27,7 @@ class TestUnit(testLib.RestTestCase):
         self.assertTrue(respData['totalTests'] >= minimumTests,
                         "at least "+str(minimumTests)+" unit tests. Found only "+str(respData['totalTests'])+". use SAMPLE_APP=1 if this is the sample app")
         self.assertEquals(0, respData['nrFailed'])
-'''
+
 class SignupTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
@@ -419,7 +419,7 @@ class SearchTest(testLib.RestTestCase):
                 self.assertTrue(driver_info != None)
                 driver = driver_info.get("driver", None)
                 self.assertTrue(driver != None)
-'''
+
 class RiderStatusTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values

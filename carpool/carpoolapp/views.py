@@ -47,8 +47,9 @@ ERR_BAD_DOB = -12
 ERR_BAD_JSON = -13
 ERR_USER_EXISTS =-14
 ERR_EXPIRED_LICENSE =-15
-ERR_REQUEST_EXISTS =-16
-ERR_KEY_VAL_DOES_NOT_EXISTS =-17
+ERR_REQUEST_EXISTS =-17
+ERR_KEY_VAL_DOES_NOT_EXISTS =-18
+ERR_BAD_APIKEY = -16
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
@@ -74,10 +75,15 @@ def signup(request):
             date_obj = datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
 
             newUser = User(firstname = firstname, lastname = lastname, email = email, dob = date_obj, sex = sex, password = password, cellphone = cellphone, driver = driver)
+            apikey = newUser.generate_apikey()
+            newUser.apikey = apikey
             newUser.save()
+            resp["apikey"] = apikey
             if (driver==1):
               print "im a driver"
+
               resp1 = driver_check(rdata)
+              resp1["apikey"] = apikey
               if resp1["errCode"]== SUCCESS:
                 license_no = rdata.get("license_no", "")
                 license_exp = rdata.get("license_exp", "")
@@ -212,7 +218,8 @@ def login(request):
           password = rdata.get("password", "")
           try:
             u = User.objects.get(email =email,password = password)
-            resp["errCode"] =SUCCESS
+            resp["errCode"] = SUCCESS
+            resp["apikey"] = u.apikey
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
           except User.DoesNotExist:
             resp["errCode"] = ERR_NOT_USER
@@ -287,11 +294,11 @@ def search(request):
     print destloc
     date = rdata.get("date", "")
     departtime = rdata.get("time-depart", "")
-    distThresh = int(rdata.get("dist-thresh", "1000"))
-    departlat = departloc.get("lat", "0")
-    departlong = departloc.get("long", "0")
-    destlat = destloc.get("lat", "0")
-    destlong = destloc.get("long", "0")
+    distThresh = int(rdata.get("dist-thresh", "50"))
+    departlat = departloc.get("lat", "37.3041") #San Jose
+    departlong = departloc.get("long", "-121.8727") #San Jose
+    destlat = destloc.get("lat", "37.3041")
+    destlong = destloc.get("long", "-121.8727")
 
     try:
         routes = Route.objects.all()
@@ -314,10 +321,33 @@ def search(request):
             print str(err)
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
+
+@csrf_exempt
+def getProfile(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp = user.to_dict()
+        resp["errCode"] = SUCCESS
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
 @csrf_exempt
 def addroute(request):
     rdata = json.loads(request.body)
-    uid = rdata.get("user", "")
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
     #start = rdata.get("start", "")
     #end = rdata.get("end", "")
 
@@ -326,14 +356,13 @@ def addroute(request):
 
     destinationLocLong = rdata.get("dest-long", "")
     destinationLocLat = rdata.get("dest-lat", "")
-
     departTime = rdata.get("edt", "")
-    validDatums = handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
+    validDatums = handleRouteData(user.id, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
     if (validDatums != 1):
     	resp = {"errCode" : validDatums}
 
     else:
-        newRoute = Route(driver_info = DriverInfo.objects.get(id = 1), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = departTime, status = False) #maps_info = directions, 
+        newRoute = Route(driver_info = User.objects.get(apikey=apikey), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False) #maps_info = directions, 
         newRoute.save()
 
         resp = {"errCode" : SUCCESS}
@@ -384,8 +413,14 @@ def addroute(request):
 def select_ride(request):
     try:
         data = json.loads(request.raw_post_data)
-        rider_id = data['rider_id']
-        print rider_id
+        apikey = data.get("apikey", "")
+        user = None
+        try:
+            user = User.objects.get(apikey = apikey)
+        except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+        rider_id = user.id
         route_id = data['route_id']
         print route_id
         comment = data['comment']
