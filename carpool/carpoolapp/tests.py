@@ -11,6 +11,7 @@ import testLib
 import unittest
 import os
 from datetime import *
+from django.test.client import Client
 
 #responses to be handled by application
 SUCCESS               =   1  # : a success
@@ -31,8 +32,12 @@ ERR_BAD_EMAIL = -10
 ERR_BAD_INPUT_OR_LENGTH = -11
 ERR_BAD_DOB = -12
 ERR_BAD_JSON = -13
-ERR_USER_EXISTS=-14
-ERR_EXPIRED_LICENSE=-15
+ERR_USER_EXISTS =-14
+ERR_EXPIRED_LICENSE =-15
+ERR_BAD_APIKEY = -16
+ERR_REQUEST_EXISTS =-17
+ERR_KEY_VAL_DOES_NOT_EXISTS =-18
+ERR_BAD_DRIVER_INFO = -19
 
 class TestUnit(unittest.TestCase):
     """Issue a REST API request to run the unit tests, and analyze the result"""
@@ -52,6 +57,56 @@ class TestUnit(unittest.TestCase):
         self.assertEquals(0, respData['nrFailed'])
 
 class SignupTest(unittest.TestCase):
+    def makeRequest(self, url, method="GET", data={ }):
+        """
+        Make a request to the server.
+        @param url is the relative url (no hostname)
+        @param method is either "GET" or "POST"
+        @param data is an optional dictionary of data to be send using JSON
+        @result is a dictionary of key-value pairs
+        """
+        testClient = Client()
+        headers = { }
+        body = ""  
+        if data is not None:
+            headers = { "content-type": "application/json" }
+            body = json.dumps(data)
+
+        try:
+            response = testClient.post(url, data) #self.conn.request(method, url, body, headers)
+        except Exception, e:
+            if str(e).find("Connection refused") >= 0:
+                print "Cannot connect to the server test Client server" #+RestTestCase.serverToTest+". You should start the server first, or pass the proper TEST_SERVER environment variable"
+                sys.exit(1)
+            raise
+
+        #self.conn.sock.settimeout(100.0) # Give time to the remote server to start and respond
+        #resp = self.conn.getresponse()
+        #print "RESPONSE:  " + str(resp)
+        data_string = "<unknown"
+        try:
+            if response.status_code == 200:
+                data_string = resp.content
+                # The response must be a JSON request
+                # Note: Python (at least) nicely tacks UTF8 information on this,
+                #   we need to tease apart the two pieces.
+                self.assertTrue(resp.getheader('content-type') is not None, "content-type header must be present in the response")
+                self.assertTrue(resp.getheader('content-type').find('application/json') == 0, "content-type header must be application/json")
+
+
+                data = json.loads(data_string)
+                return data
+            else:
+                self.assertEquals(200, resp.status)
+        except:
+            # In case of errors dump the whole response,to simplify debugging
+            print "Got exception when processing response to url="+url+" method="+method+" data="+str(data)
+            print "  Response status = "+str(resp.status)
+            print "  Resonse headers: "
+            for h, hv in resp.getheaders():
+                print "    "+h+"  =  "+hv
+            print "  Data string: "+data_string
+            raise
     def assertResponse(self, respData, errCode = SUCCESS):
         #Check that the response data dictionary matches the expected values
         expected = { 'errCode' : errCode }
