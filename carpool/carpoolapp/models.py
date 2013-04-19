@@ -123,10 +123,10 @@ class Route(models.Model):
         return rtn
 
 class ride_request(models.Model):
-        rider_apikey = models.CharField(max_length=40)
-        route_id = models.IntegerField()
-        status = models.CharField(max_length=64)
-        driver_apikey = models.CharField(max_length=40,default="")
+    rider_apikey = models.CharField(max_length=40)
+    route_id = models.IntegerField()
+    status = models.CharField(max_length=64)
+    driver_apikey = models.CharField(max_length=40,default="")
 
     def to_dict(self):
         rtn = {}
