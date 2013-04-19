@@ -324,6 +324,32 @@ def search(request):
             print str(err)
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
+@csrf_exempt
+def manageRoute(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp = user.to_dict()
+        resp["errCode"] = SUCCESS
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    try:
+        if user.user_type == 1:
+            driver_info = DriverInfo.objects.get(driver=user.id)
+            routes = Route.objects.filter(driver_info = driver_info)
+            routes_dict = []
+            for route in routes:
+                routes_dict = route.to_dict()
+            resp["routes"] = routes_dict
+    except DriverInfo.DoesNotExist:
+        resp["errCode"] = ERR_BAD_DRIVER_INFO
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
 
 @csrf_exempt
 def getProfile(request):
