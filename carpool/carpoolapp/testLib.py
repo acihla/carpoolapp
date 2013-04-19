@@ -101,7 +101,11 @@ class RestTestCase(unittest.TestCase):
         self.conn = httplib.HTTPConnection(RestTestCase.serverToTest, timeout=1)
         testUtils.genUser
         testUtils.genUser
-        testUtils.genDriver
+        testUtils.genUser
+        testUtils.genRide
+        testUtils.genRide
+        testUtils.genRide
+        testUtils.genRide
         testUtils.genRide
         testUtils.genRide
         #self.makeRequest("/TESTAPI/resetFixture", method="GET")

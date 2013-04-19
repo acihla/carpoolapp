@@ -52,6 +52,7 @@ def genRide():
 	along = str(-122.2728 + random.uniform(-1, 1))[0:10]
 	available_seats = driver.max_passengers
 	route = Route(driver_info=driver, depart_time=depart_t, depart_lat=dlat, depart_lg=dlong, arrive_lat=alat, arrive_lg=along, maps_info = "MAPPS INFO...", status = "valid", available_seats = available_seats)
+
 	route.save()
 	return route
 
