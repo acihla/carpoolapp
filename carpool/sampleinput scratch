@@ -26,7 +26,7 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"b7a2cf9544319f3002891649f980a3c9e875a3d8"}' http://127.0.0.1:8000/rider/getProfile > response.html
 
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"sex":"male","email":"samcivu@gmail.com","cellphone":"4157136205","dob":"4-19-1992","lastname":"vu","driver":0,"firstname":"sam","password":"123456"}' http://127.0.0.1:8000/rider/signup > response.html
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"license_no":"123acz","sex":"female","car_make":"hekko","lastname":"bu","firstname":"mom","password":"hi","car_mileage":1234,"car_type":"buddy ","max_passengers":4,"email":"msombu@test.com","cellphone":"650-630-5875","dob":"4-19-2013","driver":1,"license_exp":"4-19-2017"}' http://127.0.0.1:8000/rider/signup > response.html
 
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"819209c12a07e94c12f976cca3e28bfde61e6f9f"}' http://127.0.0.1:8000/driver/manageRoute > response.html
