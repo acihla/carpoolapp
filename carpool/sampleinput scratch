@@ -26,3 +26,6 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"b7a2cf9544319f3002891649f980a3c9e875a3d8"}' http://127.0.0.1:8000/rider/getProfile > response.html
 
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"sex":"male","email":"samcivu@gmail.com","cellphone":"4157136205","dob":"4-19-1992","lastname":"vu","driver":0,"firstname":"sam","password":"123456"}' http://127.0.0.1:8000/rider/signup > response.html
+
+
