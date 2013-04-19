@@ -30,7 +30,6 @@ class User(models.Model):
         rtn["driver"] = self.user_type
         rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
-        rtn["apikey"] = self.apikey
         return rtn
 
     def to_dict_unsecure(self):

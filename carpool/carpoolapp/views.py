@@ -344,6 +344,7 @@ def manageRoute(request):
             for route in routes:
                 routes_dict.append(route.to_dict())
             resp["routes"] = routes_dict
+            resp['size'] = len(routes_dict)
     except DriverInfo.DoesNotExist:
         resp["errCode"] = ERR_BAD_DRIVER_INFO
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
