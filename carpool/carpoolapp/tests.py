@@ -282,28 +282,28 @@ class LoginTest(testLib.RestTestCase):
     def testLogin1(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.cihla@yahoo.com','password':'password'})
         print("testLogin1")
-        self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
+        self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.SUCCESS)
     #check invalid iput with no  email
     def testLogin2(self):
         respData = self.makeRequest("/login",method="POST",data = {'email':'','password':'password'})
         print("testLogin2")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_EMAIL)
+        self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.ERR_BAD_EMAIL)
     #check very long passwordi
     def testLogin3(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'passwordpasswordpasswordpasswordpasswordpassword'})
         print("testLogin3")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
+        self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #check we have a wrong match
     def testLogin4(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'douala@mbanga.yaounde','password':'password'})
         print("testLogin4")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_NOT_USER)
+        self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.ERR_NOT_USER)
     #check user exist
     def testLogin5(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'doualacameroun'})
         print("testLogin5")
-        self.assertResponse(respData, testLib.RestTestCase.ERR_NOT_USER) 
+        self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.ERR_NOT_USER) 
 
 
 

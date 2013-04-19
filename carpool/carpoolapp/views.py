@@ -59,7 +59,7 @@ sex_list = ['male','female']
 
 @csrf_exempt
 def signup(request):
-    resp = {"errCode":SUCCESS}
+    resp = {"errCode":ERR_UNKOWN_IN_SIGNUP}
     try:
         rdata = json.loads(request.body)
         resp = sanitizeSignupData(rdata)
@@ -98,8 +98,9 @@ def signup(request):
                     try:
                         newDriverInfo = DriverInfo(driver = newUser, license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
                         newDriverInfo.save()
+                        print "the driver was saved!"
                     except Exception, err:
-                        print str(err)
+                        print str(err) 
                         User.objects.get(id=newUser.id).delete()
                         resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
                 else:
