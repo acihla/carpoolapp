@@ -332,7 +332,6 @@ def manageRoute(request):
     user = None
     try:
         user = User.objects.get(apikey = apikey)
-        resp = user.to_dict()
         resp["errCode"] = SUCCESS
     except User.DoesNotExist:
             resp["errCode"] = ERR_BAD_APIKEY
