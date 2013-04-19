@@ -52,6 +52,7 @@ ERR_REQUEST_EXISTS =-17
 ERR_KEY_VAL_DOES_NOT_EXISTS =-18
 ERR_BAD_DRIVER_INFO = -19
 ERR_BAD_CREDENTIALS = -20
+ERR_UNKOWN_IN_SIGNUP = -21
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
@@ -91,7 +92,7 @@ def signup(request):
                     car_make = rdata.get("car_make", "")
                     car_type = rdata.get("car_type", "")
                     car_mileage = rdata.get("car_mileage", "")
-                    max_passengers = rdata.get("max_passengers", "")
+                    max_passengers = rdata.get("max_passengers", 0)
                     license_date_obj = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
 
                     newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
@@ -104,6 +105,7 @@ def signup(request):
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
         print str(err)
+        resp["errCode"] = ERR_UNKOWN_IN_SIGNUP
 
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
