@@ -126,7 +126,7 @@ class ride_request(models.Model):
       rider_apikey = models.CharField(max_length=40)
       route_id = models.IntegerField()
       status = models.CharField(max_length=64)
-      driver_apikey = models.CharField(max_length=40)
+      driver_apikey = models.CharField(max_length=40,default="")
 
 
 #from http://djangosnippets.org/snippets/199/
