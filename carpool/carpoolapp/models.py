@@ -130,11 +130,13 @@ class ride_request(models.Model):
 
     def to_dict(self):
         rtn = {}
+        rtn["id"] = self.id
         rtn["route_id"] = self.route_id
         rtn["status"] = self.status
 
     def to_dict_unsecure(self):
         rtn = {}
+        rtn["id"] = self.id
         rtn["rider_apikey"] = self.rider_apikey
         rtn["route_id"] = self.route_id
         rtn["status"] = self.status
