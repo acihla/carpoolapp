@@ -123,10 +123,22 @@ class Route(models.Model):
         return rtn
 
 class ride_request(models.Model):
-      rider_apikey = models.CharField(max_length=40)
-      route_id = models.IntegerField()
-      status = models.CharField(max_length=64)
-      driver_apikey = models.CharField(max_length=40,default="")
+        rider_apikey = models.CharField(max_length=40)
+        route_id = models.IntegerField()
+        status = models.CharField(max_length=64)
+        driver_apikey = models.CharField(max_length=40,default="")
+
+    def to_dict(self):
+        rtn = {}
+        rtn["route_id"] = self.route_id
+        rtn["status"] = self.status
+
+    def to_dict_unsecure(self):
+        rtn = {}
+        rtn["rider_apikey"] = self.rider_apikey
+        rtn["route_id"] = self.route_id
+        rtn["status"] = self.status
+        rtn["driver_apikey"] = self.driver_apikey
 
 
 #from http://djangosnippets.org/snippets/199/
