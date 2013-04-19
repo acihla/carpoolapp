@@ -10,7 +10,7 @@ import json
 import testLib
 import testUtils
 import os
-from datetime import *
+from datetime import date, datetime, time, timedelta
 from django.test.client import Client
 
 
@@ -319,7 +319,7 @@ class AddRouteTest(testLib.RestTestCase):
         testDriver = testUtils.genDriver()
         driverApi = testDriver.driver.apikey
         print("testAddgood1pre")
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : str(driverApi), 'depart-long' : '-122.080078', 'depart-lat' : '37.579413', 'dest-long' : '-122.000078', 'dest-lat' : '37.509413','edt': str(datetime.now())} )
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : '27d006284191d231b96390bc9d18d9bcf6947641',"edt":"0:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-09-2013","dest-long":"-122.27281998842956"} )
         print("testAddGood1")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
     """
@@ -517,7 +517,7 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
         #if respData.get(count, None) is not None:
         #   expected['count']  = count
         self.assertDictEqual(expected, respData)
-
+  """
   def test_Accept_Good_Ride(self):
     respData = self.makeRequest("/driver/accept?from=3&to=1&route_id=50&response=1", method="GET")
     print("test_Accept_Good_Ride")
@@ -527,3 +527,4 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
     respData = self.makeRequest("/driver/accept?from=-1&to=-10&route_id=0&response=0", method="GET")
     print("test_Accept_BAD_Ride")
     self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_SERVER_RESPONSE)
+  """
