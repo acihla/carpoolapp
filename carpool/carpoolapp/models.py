@@ -104,7 +104,7 @@ class Route(models.Model):
     arrive_lat = models.CharField(max_length=15, null=True)
     arrive_lg = models.CharField(max_length=15, null=True)
     maps_info = models.CharField(max_length=1000, default="")
-    status = models.CharField(max_length=64, default"valid") #valid, invalid
+    status = models.CharField(max_length=64, default="valid") #valid, invalid
     available_seats = models.IntegerField()
 
 
