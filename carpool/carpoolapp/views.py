@@ -97,6 +97,7 @@ def signup(request):
 
                     newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
                     newDriverInfo.save()
+                    newUser.save()
                 else:
                     return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
             newUser.save()
