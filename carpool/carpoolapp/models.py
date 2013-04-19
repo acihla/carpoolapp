@@ -12,10 +12,10 @@ class User(models.Model):
     password = models.CharField(max_length=20)
     cellphone = models.CharField(max_length=20)
     #driverOrRider = models.CharField(max_length=64, default = "rider")
-    driver = models.BooleanField(default=False)
+    driver = models.IntegerField(default=0)
     comments = models.CharField(default="", max_length=200)
     avg_rating = models.FloatField(default = 0)
-    apikey = models.CharField(max_length=40)
+    apikey = models.CharField(max_length=40,default="")
 
     def __unicode__(self):
         return self.email
