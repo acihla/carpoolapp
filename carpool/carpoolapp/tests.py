@@ -439,7 +439,7 @@ class SearchTest(testLib.RestTestCase):
             self.assertTrue(rides != None);
             for ride in rides:
                 status = ride.get("status", None)
-                self.assertEquals(status, "False")
+                self.assertEquals(status, "valid")
 
     def testSearch4(self):
         print "testSearch4"
@@ -464,7 +464,31 @@ class SearchTest(testLib.RestTestCase):
                 self.assertTrue(driver_info != None)
                 driver = driver_info.get("driver", None)
                 self.assertTrue(driver != None)
-class RiderStatusTest(testLib.RestTestCase):
+
+class ManageRouteTest(testLib.RestTestCase):
+    def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
+        #Check that the response data dictionary matches the expected values
+        expected = { 'errCode' : errCode }
+        #if respData.get(count, None) is not None:
+        #   expected['count']  = count
+        self.assertDictEqual(expected, respData)
+
+    def testManageRoute1(self):
+        print "testManageRoute1"
+        respData = self.makeRequest("/driver/manageRoute", method="GET", data = { 'apikey' : '27d006284191d231b96390bc9d18d9bcf6947641'} )
+        self.assertTrue(respData.get("errCode",-1) == testLib.RestTestCase.SUCCESS)
+
+    def testManageRoute2(self):
+        print "testManageRoute2"
+        respData = self.makeRequest("/driver/manageRoute", method="GET", data = { 'apikey' : '27d00231b96390bc9d18d9bcf6947641'} )
+        self.assertTrue(respData.get("errCode",-1) == testLib.RestTestCase.ERR_BAD_APIKEY)
+
+    def testManageRoute3(self):
+        print "testManageRoute3"
+        respData = self.makeRequest("/driver/manageRoute", method="GET", data = { 'apikey' : '28b1f28813b70771cc26838e40fe9199167b4c76'} )
+        self.assertTrue(respData.get("errCode",-1) == testLib.RestTestCase.ERR_BAD_DRIVER_INFO)
+
+"""class RiderStatusTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
         expected = { 'errCode' : errCode }
@@ -607,7 +631,7 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
         #if respData.get(count, None) is not None:
         #   expected['count']  = count
         self.assertDictEqual(expected, respData)
-  """
+  
   def test_Accept_Good_Ride(self):
     respData = self.makeRequest("/driver/accept?from=3&to=1&route_id=50&response=1", method="GET")
     print("test_Accept_Good_Ride")
