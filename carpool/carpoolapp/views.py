@@ -47,9 +47,11 @@ ERR_BAD_DOB = -12
 ERR_BAD_JSON = -13
 ERR_USER_EXISTS =-14
 ERR_EXPIRED_LICENSE =-15
+ERR_BAD_APIKEY = -16
 ERR_REQUEST_EXISTS =-17
 ERR_KEY_VAL_DOES_NOT_EXISTS =-18
-ERR_BAD_APIKEY = -16
+ERR_BAD_DRIVER_INFO = -19
+ERR_BAD_CREDENTIALS = -20
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
@@ -74,12 +76,12 @@ def signup(request):
 
             date_obj = datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
 
-            newUser = User(firstname = firstname, lastname = lastname, email = email, dob = date_obj, sex = sex, password = password, cellphone = cellphone, driver = driver)
+            newUser = User(firstname = firstname, lastname = lastname, email = email, dob = date_obj, sex = sex, password = password, cellphone = cellphone, user_type = driver)
             apikey = newUser.generate_apikey()
             newUser.apikey = apikey
             newUser.save()
             resp["apikey"] = apikey
-            if (driver==1):
+            if driver == 1:
               print "im a driver"
 
               resp1 = driver_check(rdata)
@@ -112,7 +114,7 @@ def  sanitizeSignupData(rdata):
     sex = rdata.get("sex", "")
     password = rdata.get("password", "")
     cellphone = rdata.get("cellphone", "")
-    driver = rdata.get("driver", False)
+    driver = rdata.get("driver", 0)
     resp = {"errCode":SUCCESS}
     try:
       u = User.objects.get(email =email)
@@ -147,7 +149,7 @@ def  sanitizeSignupData(rdata):
       if phonePattern == None:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
       #validate if driver boolean type
-      if (type(driver) is not bool) and (driver not in [0,1]):
+      if (type(driver) is not int) and (driver not in [0,1]):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
     return resp
 
@@ -308,7 +310,7 @@ def search(request):
             entry = route.to_dict()
             departDist = distance(float(departlat), float(departlong), float(entry.get("depart_lat","0")), float(entry.get("depart_lg","0")))
             #destDist = distance(float(destlat), float(destlon), float(entry.get("arrive_lat","0")), float(entry.get("arrive_lg","0")))
-            if entry.get("status", "True") == "False":
+            if entry.get("status", "invalid") == "valid" and entry.available_seats > 0:
                 if departDist < distThresh: #and destDist < distThresh:
                     rides.append(entry)
 
@@ -324,6 +326,64 @@ def search(request):
 
 @csrf_exempt
 def getProfile(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp = user.to_dict()
+        resp["errCode"] = SUCCESS
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    try:
+        if user.user_type == 1:
+            driver_info = DriverInfo.objects.get(driver=user.id)
+            resp["driver_info"] = driver_info.to_dict()
+    except DriverInfo.DoesNotExist:
+        resp["errCode"] = ERR_BAD_DRIVER_INFO
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
+def changePassword(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    password = rdata.get("password", "")
+    email = rdata.get("email", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        if user.password == password and user.email == email:
+            #Change password here
+
+            resp["errCode"] = SUCCESS
+        else:
+            resp["errCode"] = ERR_BAD_CREDENTIALS
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
+def changeUserInfo(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp = user.to_dict()
+        resp["errCode"] = SUCCESS
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
+def changeDriverInfo(request):
     resp = {}
     rdata = json.loads(request.body)
     apikey = rdata.get("apikey", "")
@@ -362,7 +422,8 @@ def addroute(request):
     	resp = {"errCode" : validDatums}
 
     else:
-        newRoute = Route(driver_info = User.objects.get(apikey=apikey), rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False) #maps_info = directions, 
+        driver_info = User.objects.get(apikey=apikey)
+        newRoute = Route(driver_info = driver_info, rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False, available_seats = driver_info.max_passengers) #maps_info = directions, 
         newRoute.save()
 
         resp = {"errCode" : SUCCESS}
@@ -649,7 +710,7 @@ def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destin
     return SUCCESS
 @csrf_exempt
 def TESTAPI_resetFixture(request):
-    #need to clear db here !!! Not necessary if running python manage.py test carpoolapp
+    
     resp = {"errCode" : SUCCESS}
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 

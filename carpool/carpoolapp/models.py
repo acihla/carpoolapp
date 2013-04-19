@@ -11,8 +11,7 @@ class User(models.Model):
     sex = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
     cellphone = models.CharField(max_length=20)
-    #driverOrRider = models.CharField(max_length=64, default = "rider")
-    driver = models.IntegerField(default=0)
+    user_type = models.IntegerField(default = 0)
     comments = models.CharField(default="", max_length=200)
     avg_rating = models.FloatField(default = 0)
     apikey = models.CharField(max_length=40,default="")
@@ -30,7 +29,7 @@ class User(models.Model):
         rtn["dob"] = self.dob
         rtn["sex"] = self.sex
         rtn["cellphone"] = self.cellphone
-        rtn["driver"] = self.driver
+        rtn["driver"] = self.user_type
         rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
         return rtn
@@ -46,7 +45,7 @@ class User(models.Model):
         rtn["sex"] = self.sex
         rtn["password"] = self.password
         rtn["cellphone"] = self.cellphone
-        rtn["driver"] = self.driver
+        rtn["driver"] = self.user_type
         rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
         rtn["apikey"] = self.apikey
@@ -99,7 +98,6 @@ class Rating(models.Model):
 
 class Route(models.Model):
     driver_info = models.ForeignKey(DriverInfo)
-    rider = models.ForeignKey(User, null=True)
     depart_time = models.DateTimeField()
     #arrival_time = models.DateTimeField()
     depart_lat = models.CharField(max_length=15, null=True)
@@ -108,14 +106,13 @@ class Route(models.Model):
     arrive_lg = models.CharField(max_length=15, null=True)
     maps_info = models.CharField(max_length=1000, default="")
     status = models.CharField(max_length=64, default=False)
+    available_seats = models.IntegerField()
 
 
     def to_dict(self):
         rtn = {}
         rtn["id"] = self.id
         rtn["driver_info"] = self.driver_info.to_dict()
-        if self.rider != None:
-            rtn["rider"] = self.rider.to_dict()
         rtn["depart_time"] = self.depart_time
         rtn["depart_lat"] = self.depart_lat
         rtn["depart_lg"] = self.depart_lg
@@ -123,21 +120,14 @@ class Route(models.Model):
         rtn["arrive_lg"] = self.arrive_lg
         rtn["maps_info"] = self.maps_info
         rtn["status"] = self.status
+        rtn["available_seats"] = self.available_seats
         return rtn
+
 class ride_request(models.Model):
-      rider = models.ForeignKey(User, null=True)
+      rider_apikey = models.CharField(max_length=40)
       route_id = models.IntegerField()
       status = models.CharField(max_length=64)
-      comment = models.CharField(max_length=400)
-
-
-class SampleKey(models.Model):
-    name = models.CharField(max_length=200)
-    
-class Sample(models.Model):
-    driver = models.ForeignKey(SampleKey)
-    rider = models.CharField(max_length=200)
-
+      driver_apikey = models.CharField(max_length=40)
 
 #from http://djangosnippets.org/snippets/199/
 def instance_dict(instance, key_format=None):

@@ -16,5 +16,7 @@ urlpatterns = patterns('carpoolapp.views',
     url(r'^unitTests', 'TESTAPI_unitTests'),
     url(r'^deleterides', 'deleteRides'),
     url(r'^generateexamples', 'generateExamples'),
+    url(r'^manages_rides','driver_routes'),
+    url(r'manages_request','driver_incoming_request'),
 
     )
