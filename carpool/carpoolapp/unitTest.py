@@ -49,11 +49,11 @@ class UnitTest(unittest.TestCase):
 
     def testUnitHandleRouteDataCleaner6(self):
         #Tests that adding a route fails with bad destination location coordinates
-        self.assertEquals(testLib.RestTestCase.ERR_BAD_DESTINATION, views.handleRouteData(1, "-122.080078", "37.279413","-122.088878", "37.523322223479413"))
+        self.assertEquals(testLib.RestTestCase.ERR_BAD_DESTINATION, views.handleRouteData(1, "-122.080078", "37.279413","-122.088878", "97.523322223479413"))
 
     def testUnitHandleRouteDataCleaner7(self):
         #Tests that adding a route fails with bad destination location coordinates
-        self.assertEquals(testLib.RestTestCase.ERR_BAD_DESTINATION, views.handleRouteData(1, "-122.080078", "37.279413","-12.08823434223878", "37.579413"))
+        self.assertEquals(testLib.RestTestCase.ERR_BAD_DESTINATION, views.handleRouteData(1, "-122.080078", "37.279413","-182.08823434223878", "37.579413"))
 
     #checking that departure coordinates received from front end are legit and will be mappable if neccessary
     def testUnitHandleRouteDataCleaner8(self):
@@ -74,11 +74,11 @@ class UnitTest(unittest.TestCase):
 
     def testUnitHandleRouteDataCleaner12(self):
         #Tests that adding a route fails with bad departure location coordinates
-        self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "-122.082333234320078", "37.279413","-122.088878", "37.579413"))
+        self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "-192.082333234320078", "37.279413","-122.088878", "37.579413"))
 
     def testUnitHandleRouteDataCleaner13(self):
         #Tests that adding a route fails with bad departure location coordinates
-        self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "-122.0823378", "37.272349234234413","-122.088878", "37.579413"))
+        self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "-122.0823378", "91.272349234234413","-122.088878", "37.579413"))
 
     #checking with different BAD userid numbers... they should always fail ASSUMING THAT WE DONT CREATE MORE THAN 999999999 users
     def testUnitHandleRouteDataCleaner14(self):
@@ -109,7 +109,7 @@ class UnitTest(unittest.TestCase):
         if len(users) > 0:
             user = users[0]
             dic = user.to_dict()
-            fields = ["firstname", "lastname", "email", "dob", "sex", "cellphone", "driver", "comments", "avg_rating"]
+            fields = ["firstname", "lastname", "email", "dob", "sex", "cellphone", "user_type", "comments", "avg_rating"]
             for field in fields:
                 self.assertEquals(dic.get(field,None), eval("user."+field))
 
@@ -119,7 +119,7 @@ class UnitTest(unittest.TestCase):
         if len(users) > 0:
             user = users[0]
             dic = user.to_dict_unsecure()
-            fields = ["firstname", "lastname",  "email", "dob", "sex", "password", "cellphone", "driver", "comments", "avg_rating"]
+            fields = ["firstname", "lastname",  "email", "dob", "sex", "password", "cellphone", "user_type", "comments", "avg_rating"]
             for field in fields:
                 self.assertEquals(dic.get(field,None), eval("user."+field))
 

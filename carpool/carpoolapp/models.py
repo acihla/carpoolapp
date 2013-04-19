@@ -27,7 +27,7 @@ class User(models.Model):
         rtn["dob"] = self.dob
         rtn["sex"] = self.sex
         rtn["cellphone"] = self.cellphone
-        rtn["driver"] = self.user_type
+        rtn["user_type"] = self.user_type
         rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
         return rtn
@@ -43,7 +43,7 @@ class User(models.Model):
         rtn["sex"] = self.sex
         rtn["password"] = self.password
         rtn["cellphone"] = self.cellphone
-        rtn["driver"] = self.user_type
+        rtn["user_type"] = self.user_type
         rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
         rtn["apikey"] = self.apikey
