@@ -105,7 +105,7 @@ def signup(request):
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
         print str(err)
-        resp["errCode"] = ERR_UNKOWN_IN_SIGNUP
+        resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
 
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
