@@ -8,6 +8,7 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase
 import json
 import testLib
+import testUtils
 import os
 from datetime import *
 from django.test.client import Client
@@ -44,6 +45,7 @@ class TestUnit(testLib.RestTestCase):
 
     """Issue a REST API request to run the unit tests, and analyze the result"""
     def testUnit(self):
+        #testLib.setUp()
         respData = self.makeRequest("/TESTAPI/unitTests", method="POST")
         self.assertTrue('output' in respData)
         print ("Unit tests output:\n"+
