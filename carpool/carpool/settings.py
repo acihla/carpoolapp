@@ -126,9 +126,19 @@ INSTALLED_APPS = (
     'south',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    'django_nose',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+# Use nose to run all tests
+#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on the 'foo' and 'bar' apps
+#NOSE_ARGS = [
+ #   '--with-coverage',
+  #  '--cover-package=foo,bar',
+#]
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
