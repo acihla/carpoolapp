@@ -410,30 +410,40 @@ def addroute(request):
     user = None
     try:
         user = User.objects.get(apikey = apikey)
+        departLocLong = rdata.get("depart-long", "")
+        departLocLat = rdata.get("depart-lat", "")
+        destinationLocLong = rdata.get("dest-long", "")
+        destinationLocLat = rdata.get("dest-lat", "")
+        departTime = rdata.get("edt", "")
+        validDatums = handleRouteData(user.id, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
+        if (validDatums != 1):
+            resp = {"errCode" : validDatums}
+
+        else:
+            try:
+                driver_info = DriverInfo.objects.get(driver= User.objects.get(apikey=apikey))
+                newRoute = Route(driver_info = driver_info, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = "valid", available_seats = driver_info.max_passengers) #maps_info = directions, 
+                newRoute.save()
+                resp = {"errCode" : SUCCESS}
+
+            except DriverInfo.DoesNotExist:
+                resp["errCode"] = ERR_BAD_APIKEY
+                return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except User.DoesNotExist:
-            resp["errCode"] = ERR_BAD_APIKEY
-            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+        resp["errCode"] = ERR_BAD_APIKEY
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    except:
+        resp["errCode"] = ERR_BAD_APIKEY
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
 
     #start = rdata.get("start", "")
     #end = rdata.get("end", "")
 
-    departLocLong = rdata.get("depart-long", "")
-    departLocLat = rdata.get("depart-lat", "")
-
-    destinationLocLong = rdata.get("dest-long", "")
-    destinationLocLat = rdata.get("dest-lat", "")
-    departTime = rdata.get("edt", "")
-    validDatums = handleRouteData(user.id, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
-    if (validDatums != 1):
-    	resp = {"errCode" : validDatums}
-
-    else:
-        driver_info = User.objects.get(apikey=apikey)
-        newRoute = Route(driver_info = driver_info, rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False, available_seats = driver_info.max_passengers) #maps_info = directions, 
-        newRoute.save()
-
-        resp = {"errCode" : SUCCESS}
-        """
+    
+        
+        
+    """
         try:
 
             
