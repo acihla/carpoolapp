@@ -21,4 +21,5 @@ urlpatterns = patterns('carpoolapp.views',
     url(r'^changeUserInfo', 'changeUserInfo'),
     url(r'^changeDriverInfo', 'changeDriverInfo'),
     url(r'^manageRoute', 'manageRoute'),
+    url(r'^manageRideRequest', 'manageRideRequest'),
 )

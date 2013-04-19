@@ -25,19 +25,22 @@ class RestTestCase(unittest.TestCase):
     ERR_BAD_HEADER= -6
     ERR_BAD_SERVER_RESPONSE = -7
     MAX_LENGTH_IN = 200  #max length for all datums in our db
-    MAX_LENGTH_FIRST_LAST_PASS = 20 #max length for first and last name and password
+    MAX_LENGTH_FIRST_LAST_PASS = 15 #max length for first and last name and password
     MAX_LENGTH_EMAIL = 50  #max length email
-    COORD_LENGTH_IN = 15 # max length of coordinates
+    COORD_LENGTH_IN = 20 # max length of coordinates
     ERR_BAD_KEY = -8
     ERR_NOT_USER = -9
     ERR_BAD_EMAIL = -10
     ERR_BAD_INPUT_OR_LENGTH = -11
     ERR_BAD_DOB = -12
     ERR_BAD_JSON = -13
-    ERR_USER_EXISTS=-14
-    ERR_EXPIRED_LICENSE=-15
-    ERR_REQUEST_EXISTS=-16
-    ERR_KEY_VAL_DOES_NOT_EXISTS=-17
+    ERR_USER_EXISTS =-14
+    ERR_EXPIRED_LICENSE =-15
+    ERR_BAD_APIKEY = -16
+    ERR_REQUEST_EXISTS =-17
+    ERR_KEY_VAL_DOES_NOT_EXISTS =-18
+    ERR_BAD_DRIVER_INFO = -19
+    ERR_BAD_CREDENTIALS = -20
     # Lookup the name of the server to test
 
     serverToTest = "127.0.0.1:8000"

@@ -36,9 +36,9 @@ ERR_DATABASE_SEARCH_ERROR   = -5
 ERR_BAD_HEADER= -6
 ERR_BAD_SERVER_RESPONSE = -7
 MAX_LENGTH_IN = 200  #max length for all datums in our db
-MAX_LENGTH_FIRST_LAST_PASS = 20 #max length for first and last name and password
+MAX_LENGTH_FIRST_LAST_PASS = 15 #max length for first and last name and password
 MAX_LENGTH_EMAIL = 50  #max length email
-COORD_LENGTH_IN = 15 # max length of coordinates
+COORD_LENGTH_IN = 20 # max length of coordinates
 ERR_BAD_KEY = -8
 ERR_NOT_USER = -9
 ERR_BAD_EMAIL = -10
@@ -79,26 +79,27 @@ def signup(request):
             newUser = User(firstname = firstname, lastname = lastname, email = email, dob = date_obj, sex = sex, password = password, cellphone = cellphone, user_type = driver)
             apikey = newUser.generate_apikey()
             newUser.apikey = apikey
-            newUser.save()
             resp["apikey"] = apikey
+
             if driver == 1:
-              print "im a driver"
+                print "im a driver"
+                resp1 = driver_check(rdata)
+                if resp1["errCode"]== SUCCESS:
+                    resp1["apikey"] = apikey
+                    license_no = rdata.get("license_no", "")
+                    license_exp = rdata.get("license_exp", "")
+                    car_make = rdata.get("car_make", "")
+                    car_type = rdata.get("car_type", "")
+                    car_mileage = rdata.get("car_mileage", "")
+                    max_passengers = rdata.get("max_passengers", "")
+                    license_date_obj = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
 
-              resp1 = driver_check(rdata)
-              resp1["apikey"] = apikey
-              if resp1["errCode"]== SUCCESS:
-                license_no = rdata.get("license_no", "")
-                license_exp = rdata.get("license_exp", "")
-                car_make = rdata.get("car_make", "")
-                car_type = rdata.get("car_type", "")
-                car_mileage = rdata.get("car_mileage", "")
-                max_passengers = rdata.get("max_passengers", "")
-                license_date_obj = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
-
-                newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
-                newDriverInfo.save()
-              else:
-                return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
+                    newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
+                    newDriverInfo.save()
+                    newUser.save()
+                else:
+                    return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
+            newUser.save()
         else:
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
@@ -289,9 +290,10 @@ def search(request):
     except Exception, err:
         resp = {"errCode":ERR_BAD_JSON}
         print str(err)
+
     #TODO Parse json here.
-    departloc = json.loads(rdata.get("depart-loc", "{}"))
-    destloc = json.loads(rdata.get("dest-loc", "{}"))
+    departloc = rdata.get("depart-loc", {})
+    destloc = rdata.get("dest-loc", {})
     print rdata
     print departloc 
     print destloc
@@ -322,6 +324,36 @@ def search(request):
             resp["errCode"] = ERR_DATABASE_SEARCH_ERROR
             resp["errMsg"] = str(err)
             print str(err)
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+
+@csrf_exempt
+def manageRideRequest(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp["errCode"] = SUCCESS
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    try:
+        if user.user_type == 1:
+            driver_info = DriverInfo.objects.get(driver=user.id)
+            routes = Route.objects.filter(driver_info = driver_info)
+            requests_dict = []
+            for route in routes:
+                requests = ride_request.objects.filter(driver_apikey = apikey)
+                for request in requests:
+                    requests_dict.append(request.to_dict())
+
+            resp["requests"] = requests_dict
+            resp['size'] = len(requests_dict)
+    except DriverInfo.DoesNotExist:
+        resp["errCode"] = ERR_BAD_DRIVER_INFO
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 
@@ -406,34 +438,64 @@ def changeDriverInfo(request):
 @csrf_exempt
 def addroute(request):
     rdata = json.loads(request.body)
+    print(rdata)
     apikey = rdata.get("apikey", "")
     user = None
+    resp = {"errCode" : SUCCESS}
     try:
         user = User.objects.get(apikey = apikey)
+        departLocLong = rdata.get("depart-long", "")
+        departLocLong = departLocLong[:14]
+        departLocLat = rdata.get("depart-lat", "")
+        departLocLat = departLocLat[:14]
+        destinationLocLong = rdata.get("dest-long", "")
+        destinationLocLong = destinationLocLong[:14]
+        destinationLocLat = rdata.get("dest-lat", "")
+        destinationLocLat = destinationLocLat[:14]
+        try:
+            departTime = rdata.get("edt", "")
+            departDate = rdata.get("date","")
+            departTime = departTime.strip()
+            departDate = departDate.strip()
+            departDate = datetime.strptime("".join(departDate.split("-")),'%m%d%Y')
+            hhmm = departTime.split(':')
+            date_obj = departDate + timedelta(hours= int(hhmm[0]), minutes= int(hhmm[1]))
+            #date_obj =  datetime.combine(departDate, departTime)
+        except Exception, err:
+            print str(err)
+            print departDate
+            print departTime 
+
+        validDatums = handleRouteData(user.id, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
+        if (validDatums != 1):
+            resp = {"errCode" : validDatums}
+
+        else:
+            try:
+                driver_info = DriverInfo.objects.get(driver= User.objects.get(apikey=apikey))
+                newRoute = Route(driver_info = driver_info, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = "valid", available_seats = driver_info.max_passengers) #maps_info = directions, 
+                newRoute.save()
+                resp = {"errCode" : SUCCESS}
+
+            except DriverInfo.DoesNotExist:
+                resp["errCode"] = ERR_BAD_APIKEY
+                return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except User.DoesNotExist:
-            resp["errCode"] = ERR_BAD_APIKEY
-            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+        resp["errCode"] = ERR_BAD_APIKEY
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    except Exception, err:
+        print "so i return bad response"
+        print str(err)
+        return HttpResponse(json.dumps({'errCode':ERR_BAD_SERVER_RESPONSE}),content_type="application/json")
+
 
     #start = rdata.get("start", "")
     #end = rdata.get("end", "")
 
-    departLocLong = rdata.get("depart-long", "")
-    departLocLat = rdata.get("depart-lat", "")
-
-    destinationLocLong = rdata.get("dest-long", "")
-    destinationLocLat = rdata.get("dest-lat", "")
-    departTime = rdata.get("edt", "")
-    validDatums = handleRouteData(user.id, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
-    if (validDatums != 1):
-    	resp = {"errCode" : validDatums}
-
-    else:
-        driver_info = User.objects.get(apikey=apikey)
-        newRoute = Route(driver_info = driver_info, rider = None, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = False, available_seats = driver_info.max_passengers) #maps_info = directions, 
-        newRoute.save()
-
-        resp = {"errCode" : SUCCESS}
-        """
+    
+        
+        
+    """
         try:
 
             
@@ -676,7 +738,7 @@ def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destin
         return ERR_BAD_DESTINATION #-2
 	
     try:
-        if not (DriverInfo.objects.get(id = uid)):
+        if not (User.objects.get(id = uid)):
 		return ERR_BAD_USERID #-3
     except Exception:
         return ERR_BAD_USERID #-3

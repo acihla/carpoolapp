@@ -31,3 +31,10 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"819209c12a07e94c12f976cca3e28bfde61e6f9f"}' http://127.0.0.1:8000/driver/manageRoute > response.html
 
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"dest-loc":{"long":"-122.19444684684277","lat":"37.77318393621778"},"depart-loc":{"long":"-122.30249125510453","lat":"37.89820994113109"},"time-depart":"1:28","date":"4-19-2013","apikey":"4e3e04b75b55ae5ea6fb8dce74ff39a9e1c6801f"}' http://127.0.0.1:8000/rider/search > response.html
+
+
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"edt":"1:27","dest-lat":"37.773569003840514","depart-long":"-122.29195822030306","depart-lat":"37.88635556945343","date":"4-19-2013","dest-long":"-122.18801591545342","apikey":"819209c12a07e94c12f976cca3e28bfde61e6f9f"}' http://127.0.0.1:8000/driver/addroute > response.html
+
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"819209c12a07e94c12f976cca3e28bfde61e6f9f"}' http://127.0.0.1:8000/driver/getProfile > response.html
+
