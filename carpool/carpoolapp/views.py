@@ -290,8 +290,8 @@ def search(request):
         resp = {"errCode":ERR_BAD_JSON}
         print str(err)
     #TODO Parse json here.
-    departloc = json.loads(rdata.get("depart-loc", "{}"))
-    destloc = json.loads(rdata.get("dest-loc", "{}"))
+    departloc = rdata.get("depart-loc", "{}")
+    destloc = rdata.get("dest-loc", "{}")
     print rdata
     print departloc 
     print destloc
@@ -344,6 +344,7 @@ def manageRoute(request):
             for route in routes:
                 routes_dict.append(route.to_dict())
             resp["routes"] = routes_dict
+            resp['size'] = len(routes_dict)
     except DriverInfo.DoesNotExist:
         resp["errCode"] = ERR_BAD_DRIVER_INFO
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
@@ -533,6 +534,7 @@ def addroute(request):
 
 @csrf_exempt
 def select_ride(request):
+    print "im in select ride"
     try:
         data = json.loads(request.raw_post_data)
         apikey = data.get("apikey", "")
@@ -666,9 +668,6 @@ def accept_ride(request):
     return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")  
 
 def rides_accepted(request):
-    return HttpResponse("Accepted")
-    '''
-    print "before the try in rides_accepted"
     try:
         print "in the begining of accepted"
         data = json.loads(request.raw_post_data)
@@ -695,11 +694,9 @@ def rides_accepted(request):
     except KeyError:
         print "so there is a key error"
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
-    '''
 @csrf_exempt
 def rides_denied(request):
-    print "in rides_denied"
-    '''
+    
     try:
         data = json.loads(request.raw_post_data)
         rider_id = data['rider_id']
@@ -724,7 +721,7 @@ def rides_denied(request):
 
     except KeyError:
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
-    '''
+    
 @csrf_exempt
 def rides_pending(request):
     #import pdb;pdb.set_trace()
@@ -831,9 +828,9 @@ def can_ride(rider,route_id,status='',comment=''):
 def cancel_ride(request):
     try:
         data = json.loads(request.raw_post_data)
-        rider_id = data['rider_id']
+        apikey= data['apikey']
         route_id = data['route_id']
-        rider = User.objects.get(id=rider_id)
+        rider = User.objects.get(apikey=apikey)
         try:
             print "right before i check"
             rq = ride_request.objects.get(rider=rider,route_id=route_id)
