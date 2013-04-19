@@ -289,9 +289,10 @@ def search(request):
     except Exception, err:
         resp = {"errCode":ERR_BAD_JSON}
         print str(err)
+
     #TODO Parse json here.
-    departloc = rdata.get("depart-loc", "{}")
-    destloc = rdata.get("dest-loc", "{}")
+    departloc = rdata.get("depart-loc", {})
+    destloc = rdata.get("dest-loc", {})
     print rdata
     print departloc 
     print destloc
