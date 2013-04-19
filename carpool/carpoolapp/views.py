@@ -79,26 +79,26 @@ def signup(request):
             newUser = User(firstname = firstname, lastname = lastname, email = email, dob = date_obj, sex = sex, password = password, cellphone = cellphone, user_type = driver)
             apikey = newUser.generate_apikey()
             newUser.apikey = apikey
-            newUser.save()
             resp["apikey"] = apikey
+
             if driver == 1:
-              print "im a driver"
+                print "im a driver"
+                resp1 = driver_check(rdata)
+                if resp1["errCode"]== SUCCESS:
+                    resp1["apikey"] = apikey
+                    license_no = rdata.get("license_no", "")
+                    license_exp = rdata.get("license_exp", "")
+                    car_make = rdata.get("car_make", "")
+                    car_type = rdata.get("car_type", "")
+                    car_mileage = rdata.get("car_mileage", "")
+                    max_passengers = rdata.get("max_passengers", "")
+                    license_date_obj = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
 
-              resp1 = driver_check(rdata)
-              resp1["apikey"] = apikey
-              if resp1["errCode"]== SUCCESS:
-                license_no = rdata.get("license_no", "")
-                license_exp = rdata.get("license_exp", "")
-                car_make = rdata.get("car_make", "")
-                car_type = rdata.get("car_type", "")
-                car_mileage = rdata.get("car_mileage", "")
-                max_passengers = rdata.get("max_passengers", "")
-                license_date_obj = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
-
-                newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
-                newDriverInfo.save()
-              else:
-                return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
+                    newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
+                    newDriverInfo.save()
+                else:
+                    return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
+            newUser.save()
         else:
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
@@ -289,9 +289,10 @@ def search(request):
     except Exception, err:
         resp = {"errCode":ERR_BAD_JSON}
         print str(err)
+
     #TODO Parse json here.
-    departloc = rdata.get("depart-loc", "{}")
-    destloc = rdata.get("dest-loc", "{}")
+    departloc = rdata.get("depart-loc", {})
+    destloc = rdata.get("dest-loc", {})
     print rdata
     print departloc 
     print destloc
