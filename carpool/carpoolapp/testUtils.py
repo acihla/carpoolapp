@@ -4,7 +4,7 @@ from carpoolapp.models import *
 import string
 import random
 
-def genUser(driver = False):
+def genUser(driver = 0):
 	first = id_gen(1, string.ascii_uppercase) + id_gen(random.randint(1,10), string.ascii_lowercase)
 	last = id_gen(1, string.ascii_uppercase) + id_gen(random.randint(1,10), string.ascii_lowercase)
 	email = id_gen(random.randint(5,10), string.ascii_lowercase+string.digits) + "@carpoolapp.com"
@@ -20,13 +20,13 @@ def genUser(driver = False):
 	dOrR = random.choice(drr)
 	comments = id_gen(50, string.ascii_lowercase+" ")
 	avg_rating = 5.0 * random.random()
-	u = User(firstname = first,lastname = last, email = email, dob = dob, sex = sex, password = password, cellphone = cellphone, driver = driver, comments = comments, avg_rating = avg_rating)
+	u = User(firstname = first,lastname = last, email = email, dob = dob, sex = sex, password = password, cellphone = cellphone, user_type = driver, comments = comments, avg_rating = avg_rating)
 	u.apikey = u.generate_apikey()
 	u.save()
 	return u
 
 def genDriver():
-	user = genUser(True)
+	user = genUser(1)
 	year = 2013
 	month = 4
 	day = random.randint(1,3)
@@ -50,7 +50,8 @@ def genRide():
 	dlong = str(-122.2728 + random.uniform(-1, 1))[0:10]
 	alat = str(37.8717 + random.uniform(-1, 1))[0:10]
 	along = str(-122.2728 + random.uniform(-1, 1))[0:10]
-	route = Route(driver_info=driver, rider=None, depart_time=depart_t, depart_lat=dlat, depart_lg=dlong, arrive_lat=alat, arrive_lg=along, maps_info = "MAPPS INFO...", status = False)
+	available_seats = driver.max_passengers
+	route = Route(driver_info=driver, depart_time=depart_t, depart_lat=dlat, depart_lg=dlong, arrive_lat=alat, arrive_lg=along, maps_info = "MAPPS INFO...", status = "valid", available_seats = available_seats)
 	route.save()
 	return route
 
