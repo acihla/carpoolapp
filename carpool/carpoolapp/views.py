@@ -438,6 +438,12 @@ def changeDriverInfo(request):
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
+def getTestDriver(request):
+    resp = {}
+    resp["apikey"] = User.objects.get(email = "alex.gatech@berkeley.edu").apikey
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
 def addroute(request):
     rdata = json.loads(request.body)
     print(rdata)

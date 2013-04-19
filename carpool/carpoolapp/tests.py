@@ -13,6 +13,7 @@ import os
 from datetime import date, datetime, time, timedelta
 from django.test.client import Client
 import views
+from carpoolapp.models import *
 
 
 #responses to be handled by application
@@ -279,28 +280,28 @@ class LoginTest(testLib.RestTestCase):
         expected = { 'errCode' : errCode }
         self.assertDictEqual(expected, respData)
     #check we have good input
-    def testLogin1(self):
+    def testZLogin1(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.cihla@yahoo.com','password':'password'})
         print("testLogin1")
         self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.SUCCESS)
     #check invalid iput with no  email
-    def testLogin2(self):
+    def testzLogin2(self):
         respData = self.makeRequest("/login",method="POST",data = {'email':'','password':'password'})
         print("testLogin2")
         self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.ERR_BAD_EMAIL)
     #check very long passwordi
-    def testLogin3(self):
+    def testzLogin3(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'passwordpasswordpasswordpasswordpasswordpassword'})
         print("testLogin3")
         self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH)
 
     #check we have a wrong match
-    def testLogin4(self):
+    def testzLogin4(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'douala@mbanga.yaounde','password':'password'})
         print("testLogin4")
         self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.ERR_NOT_USER)
     #check user exist
-    def testLogin5(self):
+    def testzLogin5(self):
         respData = self.makeRequest("/login",method="POST",data = {'email' :'alex.chila@berkeley.edu','password':'doualacameroun'})
         print("testLogin5")
         self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.ERR_NOT_USER) 
@@ -317,9 +318,9 @@ class AddRouteTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
 
     #generic first add route test with legitimate coordinates
-    def testAddGood1(self):
-        testApi = User.objects.get(email = alex.gatech@berkeley.edu).apikey
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"0:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-09-2013","dest-long":"-122.27281998842956"} )
+    def testzAddGood1(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {}) #User.objects.get(email = "alex.gatech@berkeley.edu").apikey
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"0:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-09-2013","dest-long":"-122.27281998842956"} )
         print("testAddGood1")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
     """
@@ -332,80 +333,92 @@ class AddRouteTest(testLib.RestTestCase):
         self.assertResponse(response, testLib.RestTestCase.SUCCESS)
 
     """
-    def testAddGood2(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"23:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
+    def testzAddGood2(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"23:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
         print("testAddGood2")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
-    def testAddGood3(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-172.27281998842956"} )
+    def testzAddGood3(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-172.27281998842956"} )
         print("testAddGood3")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
-    def testAddGood4(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"87.83421105081068","depart-long":"-172.27687716484068","depart-lat":"85.856989109666834","date":"04-17-2013","dest-long":"-128.27281998842956"} )
+    def testzAddGood4(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"87.83421105081068","depart-long":"-172.27687716484068","depart-lat":"85.856989109666834","date":"04-17-2013","dest-long":"-128.27281998842956"} )
         print("testAddGood4")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
     #checks that coordinates on departure are good
-    def testAddBadDep5(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-192.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
+    def testzAddBadDep5(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-192.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
         print("testAddBadDep5")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DEPARTURE)
 
-    def testAddBadDep6(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"67.83421105081068","depart-long":"-162.080078","depart-lat":"97.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
+    def testzAddBadDep6(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"67.83421105081068","depart-long":"-162.080078","depart-lat":"97.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
         print("testAddBadDep6")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DEPARTURE)
 
-    def testAddBadDep7(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"192.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
+    def testzAddBadDep7(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"192.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
         print("testAddBadDep8")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DEPARTURE)
 
-    def testAddBadDep8(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-132.080078","depart-lat":"-91.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
+    def testzAddBadDep8(self):
+        testApi = (User.objects.get(email = 'alex.gatech@berkeley.edu')).apikey
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-132.080078","depart-lat":"-91.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
         print("testAddBadDep8")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DEPARTURE)
 
     #checks that coordinates on destination are good
-    def testAddBadDest9(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-142.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-182.27281998842956"} )
+    def testzAddBadDest9(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-142.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-182.27281998842956"} )
         print("testAddBadDest9")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DESTINATION)
 
-    def testAddBadDest10(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"97.83421105081068","depart-long":"-162.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
+    def testzAddBadDest10(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"97.83421105081068","depart-long":"-162.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
         print("testAddBadDest10")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DESTINATION)
 
-    def testAddBadDest11(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"97.83421105081068","depart-long":"-122.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"132.27281998842956"} )
+    def testzAddBadDest11(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"97.83421105081068","depart-long":"-122.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"132.27281998842956"} )
         print("testAddBadDest11")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DESTINATION)
 
-    def testAddBadDest12(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-133.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"192.27281998842956"} )
+    def testzAddBadDest12(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-133.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"192.27281998842956"} )
         print("testAddBadDest12")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_DESTINATION)
 
     #to check that adding route only works for established drivers
-    def testAddGoodUser13(self):
-        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-132.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
+    def testzAddGoodUser13(self):
+        testApi = self.makeRequest("/TESTAPI/getTestDriver", method ="POST", data= {})
+        respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : testApi["apikey"],"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-132.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
         print("testAddGoodUser13")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
 
-    def testAddBadUser14(self):
+    def testzAddBadUser14(self):
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : '27d006284191d231b9639018d9bcf6947641',"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-162.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
         print("testAddBadUser14")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_APIKEY)
 
-    def testAddBadUser15(self):
+    def testzAddBadUser15(self):
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : '27d006284191d231b9639d18d9bcf6947641',"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-12.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
         print("testAddBadUser15")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_APIKEY)
 
-    def testAddBadUser16(self):
+    def testzAddBadUser16(self):
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : '27d006284191d23190bc9d18d9bcf6947641',"edt":"2:36","dest-lat":"37.83421105081068","depart-long":"-122.080078","depart-lat":"37.856989109666834","date":"04-17-2013","dest-long":"-122.27281998842956"} )
         print("testAddBadUser16")
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_APIKEY)
@@ -420,18 +433,18 @@ class SearchTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
 
     
-    def testSearch1(self):
+    def testzSearch1(self):
         print "testSearch1"
         respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         self.assertEquals(respData.get("errCode",-1), testLib.RestTestCase.SUCCESS)
 
-    def testSearch2(self):
+    def testzSearch2(self):
         print "testSearch2"
         respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         t = (respData.get("size", -1) >= 0)
         self.assertEquals(t, True)
 
-    def testSearch3(self):
+    def testzSearch3(self):
         print "testSearch3"
         respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         t = (respData.get("size", -1) > 0)
@@ -442,7 +455,7 @@ class SearchTest(testLib.RestTestCase):
                 status = ride.get("status", None)
                 self.assertEquals(status, "valid")
 
-    def testSearch4(self):
+    def testzSearch4(self):
         print "testSearch4"
         respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         t = (respData.get("size", -1) > 0)
@@ -453,7 +466,7 @@ class SearchTest(testLib.RestTestCase):
                 driver_info = ride.get("driver_info", None)
                 self.assertTrue(driver_info != None)
 
-    def testSearch5(self):
+    def testzSearch5(self):
         print "testSearch5"
         respData = self.makeRequest("/rider/search", method="GET", data = { 'user' : 1, 'start' : 'Berkeley', 'end' : 'San Jose'} )
         t = (respData.get("size", -1) > 0)
@@ -474,17 +487,17 @@ class ManageRouteTest(testLib.RestTestCase):
         #   expected['count']  = count
         self.assertDictEqual(expected, respData)
 
-    def testManageRoute1(self):
+    def testzzManageRoute1(self):
         print "testManageRoute1"
         respData = self.makeRequest("/driver/manageRoute", method="GET", data = { 'apikey' : '06284191d231b96390bc9d18d9bcf6947641'} )
         self.assertTrue(respData.get("errCode",-1) == testLib.RestTestCase.SUCCESS)
 
-    def testManageRoute2(self):
+    def testzzManageRoute2(self):
         print "testManageRoute2"
         respData = self.makeRequest("/driver/manageRoute", method="GET", data = { 'apikey' : '27d00231b96390bc9d18d9bcf6947641'} )
         self.assertTrue(respData.get("errCode",-1) == testLib.RestTestCase.ERR_BAD_APIKEY)
 
-    def testManageRoute3(self):
+    def testzzManageRoute3(self):
         print "testManageRoute3"
         respData = self.makeRequest("/driver/manageRoute", method="GET", data = { 'apikey' : '28b1f28813b70771cc26838e40fe9199167b4c76'} )
         self.assertTrue(respData.get("errCode",-1) == testLib.RestTestCase.ERR_BAD_DRIVER_INFO)
