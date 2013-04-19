@@ -5,7 +5,6 @@ import random, sha
 class User(models.Model):
     firstname = models.CharField(max_length=20)
     lastname = models.CharField(max_length=20)
-    #username = models.CharField(max_length=200)
     email = models.CharField(max_length=50)
     dob = models.DateField()
     sex = models.CharField(max_length=20)
@@ -14,7 +13,7 @@ class User(models.Model):
     user_type = models.IntegerField(default = 0)
     comments = models.CharField(default="", max_length=200)
     avg_rating = models.FloatField(default = 0)
-    apikey = models.CharField(max_length=40)
+    apikey = models.CharField(max_length=40, default="")
 
     def __unicode__(self):
         return self.email
@@ -24,7 +23,6 @@ class User(models.Model):
         rtn["id"] = self.id
         rtn["firstname"] = self.firstname
         rtn["lastname"] = self.lastname
-        #rtn["username"] = self.username
         rtn["email"] = self.email
         rtn["dob"] = self.dob
         rtn["sex"] = self.sex
@@ -32,6 +30,7 @@ class User(models.Model):
         rtn["driver"] = self.user_type
         rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
+        rtn["apikey"] = self.apikey
         return rtn
 
     def to_dict_unsecure(self):
@@ -105,8 +104,9 @@ class Route(models.Model):
     arrive_lat = models.CharField(max_length=15, null=True)
     arrive_lg = models.CharField(max_length=15, null=True)
     maps_info = models.CharField(max_length=1000, default="")
-    status = models.CharField(max_length=64, default=False)
+    status = models.CharField(max_length=64, default"valid") #valid, invalid
     available_seats = models.IntegerField()
+
 
 
     def to_dict(self):
@@ -128,6 +128,7 @@ class ride_request(models.Model):
       route_id = models.IntegerField()
       status = models.CharField(max_length=64)
       driver_apikey = models.CharField(max_length=40)
+
 
 #from http://djangosnippets.org/snippets/199/
 def instance_dict(instance, key_format=None):
