@@ -146,7 +146,8 @@ def  sanitizeSignupData(rdata):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
       #validate phone us phone number
       phonePattern = re.match(r'^\d{3}-\d{3}-\d{4}$',cellphone)
-      if phonePattern == None:
+      phonePattern2 = re.match(r'^\d{10}$',cellphone)
+      if phonePattern == None and phonePattern2 == None:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
       #validate if driver boolean type
       if (type(driver) is not int) and (driver not in [0,1]):
@@ -310,7 +311,7 @@ def search(request):
             entry = route.to_dict()
             departDist = distance(float(departlat), float(departlong), float(entry.get("depart_lat","0")), float(entry.get("depart_lg","0")))
             #destDist = distance(float(destlat), float(destlon), float(entry.get("arrive_lat","0")), float(entry.get("arrive_lg","0")))
-            if entry.get("status", "invalid") == "valid" and entry.available_seats > 0:
+            if entry.get("status", "invalid") == "valid" and entry.get("available_seats", 0) > 0:
                 if departDist < distThresh: #and destDist < distThresh:
                     rides.append(entry)
 
@@ -351,15 +352,20 @@ def changePassword(request):
     resp = {}
     rdata = json.loads(request.body)
     apikey = rdata.get("apikey", "")
-    password = rdata.get("password", "")
+    currentpw = rdata.get("currentpw", "")
+    newpw = rdata.get("newpw", "")
     email = rdata.get("email", "")
     user = None
     try:
         user = User.objects.get(apikey = apikey)
-        if user.password == password and user.email == email:
-            #Change password here
-
-            resp["errCode"] = SUCCESS
+        if user.password == currentpw and user.email == email:
+            if(not newpw or len(newpw)> MAX_LENGTH_FIRST_LAST_PASS):
+                resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+            else:
+                #change pw here
+                user.password = newpw
+                user.save()
+                resp["errCode"] = SUCCESS
         else:
             resp["errCode"] = ERR_BAD_CREDENTIALS
     except User.DoesNotExist:
