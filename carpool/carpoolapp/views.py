@@ -301,9 +301,6 @@ def search(request):
     #TODO Parse json here.
     departloc = rdata.get("depart-loc", {})
     destloc = rdata.get("dest-loc", {})
-    print rdata
-    print departloc 
-    print destloc
     date = rdata.get("date", "")
     departtime = rdata.get("time-depart", "")
     distThresh = int(rdata.get("dist-thresh", "50"))
