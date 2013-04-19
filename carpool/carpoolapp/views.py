@@ -81,6 +81,7 @@ def signup(request):
             apikey = newUser.generate_apikey()
             newUser.apikey = apikey
             resp["apikey"] = apikey
+            newUser.save()
 
             if driver == 1:
                 print "im a driver"
@@ -94,13 +95,16 @@ def signup(request):
                     car_mileage = rdata.get("car_mileage", "")
                     max_passengers = rdata.get("max_passengers", 0)
                     license_date_obj = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
-
-                    newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
-                    newDriverInfo.save()
-                    newUser.save()
+                    try:
+                        newDriverInfo = DriverInfo(driver = newUser, license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
+                        newDriverInfo.save()
+                    except Exception, err:
+                        print str(err)
+                        User.objects.get(id=newUser.id).delete()
+                        resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
                 else:
                     return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
-            newUser.save()
+            
         else:
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
