@@ -100,7 +100,7 @@ def signup(request):
                         newDriverInfo.save()
                         print "the driver was saved!"
                     except Exception, err:
-                        print str(err) 
+                        print str(err) + "!!!!!!"
                         User.objects.get(id=newUser.id).delete()
                         resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
                 else:

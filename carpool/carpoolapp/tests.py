@@ -318,6 +318,7 @@ class AddRouteTest(testLib.RestTestCase):
 
     #generic first add route test with legitimate coordinates
     def testAddGood1(self):
+        testApi = User.objects.get(email = alex.gatech@berkeley.edu).apikey
         respData = self.makeRequest("/driver/addroute", method="POST", data = { 'apikey' : 'f2b8b1a60723c5763422d6d5ba25a0594ee2cecc',"edt":"0:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-09-2013","dest-long":"-122.27281998842956"} )
         print("testAddGood1")
         self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
