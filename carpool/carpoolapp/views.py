@@ -771,6 +771,7 @@ def rides_pending(request):
     
 #handles that coordinates are legit and uid exists in db
 def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat):
+    
     if (len(departLocLat) > COORD_LENGTH_IN) | (len(departLocLong) > COORD_LENGTH_IN) | (not (90.0 >= float(departLocLat) >= -90.0)) | (not (180.0 >= float(departLocLong) >= -180.0)) :
 		return ERR_BAD_DEPARTURE #-1
 	
@@ -784,6 +785,7 @@ def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destin
         return ERR_BAD_USERID #-3
     
     return SUCCESS
+    
 @csrf_exempt
 def TESTAPI_resetFixture(request):
     
@@ -795,7 +797,6 @@ def TESTAPI_unitTests(request):
     buffer = StringIO.StringIO()
     suite = unittest.TestLoader().loadTestsFromTestCase(UnitTest)
     result = unittest.TextTestRunner(stream = buffer, verbosity = 2).run(suite)
-
     rv = {"totalTests": result.testsRun, "nrFailed": len(result.failures), "output": buffer.getvalue()}
     return HttpResponse(json.dumps(rv), content_type = "application/json")
 
