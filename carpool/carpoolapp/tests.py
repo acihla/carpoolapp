@@ -6,6 +6,7 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from django.utils import unittest
 import json
 import testLib
 import testUtils
@@ -13,7 +14,7 @@ import os
 from datetime import date, datetime, time, timedelta
 from django.test.client import Client
 import views
-from carpoolapp.models import *
+import models
 
 
 #responses to be handled by application
@@ -43,11 +44,138 @@ ERR_KEY_VAL_DOES_NOT_EXISTS =-18
 ERR_BAD_DRIVER_INFO = -19
 ERR_BAD_CREDENTIALS = -20
 
+class UnitTest(unittest.TestCase):
+        """
+        Unittests for the Users model class (a sample, incomplete)
+        """
+        
 
-class TestUnit(testLib.RestTestCase):
+        def setUp(self):
+            os.environ['DJANGO_SETTINGS_MODULE'] = "mysite.settings"
+            testUtils.genDriver()
+            testUtils.genDriver()
+            testUtils.genUser()
+            testUtils.genUser()
+            self.users = models.User()
+            self.routes = models.Route()
+
+        #checking that destination coordinates received from front end are legit and will be mappable if neccessary
+        def testUnitHandleRouteDataCleaner1(self):
+            #Tests that adding a user works
+            self.assertEquals(testLib.RestTestCase.SUCCESS, views.handleRouteData(1, "-122.080078", "37.279413","-122.088878", "37.579413"))
+
+        def testUnitHandleRouteDataCleaner2(self):
+            #Tests that adding a route fails with bad destination location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DESTINATION , views.handleRouteData(1, "-122.080078", "37.279413","-122.088878", "98.579413"))
+
+        def testUnitHandleRouteDataCleaner3(self):
+            #Tests that adding a route fails with bad destination location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DESTINATION, views.handleRouteData(1, "-122.080078", "37.279413","182.088878", "37.579413"))
+
+        def testUnitHandleRouteDataCleaner4(self):
+            #Tests that adding a route fails with bad destination location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DESTINATION, views.handleRouteData(1, "-122.080078", "37.279413","-122.088878", "97.579413"))
+
+        def testUnitHandleRouteDataCleaner5(self):
+            #Tests that adding a route fails with bad destination location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DESTINATION, views.handleRouteData(1, "-122.080078", "37.279413","-192.088878", "37.579413"))
+
+        def testUnitHandleRouteDataCleaner6(self):
+            #Tests that adding a route fails with bad destination location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DESTINATION, views.handleRouteData(1, "-122.080078", "37.279413","-122.088878", "97.523322223479413"))
+
+        def testUnitHandleRouteDataCleaner7(self):
+            #Tests that adding a route fails with bad destination location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DESTINATION, views.handleRouteData(1, "-122.080078", "37.279413","-182.08823434223878", "37.579413"))
+
+        #checking that departure coordinates received from front end are legit and will be mappable if neccessary
+        def testUnitHandleRouteDataCleaner8(self):
+            #Tests that adding a route fails with bad departure location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "-190.080078", "37.279413","-122.088878", "37.579413"))
+
+        def testUnitHandleRouteDataCleaner9(self):
+            #Tests that adding a route fails with bad departure location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "-122.080078", "91.279413","-122.088878", "37.579413"))
+
+        def testUnitHandleRouteDataCleaner10(self):
+            #Tests that adding a route fails with bad departure location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "192.080078", "37.279413","-132.088878", "37.579413"))
+
+        def testUnitHandleRouteDataCleaner11(self):
+            #Tests that adding a route fails with bad departure location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "-122.080078", "-137.279413","-122.088878", "65.579413"))
+
+        def testUnitHandleRouteDataCleaner12(self):
+            #Tests that adding a route fails with bad departure location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "-192.082333234320078", "37.279413","-122.088878", "37.579413"))
+
+        def testUnitHandleRouteDataCleaner13(self):
+            #Tests that adding a route fails with bad departure location coordinates
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "-122.0823378", "91.272349234234413","-122.088878", "37.579413"))
+
+        #checking with different BAD userid numbers... they should always fail ASSUMING THAT WE DONT CREATE MORE THAN 999999999 users
+        def testUnitHandleRouteDataCleaner14(self):
+            #Tests that adding a route with bad userid fails
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_USERID, views.handleRouteData(-233, "-122.080078", "37.279413","-122.088878", "37.579413"))
+
+        def testUnitHandleRouteDataCleaner15(self):
+            #Tests that adding a route with bad userid fails
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_USERID, views.handleRouteData(99999999, "-122.080078", "37.279413","-122.088878", "37.579413"))
+
+        def testUnitHandleRouteDataCleaner16(self):
+            #Tests that adding a route with bad userid fails
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_USERID, views.handleRouteData(-1, "-122.080078", "37.279413","-122.088878", "37.579413"))
+
+        def testUnitModelUserToDict(self):
+            #Test if to_dict method works properly
+            users = models.User.objects.all()
+            if len(users) > 0:
+                user = users[0]
+                dic = user.to_dict()
+                fields = ["firstname", "lastname", "email", "dob", "sex", "cellphone", "user_type", "comments", "avg_rating"]
+                for field in fields:
+                    self.assertEquals(dic.get(field,None), eval("user."+field))
+
+        def testUnitModelUserToDictUnsecure(self):
+            #Test if to_dict method works properly
+            users = models.User.objects.all()
+            if len(users) > 0:
+                user = users[0]
+                dic = user.to_dict_unsecure()
+                fields = ["firstname", "lastname",  "email", "dob", "sex", "password", "cellphone", "user_type", "comments", "avg_rating"]
+                for field in fields:
+                    self.assertEquals(dic.get(field,None), eval("user."+field))
+
+        def testUnitModelDriverInfoToDict(self):
+            #Test if to_dict method works properly
+            di = models.DriverInfo.objects.all()
+            if len(di) > 0:
+                di= di[0]
+                dic = di.to_dict()
+                fields = ["license_no", "license_exp", "car_make", "car_type", "car_mileage", "max_passengers"]
+                for field in fields:
+                    self.assertEquals(dic.get(field,None), eval("di."+field))
+
+        def testUnitModelRouteToDict(self):
+            #Test if to_dict method works properly
+            routes = models.Route.objects.all()
+            if len(routes) > 0:
+                route= routes[0]
+                dic = route.to_dict()
+                fields = ["depart_time", "depart_lat", "depart_lg", "arrive_lat", "arrive_lg", "maps_info", "status"]
+                for field in fields:
+                    self.assertEquals(dic.get(field,None), eval("route."+field))
+
+
+# If this file is invoked as a Python script, run the tests in this module
+if __name__ == "__main__":
+    # Add a verbose argument
+    sys.argv = [sys.argv[0]] + ["-v"] + sys.argv[1:]
+    unittest.main()
+#class TestUnit(testLib.RestTestCase):
 
     """Issue a REST API request to run the unit tests, and analyze the result"""
-    def testUnit(self):
+"""    def testUnit(self):
         #testLib.setUp()
         respData = self.makeRequest("/TESTAPI/unitTests", method="POST")
         self.assertTrue('output' in respData)
@@ -62,8 +190,9 @@ class TestUnit(testLib.RestTestCase):
         self.assertTrue(respData['totalTests'] >= minimumTests,
                         "at least "+str(minimumTests)+" unit tests. Found only "+str(respData['totalTests'])+". use SAMPLE_APP=1 if this is the sample app")
         self.assertEquals(0, respData['nrFailed'])
+"""
 
-
+'''
 class SignupTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
@@ -309,7 +438,7 @@ class LoginTest(testLib.RestTestCase):
 
 
 
-class AddRouteTest(testLib.RestTestCase):
+class ZAddRouteTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
         expected = { 'errCode' : errCode }
@@ -424,7 +553,7 @@ class AddRouteTest(testLib.RestTestCase):
         self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_APIKEY)
         
 
-class SearchTest(testLib.RestTestCase):
+class ZSearchTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
         expected = { 'errCode' : errCode }
@@ -479,7 +608,7 @@ class SearchTest(testLib.RestTestCase):
                 driver = driver_info.get("driver", None)
                 self.assertTrue(driver != None)
 
-class ManageRouteTest(testLib.RestTestCase):
+class ZManageRouteTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
         expected = { 'errCode' : errCode }
@@ -501,8 +630,8 @@ class ManageRouteTest(testLib.RestTestCase):
         print "testManageRoute3"
         respData = self.makeRequest("/driver/manageRoute", method="GET", data = { 'apikey' : '28b1f28813b70771cc26838e40fe9199167b4c76'} )
         self.assertTrue(respData.get("errCode",-1) == testLib.RestTestCase.ERR_BAD_DRIVER_INFO)
-
-"""class RiderStatusTest(testLib.RestTestCase):
+'''
+class RiderStatusTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
         expected = { 'errCode' : errCode }
@@ -510,116 +639,63 @@ class ManageRouteTest(testLib.RestTestCase):
         #   expected['count']  = count
         self.assertDictEqual(expected, respData)
 
-    
+     
     def testUserPendingRides(self):
+        print "testing user pending status"
         print "testUserPendingRides"
-        self.makeRequest("/rider/select",method="POST",data={'rider_id':1,'route_id':20,'comment':"I would like a ride from you"})
-        self.makeRequest("/rider/select",method="POST",data={'rider_id':1,'route_id':60,'comment':"I would like a ride from you"})
         
+        print "before the function is called"
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "d4a0fb1919d3a5c353c60279a3081f437465959c", 'route_id' : 30} ) 
+        print "before the second function is called"
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "d4a0fb1919d3a5c353c60279a3081f437465959c", 'route_id' : 20} )
         expected_dict = {}
-        expected_dict[20]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-06 19:16:14.689763+00:00",
-        'comment':"I would like a ride from you"}
-        expected_dict[60]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-08 04:35:21.223602+00:00",
-        'comment':"I would like a ride from you"}
-        
-        respData = self.makeRequest("/rides/pending", method="POST", data = { 'rider_id':1} )
+        expected_dict[20]={"driver_lastname": "Vmsfbagdzxx", "route_arrive_lg": "-121.59343", "route_depart_lat": "38.4712594", "route_arrive_lat": "38.3945351", "route_depart_lg": "-123.04618", "driver_firstname": "Rwot"}
+        expected_dict[30]={"driver_lastname": "Qzcytk", "route_arrive_lg": "-121.46535", "route_depart_lat": "38.6293819", "route_arrive_lat": "38.0733824", "route_depart_lg": "-122.51328", "driver_firstname": "Fgmemnvg"}
+        respData = self.makeRequest("/rider/rides_pending", method="POST", data = { 'rider_apikey':"d4a0fb1919d3a5c353c60279a3081f437465959c"} )
         self.assertEquals(respData, expected_dict.values())
-
+    
     def testUserDeniedRides(self):
    
         print "testUserDeniedRides "
-        self.makeRequest("/driver/accept?from=1&to=1&route_id=20&response=0", method="GET")
-   
-        self.makeRequest("/driver/accept?from=1&to=1&route_id=60&response=0", method="GET")
-        
-        expected_dict = {}
-        expected_dict[20]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-06 19:16:14.689763+00:00",
-        'comment':"I would like a ride from you"}
-        expected_dict[60]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-08 04:35:21.223602+00:00",
-        'comment':"I would like a ride from you"}
-        
-        respData = self.makeRequest("/rides/denied", method="POST", data = { 'rider_id':3} )
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "61057bca46cb9a6ecd3e4acb9aa0a484a5c5a725", 'route_id' : 28} )
+        self.makeRequest("/driver/accept?from=61057bca46cb9a6ecd3e4acb9aa0a484a5c5a725&to=28&route_id=28&response=0", method="GET")
+        expected_dict={}
+        expected_dict[28]={"driver_lastname": "Rw", "route_arrive_lg": "-122.61246", "route_depart_lat": "36.8855946", "route_arrive_lat": "38.4072551", "route_depart_lg": "-122.29165", "driver_firstname": "Sxjp"}
+        respData = self.makeRequest("/rider/rides_denied", method="POST", data = {  'rider_apikey':"61057bca46cb9a6ecd3e4acb9aa0a484a5c5a725"} )
         self.assertEquals(respData, expected_dict.values())
     
     def testUserCanceledRides(self):
-        print "testUserPendingRides"
-        self.makeRequest("/cancel/ride",method="POST",data={'rider_id':1,'route_id':20,'comment':"Sorry I changed my mind"})
-        self.makeRequest("/cancel/ride",method="POST",data={'rider_id':1,'route_id':60,'comment':"sorry i changed my mind"})
+        print "testUserCanceledRides"
         
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "d13e5d1dbf9bf7741662e3862e23f455b7304579", 'route_id' : 28} )
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "d13e5d1dbf9bf7741662e3862e23f455b7304579", 'route_id' : 35} )
+        self.makeRequest("/rider/cancel_ride", method="POST", data = { 'apikey' : "d13e5d1dbf9bf7741662e3862e23f455b7304579", 'route_id' : 28} )
+        self.makeRequest("/rider/cancel_ride", method="POST", data = { 'apikey' : "d13e5d1dbf9bf7741662e3862e23f455b7304579", 'route_id' : 35} )
         expected_dict = {}
-        expected_dict[20]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-06 19:16:14.689763+00:00",
-        'comment':"sorry i changed my mind"}
-        expected_dict[60]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-08 04:35:21.223602+00:00",
-        'comment':"sorry i changed my mind"}
-        
-        respData = self.makeRequest("/rides/canceled", method="POST", data = { 'rider_id':1} )
+        expected_dict[35]={"driver_lastname": "Xbzmutsi", "route_arrive_lg": "-122.21085", "route_depart_lat": "36.8800639", "route_arrive_lat": "37.1069058", "route_depart_lg": "-123.07194", "driver_firstname": "Eosobpdurt"}
+        expected_dict[28]={"driver_lastname": "Rw", "route_arrive_lg": "-122.61246", "route_depart_lat": "36.8855946", "route_arrive_lat": "38.4072551", "route_depart_lg": "-122.29165", "driver_firstname": "Sxjp"}
+        respData = self.makeRequest("/rider/rides_canceled", method="POST", data = { 'rider_apikey':"d13e5d1dbf9bf7741662e3862e23f455b7304579"} )
         self.assertEquals(respData, expected_dict.values())
     
     def testUserAcceptedRides(self):
-        print "testUserPendingRides"
-        self.makeRequest("/driver/accept?from=1&to=1&route_id=20&response=1", method="GET")
-   
-        self.makeRequest("/driver/accept?from=1&to=1&route_id=60&response=1", method="GET")
-        
+        print "testUserAcceptedRides "
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "49d53e86a23ddb6ecbdfdcd2dd915689e0db18e8", 'route_id' : 43} )
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "49d53e86a23ddb6ecbdfdcd2dd915689e0db18e8", 'route_id' : 45} )
 
-        expected_dict = {}
-        expected_dict[20]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-06 19:16:14.689763+00:00",
-        'comment':"I would like a ride from you"}
-        expected_dict[60]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-08 04:35:21.223602+00:00",
-        'comment':"I would like a ride from you"}
-        
-        respData = self.makeRequest("/rides/accepted", method="POST", data = { 'rider_id':1} )
+        self.makeRequest("/driver/accept?from=49d53e86a23ddb6ecbdfdcd2dd915689e0db18e8&to=43&route_id=43&response=1", method="GET")
+        self.makeRequest("/driver/accept?from=49d53e86a23ddb6ecbdfdcd2dd915689e0db18e8&to=45&route_id=45&response=1", method="GET")
+
+        expected_dict={}
+        expected_dict[43]={"driver_lastname": "Mdlwopwc", "route_arrive_lg": "-122.02138", "route_depart_lat": "36.9985756", "route_arrive_lat": "37.9152692", "route_depart_lg": "-122.46316", "driver_firstname": "Mysifhs"}
+        expected_dict[45]={"driver_lastname": "Qiyq", "route_arrive_lg": "-121.67304", "route_depart_lat": "36.9734151", "route_arrive_lat": "37.9390983", "route_depart_lg": "-121.42658", "driver_firstname": "Tcec"}
+        respData = self.makeRequest("/rider/rides_accepted", method="POST", data = {  'rider_apikey':"49d53e86a23ddb6ecbdfdcd2dd915689e0db18e8"} )
         self.assertEquals(respData, expected_dict.values())
+    
 
+   
+        
 
+'''
 class Select_RideTest(testLib.RestTestCase):
   def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
@@ -629,15 +705,18 @@ class Select_RideTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
 
   def testSelect_Good_Ride(self):
-    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 3, 'route_id' : 50,'comment':''} )
+    print "before the function is called"
+    respData = self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "d4a0fb1919d3a5c353c60279a3081f437465959c", 'route_id' : 30} )
+    print "after the function is being called"
     print("testSelect_Good_Ride")
     self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
-
+  
   def testSelect_BAD_Ride(self):
     respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 2000,'comment':''} )
     print("testSelect_BAD_Ride")
     self.assertResponse(respData, testLib.RestTestCase.ERR_DATABASE_SEARCH_ERROR)
 
+'''
 class Accept_OR_Deny_RideTest(testLib.RestTestCase):
   def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
@@ -647,12 +726,13 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
   
   def test_Accept_Good_Ride(self):
-    respData = self.makeRequest("/driver/accept?from=3&to=1&route_id=50&response=1", method="GET")
-    print("test_Accept_Good_Ride")
-    self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
-
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "acdd1ad1353d8c25407ff8f9fb5080937495ca08", 'route_id' : 4} ) 
+        respData=self.makeRequest("/driver/accept?from=acdd1ad1353d8c25407ff8f9fb5080937495ca08&to=4&route_id=4&response=0", method="GET")
+        print("test_Accept_Good_Ride")
+        self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
+  '''
   def test_Accept_BAD_Ride(self):
     respData = self.makeRequest("/driver/accept?from=-1&to=-10&route_id=0&response=0", method="GET")
     print("test_Accept_BAD_Ride")
     self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_SERVER_RESPONSE)
-  """
+  '''

@@ -29,7 +29,7 @@ class UnitTest(unittest.TestCase):
     #checking that destination coordinates received from front end are legit and will be mappable if neccessary
     def testUnitHandleRouteDataCleaner1(self):
         #Tests that adding a user works
-        self.assertEquals(testLib.RestTestCase.SUCCESS, views.handleRouteData(1, "-122.080078", "37.279413","-122.088878", "37.579413"))
+        self.assertEquals(testLib.RestTestCase.ERR_BAD_DEPARTURE, views.handleRouteData(1, "-122.080078", "37.279413","-122.088878", "37.579413"))
 
     def testUnitHandleRouteDataCleaner2(self):
         #Tests that adding a route fails with bad destination location coordinates
