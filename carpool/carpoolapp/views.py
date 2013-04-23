@@ -846,13 +846,16 @@ def generateExamples(request):
         testUtils.genRide()
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
-def request_ride(rider,route_id,status='Pending',comment=''):
-    rq= ride_request(rider =rider,route_id =route_id,status=status,comment=comment)
+def request_ride(rider_apikey,route_id,status='Pending'):
+    rq= ride_request(rider_apikey =rider_apikey,route_id =route_id,status=status)
+    dr = Route.objects.get(id=route_id)
+    dr_info = dr.driver_info
+    dr_id = dr_info.driver_id
+    u = User.objects.get(id= dr_id)
+    dr_apikey = u.apikey
+    rq.driver_apikey=dr_apikey
     rq.save()
 
-def can_ride(rider,route_id,status='',comment=''):
-    can_rq = ride_request(rider=rider,route_id=route_id,status=status,comment=comment)
-    can_rq.save()
 
 @csrf_exempt
 def cancel_ride(request):
@@ -860,14 +863,21 @@ def cancel_ride(request):
         data = json.loads(request.raw_post_data)
         apikey= data['apikey']
         route_id = data['route_id']
+        route= Route.objects.get(id=route_id)
+        print "available_seats before"
+        print route.available_seats
         rider = User.objects.get(apikey=apikey)
         try:
             print "right before i check"
-            rq = ride_request.objects.get(rider=rider,route_id=route_id)
+            rq = ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
             if (rq.status=="Pending" or rq.status=="Accepted"):
                 status="Canceled"
-                comment ="Sorry but i changed my mind"
-                can_ride(rider,route_id,status,comment)
+                rq.status=status
+                rq.save()
+                route.available_seats +=1
+                route.save()
+                print "available seats after"
+                print route.available_seats
             else:
                 print "either your ride was denied or you canceled it"
 
@@ -882,3 +892,20 @@ def cancel_ride(request):
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
 
+'''
+@csrf_exempt
+
+def leave_feedback(request):
+    data = json.loads(request.raw_post_data)
+    apikey= data['apikey']
+    route_id = data['route_id']
+    route= Route.objects.get(id=route_id)
+    driver_info = route.driver_info
+    driver =driver_info.driver 
+    owner_apikey = driver.apikey
+    rating = data['rating']
+    author_apikey = apikey
+    comment = data['comment']
+
+    rating = Rating(owner=driver,author = 
+'''
