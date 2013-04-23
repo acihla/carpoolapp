@@ -663,33 +663,20 @@ class RiderStatusTest(testLib.RestTestCase):
         expected_dict[28]={"driver_lastname": "Rw", "route_arrive_lg": "-122.61246", "route_depart_lat": "36.8855946", "route_arrive_lat": "38.4072551", "route_depart_lg": "-122.29165", "driver_firstname": "Sxjp"}
         respData = self.makeRequest("/rider/rides_denied", method="POST", data = {  'rider_apikey':"61057bca46cb9a6ecd3e4acb9aa0a484a5c5a725"} )
         self.assertEquals(respData, expected_dict.values())
-    '''
-    def testUserCanceledRides(self):
-        print "testUserPendingRides"
-        self.makeRequest("/cancel/ride",method="POST",data={'rider_id':1,'route_id':20,'comment':"Sorry I changed my mind"})
-        self.makeRequest("/cancel/ride",method="POST",data={'rider_id':1,'route_id':60,'comment':"sorry i changed my mind"})
-        
-        expected_dict = {}
-        expected_dict[20]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-06 19:16:14.689763+00:00",
-        'comment':"sorry i changed my mind"}
-        expected_dict[60]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-08 04:35:21.223602+00:00",
-        'comment':"sorry i changed my mind"}
-        
-        respData = self.makeRequest("/rides/canceled", method="POST", data = { 'rider_id':1} )
-        self.assertEquals(respData, expected_dict.values())
     
+    def testUserCanceledRides(self):
+        print "testUserCanceledRides"
+        
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "d13e5d1dbf9bf7741662e3862e23f455b7304579", 'route_id' : 28} )
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "d13e5d1dbf9bf7741662e3862e23f455b7304579", 'route_id' : 35} )
+        self.makeRequest("/rider/cancel_ride", method="POST", data = { 'apikey' : "d13e5d1dbf9bf7741662e3862e23f455b7304579", 'route_id' : 28} )
+        self.makeRequest("/rider/cancel_ride", method="POST", data = { 'apikey' : "d13e5d1dbf9bf7741662e3862e23f455b7304579", 'route_id' : 35} )
+        expected_dict = {}
+        expected_dict[35]={"driver_lastname": "Xbzmutsi", "route_arrive_lg": "-122.21085", "route_depart_lat": "36.8800639", "route_arrive_lat": "37.1069058", "route_depart_lg": "-123.07194", "driver_firstname": "Eosobpdurt"}
+        expected_dict[28]={"driver_lastname": "Rw", "route_arrive_lg": "-122.61246", "route_depart_lat": "36.8855946", "route_arrive_lat": "38.4072551", "route_depart_lg": "-122.29165", "driver_firstname": "Sxjp"}
+        respData = self.makeRequest("/rider/rides_canceled", method="POST", data = { 'rider_apikey':"d13e5d1dbf9bf7741662e3862e23f455b7304579"} )
+        self.assertEquals(respData, expected_dict.values())
+    '''
     def testUserAcceptedRides(self):
         print "testUserPendingRides"
         self.makeRequest("/driver/accept?from=1&to=1&route_id=20&response=1", method="GET")

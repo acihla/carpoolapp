@@ -690,9 +690,13 @@ def rides_pending(request):
 
 @csrf_exempt
 def rides_canceled(request):
+    print "in rides_canceled"
     try:
+        print "begining of try"
         data = json.loads(request.raw_post_data)
+        print "before i get the apikey"
         rider_apikey = data['rider_apikey']
+        print "rider_apikey is :" +rider_apikey
         r_r = ride_request.objects.filter(rider_apikey=rider_apikey,status='Canceled') 
         dic_route ={}
         for a in r_r:
