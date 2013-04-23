@@ -564,7 +564,7 @@ def select_ride(request):
             if (rq.status=="Canceled"):
                 status='Pending'
                 request_ride(rider,route_id,status)
-                url = "http://127.0.0.1:8000/driver/accept"
+                url = "http://carpool1691.herokuapp.com/driver/accept"
                 url += "?from=" + apikey
                 url += "&to=" + str(driver_info.driver_id)
                 url += "&route_id=" + str(route_id)
@@ -580,7 +580,7 @@ def select_ride(request):
         except ride_request.DoesNotExist:
             status='Pending' 
             request_ride(apikey,route_id,status)
-            url = "http://127.0.0.1:8000/driver/accept"
+            url = "http://carpool1691.herokuapp.com/driver/accept"
             url += "?from=" + apikey
             url += "&to=" + str(driver_info.driver_id)
             url += "&route_id=" + str(route_id)

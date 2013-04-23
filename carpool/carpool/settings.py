@@ -11,7 +11,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD= 'carpoolgroup'
 EMAIL_HOST_USER = 'carpoolcs169@gmail.com'
 EMAIL_SUBJECT_PREFIX='something'
-EMAIL_USE_TLS ='True'
+EMAIL_USE_TLS =True
 
 MANAGERS = ADMINS
 
