@@ -349,7 +349,7 @@ def manageRoute(request):
             routes_dict = []
             for route in routes:
                 routes_dict.append(route.to_dict())
-            resp["routes"] = routes_dict
+            resp["rides"] = routes_dict
             resp['size'] = len(routes_dict)
         else:
             resp["errCode"] = ERR_BAD_DRIVER_INFO
