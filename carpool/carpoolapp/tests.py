@@ -736,4 +736,3 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
     print("test_Accept_BAD_Ride")
     self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_SERVER_RESPONSE)
   '''
-

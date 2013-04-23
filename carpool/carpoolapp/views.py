@@ -568,6 +568,7 @@ def accept_ride(request):
         rider_apikey= r.get("from","")
         driver_id =r.get("to","")
         rider =User.objects.get(apikey=rider_apikey)
+        route = Route.objects.get(id=route_id)
         print 'rider_apikey: ' + rider_apikey
         rider_email = rider.email
         rider_firstname = rider.firstname
@@ -583,7 +584,8 @@ def accept_ride(request):
         print "driver_firstname:"+ driver_firstname
         print "driver_lastname:" + driver_lastname
         route = Route.objects.get(id=route_id)
-        print route
+        print "available_seats_before " 
+        print route.available_seats
         if response == "1":
             message = "Congratulation " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that your trip is now confirmed with \n" + driver_firstname + " "+ driver_lastname
 
@@ -592,7 +594,10 @@ def accept_ride(request):
             rq.status = status
             rq.save()
             send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
-
+            route.available_seats -=1
+            route.save()
+            print "available seats after " 
+            print route.available_seats 
         elif response == "0":
             message = "Sorry " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that the trip you selected with \n" + driver_firstname + " " +driver_lastname + "was denied please select another ride\n"
             status  = 'Denied'
@@ -799,6 +804,9 @@ def cancel_ride(request):
         data = json.loads(request.raw_post_data)
         apikey= data['apikey']
         route_id = data['route_id']
+        route= Route.objects.get(id=route_id)
+        print "available_seats before"
+        print route.available_seats
         rider = User.objects.get(apikey=apikey)
         try:
             print "right before i check"
@@ -807,6 +815,10 @@ def cancel_ride(request):
                 status="Canceled"
                 rq.status=status
                 rq.save()
+                route.available_seats +=1
+                route.save()
+                print "available seats after"
+                print route.available_seats
             else:
                 print "either your ride was denied or you canceled it"
 
@@ -821,4 +833,12 @@ def cancel_ride(request):
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
 
+'''
+@csrf_exempt
 
+def leave_feedback(request):
+    data = json.loads(request.raw_post_data)
+    apikey= data['apikey']
+    route_id = data['route_id']
+    route= Route.objects.get(id=route_id)
+'''
