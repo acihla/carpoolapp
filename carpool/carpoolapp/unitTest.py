@@ -50,15 +50,322 @@ class UnitTest(unittest.TestCase):
             self.users = models.User()
             self.routes = models.Route()
 
+
+        #
+        # SIGNUP USER AND DRIVER!
+        #
+
         #successful addition of a user
         def testAddUser1(self):
             newrequest = views.request
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@yahoo.com', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
             response = views.signup(newrequest)
             response = json.loads(response.content)
-            print(response)
+            #print(response)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
-        
+
+        #successful addition of a user
+        def testAddUser2(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'Symb!@#$%^&*', 'lastname' : 'Symb!@#$%^&*', 'email' : 'alex.christ@be.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+        #long firstname
+        def testAddUser3(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'Longfirstnameiswayyyyywayyyytoolong', 'lastname' : 'Cihla', 'email' : 'alex.pena@bs2.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #long lastname
+        def testAddUser4(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Longlastnameiswayyyyywayyyytoolong', 'email' : 'alex.doumbe@bs3.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #bad email
+        def testAddUser5(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password','email':'aime.com', 'cellphone' : '408-826-9366', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_EMAIL, response.get("errCode"))
+
+        #bad email
+        def testAddUser6(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password','email':'yahoo.com', 'cellphone' : '408-826-9366', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_EMAIL, response.get("errCode"))
+
+        #bad email
+        def testAddUser7(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password','email':'', 'cellphone' : '408-826-9366', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_EMAIL, response.get("errCode"))
+
+        #bad dob
+        def testAddUser8(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.panick@bs5.edu', 'dob' : '03-23-423553', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #password too long
+        def testAddUser9(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.tenkeu@bs6.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'passwordiswayyyywayyyywayyytoolong', 'cellphone' : '408-826-9366', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #cell phone formatted incorrectly
+        def testAddUser10(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.peter@bs7.com', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '(408)8269366', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #cell number too long
+        def testAddUser11(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.anita@bs10.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-93668', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #all good here... rechecking with different info
+        def testAddUser12(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'Alexander', 'lastname' : 'JamesCihla', 'email' : 'alex.ciron@bs8.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+        #bad sex type
+        def testAddUser13(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({'firstname':'AJ','lastname':'Cihla','email':'alex.evarist@yahoo.com','dob':'04-17-1992','sex':'garcon','password':'password','cellphone':'510-459-3078','driver':0})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #invalid driver type
+        def testAddUser14(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({'firstname':'AJ','lastname':'Cihla','email':'alex.masoeur@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':'vrai'})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+
+        #no car make
+        def testAddUser15(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({'firstname':'AJ','lastname':'Cihla','email':'alex.samuel@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblahbla','license_exp':'05-15-2017','car_make':'','car_type':'sedan','car_mileage':100000,'max_passengers':2})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #null car type
+        def testAddUser16(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({'firstname':'AJ','lastname':'Cihla','email':'alex.song@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblah','license_exp':'05-15-2017','car_make':'mercedes_benz','car_type':'','car_mileage':100000,'max_passengers':2})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #bad experation date
+        def testAddUser17(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({'firstname':'AJ','lastname':'Cihla','email':'alex.alex@yahoo.com','dob':'04171992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblah','license_exp':'05152017','car_make':'mercedes_benz','car_type':'','car_mileage':100000,'max_passengers':2})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+
+
+        #
+        #SIGNUP DRIVER
+        #
+        #successful addition
+        def testAddDriver1(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+        #license is old
+        def testAddDriver2(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'Aime', 'lastname' : 'Ngongang', 'email' : 'marianikgatech@berkeley.edu', 'dob' : '04-17-1950', 'sex' : 'male', 'password' : 'password', 'cellphone' : '510-459-3078', 'driver' : 1, 'license_no' : 'abcdefghij', 'license_exp' : '03-12-2008', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_EXPIRED_LICENSE, response.get("errCode"))
+
+        #license number is too long/weird
+        def testAddDriver3(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.purdue@bs12.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sfesuperrrrrrrrrrdupperrrrrrrrrrrrrrlongggggggggggggggggggggggggggasdfghjasdfghjk', 'license_exp' : '03-12-2016', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #wrong date format for exp date
+        def testAddDriver4(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.chicago@bs13.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '02342322017', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #bad/extra long car make field
+        def testAddDriver5(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.guiness@bs14.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '02-03-2018', 'car_make' : 'Honda Accord LONGCRAPLONGCRAPLONGCRAP', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2} )
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #bad/extra long car type field
+        def testAddDriver6(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.putain@bs15.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '02-03-2019', 'car_make' : 'Honda Accord', 'car_type' : 'SedanLONGLONGLONGLONGCRAPPPPPP', 'car_mileage' : 30, 'max_passengers' : 2} )
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #bad mileage entry
+        def testAddDriver7(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.adal@bs16.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '02-03-2014', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : '3034', 'max_passengers' : 2} )
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #bad max passenger field
+        def testAddDriver8(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.bianca@bs17.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '02-03-2020', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : '2453'} )
+            response = views.signup(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+
+        #
+        #CHECK LOGGING IN
+        #
+        #clean login
+        def testLoginUser1(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.unique@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest.body = json.dumps({'email':'alex.unique@berkeley.edu', 'password':'password'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+        #clean login
+        def testLoginUser2(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest.body = json.dumps({'email':'','password':'password'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_EMAIL, response.get("errCode"))
+
+        #clean login
+        def testLoginUser3(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest.body = json.dumps({'email' :'alex.chila@berkeley.edu','password':'passwordpasswordpasswordpasswordpasswordpassword'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+
+        #clean login
+        def testLoginUser4(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest.body = json.dumps({'email' :'douala@mbanga.yaounde','password':'password'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_NOT_USER, response.get("errCode"))
+
+        #clean login
+        def testLoginUser5(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest.body = json.dumps({'email' :'alex.gatech@berkeley.edu','password':'doualacameroun'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_NOT_USER, response.get("errCode"))
+
+
+
+
+        #
+        #TESTING ADDING ROUTES
+        #
+
+        #clean route addition
+        def testAddRoute1(self):
+            newrequest = views.request
+            testDriver = testUtils.genDriver()
+            testApi = testDriver.driver.apikey
+            newrequest.body = json.dumps({ 'apikey' : testApi,"edt":"0:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-09-2013","dest-long":"-122.27281998842956"} )
+            response = views.addroute(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+        #
+        #CHECK SANITIZATION EFFORTS
+        #
+
         #checking that destination coordinates received from front end are legit and will be mappable if neccessary
         def testUnitHandleRouteDataCleaner1(self):
             #Tests that adding a user works
