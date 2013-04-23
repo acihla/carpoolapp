@@ -299,11 +299,8 @@ def search(request):
         resp = {"errCode":ERR_BAD_JSON}
         print str(err)
     #TODO Parse json here.
-    departloc = json.loads(rdata.get("depart-loc", "{}"))
-    destloc = json.loads(rdata.get("dest-loc", "{}"))
-    print rdata
-    print departloc 
-    print destloc
+    departloc = rdata.get("depart-loc", {})
+    destloc = rdata.get("dest-loc", {})
     date = rdata.get("date", "")
     departtime = rdata.get("time-depart", "")
     distThresh = int(rdata.get("dist-thresh", "50"))
