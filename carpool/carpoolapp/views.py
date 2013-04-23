@@ -342,6 +342,7 @@ def manageRoute(request):
         user = User.objects.get(apikey = apikey)
         resp["errCode"] = SUCCESS
     except User.DoesNotExist:
+            resp = {}
             resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     try:
@@ -453,6 +454,7 @@ def addroute(request):
     try:
         user = User.objects.get(apikey = apikey)
     except User.DoesNotExist:
+            resp = {}
             resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
