@@ -38,3 +38,5 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"819209c12a07e94c12f976cca3e28bfde61e6f9f"}' http://127.0.0.1:8000/driver/getProfile > response.html
 
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"route_id":117,"apikey":"af816930c56e0ac16b59e72eb87cd2364ba6e7f78"}' http://127.0.0.1:8000/rider/select > response.html
+

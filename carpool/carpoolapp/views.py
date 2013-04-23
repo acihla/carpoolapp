@@ -528,7 +528,7 @@ def select_ride(request):
         apikey = data.get("apikey", "")
         print "after getting apikey"
         user = None
-        route_id = data['route_id']
+        route_id = data.get("route_id",-1)
         print route_id
 
         try:
@@ -541,6 +541,7 @@ def select_ride(request):
             print 'rider email is:' + rider_email
             print "before user doesnotexist ecxception"
         except User.DoesNotExist:
+            resp={}
             resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
         try:
@@ -598,6 +599,8 @@ def select_ride(request):
         return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="application/json")
 
     return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
+
+
 @csrf_exempt
 def accept_ride(request):
     try:
