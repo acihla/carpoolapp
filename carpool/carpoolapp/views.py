@@ -459,11 +459,11 @@ def addroute(request):
     #start = rdata.get("start", "")
     #end = rdata.get("end", "")
 
-    departLocLong = rdata.get("depart-long", "")
-    departLocLat = rdata.get("depart-lat", "")
+    departLocLong = rdata.get("depart-long", "")[0:14]
+    departLocLat = rdata.get("depart-lat", "")[0:14]
 
-    destinationLocLong = rdata.get("dest-long", "")
-    destinationLocLat = rdata.get("dest-lat", "")
+    destinationLocLong = rdata.get("dest-long", "")[0:14]
+    destinationLocLat = rdata.get("dest-lat", "")[0:14]
     departTime = rdata.get("edt", "")
     validDatums = handleRouteData(user.id, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
     if (validDatums != 1):
