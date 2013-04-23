@@ -53,6 +53,7 @@ ERR_KEY_VAL_DOES_NOT_EXISTS =-18
 ERR_BAD_DRIVER_INFO = -19
 ERR_BAD_CREDENTIALS = -20
 ERR_UNKOWN_IN_SIGNUP = -21
+ERR_UNKNOWN_ROUTE = -22
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
@@ -501,29 +502,41 @@ def select_ride(request):
         apikey = data.get("apikey", "")
         print "after getting apikey"
         user = None
+        route_id = data['route_id']
+        print route_id
+
         try:
             print "in the try for user_exist"
             user = User.objects.get(apikey = apikey)
             print "after getting user"
-            route_id = data['route_id']
-            print route_id
             rider = user
-            route = Route.objects.get(id=route_id)
-            driver_info =route.driver_info
+            print "im after route_id"
             rider_email = rider.email
             print 'rider email is:' + rider_email
-            driver_email = driver_info.driver.email
-            driver_firstname = driver_info.driver.firstname
-            driver_lastname  = driver_info.driver.lastname
-
+            print "before user doesnotexist ecxception"
         except User.DoesNotExist:
             resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
         try:
+            print "try for bad route_id"
+            route = Route.objects.get(id=route_id)
+            print route_id
+            driver_info =route.driver_info
+            driver_email = driver_info.driver.email
+            driver_firstname = driver_info.driver.firstname
+            driver_lastname  = driver_info.driver.lastname
+
+        except Route.DoesNotExist:
+            print "in the exception of bad route"
+            err = ERR_UNKNOWN_ROUTE
+            print err
+        
+            return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
+        try:
             rq = ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
             if (rq.status=="Canceled"):
                 status='Pending'
-                request_ride(rider,route_id,status,comment)
+                request_ride(rider,route_id,status)
                 url = "http://127.0.0.1:8000/driver/accept"
                 url += "?from=" + apikey
                 url += "&to=" + str(driver_info.driver_id)
@@ -841,4 +854,12 @@ def leave_feedback(request):
     apikey= data['apikey']
     route_id = data['route_id']
     route= Route.objects.get(id=route_id)
+    driver_info = route.driver_info
+    driver =driver_info.driver 
+    owner_apikey = driver.apikey
+    rating = data['rating']
+    author_apikey = apikey
+    comment = data['comment']
+
+    rating = Rating(owner=driver,author = 
 '''
