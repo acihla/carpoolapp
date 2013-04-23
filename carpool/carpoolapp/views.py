@@ -52,13 +52,14 @@ ERR_REQUEST_EXISTS =-17
 ERR_KEY_VAL_DOES_NOT_EXISTS =-18
 ERR_BAD_DRIVER_INFO = -19
 ERR_BAD_CREDENTIALS = -20
+ERR_UNKOWN_IN_SIGNUP = -21
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
 
 @csrf_exempt
 def signup(request):
-    resp = {"errCode":SUCCESS}
+    resp = {"errCode":ERR_UNKOWN_IN_SIGNUP}
     try:
         rdata = json.loads(request.body)
         resp = sanitizeSignupData(rdata)
@@ -81,28 +82,36 @@ def signup(request):
             newUser.apikey = apikey
             newUser.save()
             resp["apikey"] = apikey
+            newUser.save()
+
             if driver == 1:
-              print "im a driver"
-
-              resp1 = driver_check(rdata)
-              resp1["apikey"] = apikey
-              if resp1["errCode"]== SUCCESS:
-                license_no = rdata.get("license_no", "")
-                license_exp = rdata.get("license_exp", "")
-                car_make = rdata.get("car_make", "")
-                car_type = rdata.get("car_type", "")
-                car_mileage = rdata.get("car_mileage", "")
-                max_passengers = rdata.get("max_passengers", "")
-                license_date_obj = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
-
-                newDriverInfo = DriverInfo(driver = User.objects.get(email = email), license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
-                newDriverInfo.save()
-              else:
-                return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
+                print "im a driver"
+                resp1 = driver_check(rdata)
+                if resp1["errCode"]== SUCCESS:
+                    resp1["apikey"] = apikey
+                    license_no = rdata.get("license_no", "")
+                    license_exp = rdata.get("license_exp", "")
+                    car_make = rdata.get("car_make", "")
+                    car_type = rdata.get("car_type", "")
+                    car_mileage = rdata.get("car_mileage", "")
+                    max_passengers = rdata.get("max_passengers", 0)
+                    license_date_obj = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
+                    try:
+                        newDriverInfo = DriverInfo(driver = newUser, license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
+                        newDriverInfo.save()
+                        print "the driver was saved!"
+                    except Exception, err:
+                        print str(err) + "!!!!!!"
+                        User.objects.get(id=newUser.id).delete()
+                        resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
+                else:
+                    return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
+            
         else:
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
         print str(err)
+        resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
 
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
@@ -404,6 +413,12 @@ def changeDriverInfo(request):
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
+def getTestDriver(request):
+    resp = {}
+    resp["apikey"] = User.objects.get(email = "alex.gatech@berkeley.edu").apikey
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
 def addroute(request):
     rdata = json.loads(request.body)
     apikey = rdata.get("apikey", "")
@@ -537,7 +552,7 @@ def select_ride(request):
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
     try:
-        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
     except BadHeaderError:
         print "my fault is this"
@@ -575,7 +590,7 @@ def accept_ride(request):
             rq = ride_request.objects.get(rider_apikey =rider_apikey,route_id=route_id)
             rq.status = status
             rq.save()
-            send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+            send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
         elif response == "0":
             message = "Sorry " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that the trip you selected with \n" + driver_firstname + " " +driver_lastname + "was denied please select another ride\n"
@@ -702,6 +717,7 @@ def rides_canceled(request):
 
 #handles that coordinates are legit and uid exists in db
 def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat):
+    
     if (len(departLocLat) > COORD_LENGTH_IN) | (len(departLocLong) > COORD_LENGTH_IN) | (not (90.0 >= float(departLocLat) >= -90.0)) | (not (180.0 >= float(departLocLong) >= -180.0)) :
 		return ERR_BAD_DEPARTURE #-1
 	
@@ -715,6 +731,7 @@ def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destin
         return ERR_BAD_USERID #-3
     
     return SUCCESS
+    
 @csrf_exempt
 def TESTAPI_resetFixture(request):
     
@@ -726,7 +743,6 @@ def TESTAPI_unitTests(request):
     buffer = StringIO.StringIO()
     suite = unittest.TestLoader().loadTestsFromTestCase(UnitTest)
     result = unittest.TextTestRunner(stream = buffer, verbosity = 2).run(suite)
-
     rv = {"totalTests": result.testsRun, "nrFailed": len(result.failures), "output": buffer.getvalue()}
     return HttpResponse(json.dumps(rv), content_type = "application/json")
 
