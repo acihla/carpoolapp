@@ -55,6 +55,9 @@ ERR_BAD_CREDENTIALS = -20
 ERR_UNKOWN_IN_SIGNUP = -21
 #sample_date = "1992-04-17"
 
+class request:
+    body = {}
+
 sex_list = ['male','female']
 
 @csrf_exempt
@@ -110,7 +113,7 @@ def signup(request):
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
         print str(err)
-        resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
+        resp = {"errCode:" : str(rdata)} #ERR_UNKOWN_IN_SIGNUP}
 
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
@@ -810,8 +813,8 @@ def distance(lat1, lon1, lat2, lon2):
         * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     d = radius * c
- 
     return d
+
 @csrf_exempt
 def deleteRides(request):
     resp = {"errCode":SUCCESS}
@@ -831,6 +834,7 @@ def generateExamples(request):
         testUtils.genRide()
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
+
 def request_ride(rider,route_id,status='Pending',comment=''):
     rq= ride_request(rider =rider,route_id =route_id,status=status,comment=comment)
     rq.save()
@@ -838,6 +842,7 @@ def request_ride(rider,route_id,status='Pending',comment=''):
 def can_ride(rider,route_id,status='',comment=''):
     can_rq = ride_request(rider=rider,route_id=route_id,status=status,comment=comment)
     can_rq.save()
+
 
 @csrf_exempt
 def cancel_ride(request):

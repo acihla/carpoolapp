@@ -1,0 +1,7 @@
+venv
+*.pyc
+xpython2.7
+_init_.py
+migrations
+*.sw[op]
+.DS_Store
