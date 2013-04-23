@@ -568,6 +568,7 @@ def accept_ride(request):
         rider_apikey= r.get("from","")
         driver_id =r.get("to","")
         rider =User.objects.get(apikey=rider_apikey)
+        print 'rider_apikey: ' + rider_apikey
         rider_email = rider.email
         rider_firstname = rider.firstname
         rider_lastname= rider.lastname
