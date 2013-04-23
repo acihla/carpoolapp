@@ -488,7 +488,7 @@ class ManageRouteTest(testLib.RestTestCase):
         respData = self.makeRequest("/driver/manageRoute", method="GET", data = { 'apikey' : '28b1f28813b70771cc26838e40fe9199167b4c76'} )
         self.assertTrue(respData.get("errCode",-1) == testLib.RestTestCase.ERR_BAD_DRIVER_INFO)
 
-"""class RiderStatusTest(testLib.RestTestCase):
+class RiderStatusTest(testLib.RestTestCase):
     def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
         #Check that the response data dictionary matches the expected values
         expected = { 'errCode' : errCode }
@@ -498,31 +498,19 @@ class ManageRouteTest(testLib.RestTestCase):
 
     
     def testUserPendingRides(self):
+        print "testing user pending status"
         print "testUserPendingRides"
-        self.makeRequest("/rider/select",method="POST",data={'rider_id':1,'route_id':20,'comment':"I would like a ride from you"})
-        self.makeRequest("/rider/select",method="POST",data={'rider_id':1,'route_id':60,'comment':"I would like a ride from you"})
         
+        print "before the function is called"
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "d4a0fb1919d3a5c353c60279a3081f437465959c", 'route_id' : 30} ) 
+        print "before the second function is called"
+        self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "d4a0fb1919d3a5c353c60279a3081f437465959c", 'route_id' : 20} )
         expected_dict = {}
-        expected_dict[20]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-06 19:16:14.689763+00:00",
-        'comment':"I would like a ride from you"}
-        expected_dict[60]={'driver_firstname':"Peter",
-        'driver_lastname':"Lee",
-        'route_depart_lat':"27.50233",
-        'route_depart_lg':"-142.080078",
-        'route_arrive_lat':"-37.509413",
-        'route_arrive_lg':"-12.000078",
-        'departure_time':"2013-04-08 04:35:21.223602+00:00",
-        'comment':"I would like a ride from you"}
-        
-        respData = self.makeRequest("/rides/pending", method="POST", data = { 'rider_id':1} )
+        expected_dict[20]={"driver_lastname": "Vmsfbagdzxx", "route_arrive_lg": "-121.59343", "route_depart_lat": "38.4712594", "route_arrive_lat": "38.3945351", "route_depart_lg": "-123.04618", "driver_firstname": "Rwot"}
+        expected_dict[30]={"driver_lastname": "Qzcytk", "route_arrive_lg": "-121.46535", "route_depart_lat": "38.6293819", "route_arrive_lat": "38.0733824", "route_depart_lg": "-122.51328", "driver_firstname": "Fgmemnvg"}
+        respData = self.makeRequest("/rider/rides_pending", method="POST", data = { 'rider_apikey':"d4a0fb1919d3a5c353c60279a3081f437465959c"} )
         self.assertEquals(respData, expected_dict.values())
-
+    '''
     def testUserDeniedRides(self):
    
         print "testUserDeniedRides "
@@ -604,7 +592,7 @@ class ManageRouteTest(testLib.RestTestCase):
         
         respData = self.makeRequest("/rides/accepted", method="POST", data = { 'rider_id':1} )
         self.assertEquals(respData, expected_dict.values())
-
+   '''
 
 class Select_RideTest(testLib.RestTestCase):
   def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
@@ -615,14 +603,17 @@ class Select_RideTest(testLib.RestTestCase):
         self.assertDictEqual(expected, respData)
 
   def testSelect_Good_Ride(self):
-    respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 3, 'route_id' : 50,'comment':''} )
+    print "before the function is called"
+    respData = self.makeRequest("/rider/select", method="POST", data = { 'apikey' : "d4a0fb1919d3a5c353c60279a3081f437465959c", 'route_id' : 30} )
+    print "after the function is being called"
     print("testSelect_Good_Ride")
     self.assertResponse(respData, testLib.RestTestCase.SUCCESS)
-
+  
   def testSelect_BAD_Ride(self):
     respData = self.makeRequest("/rider/select", method="POST", data = { 'rider_id' : 1, 'route_id' : 2000,'comment':''} )
     print("testSelect_BAD_Ride")
     self.assertResponse(respData, testLib.RestTestCase.ERR_DATABASE_SEARCH_ERROR)
+
 
 class Accept_OR_Deny_RideTest(testLib.RestTestCase):
   def assertResponse(self, respData, errCode = testLib.RestTestCase.SUCCESS):
@@ -642,3 +633,4 @@ class Accept_OR_Deny_RideTest(testLib.RestTestCase):
     print("test_Accept_BAD_Ride")
     self.assertResponse(respData, testLib.RestTestCase.ERR_BAD_SERVER_RESPONSE)
   """
+
