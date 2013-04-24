@@ -444,7 +444,7 @@ def changeDriverInfo(request):
 @csrf_exempt
 def getTestDriver(request):
     resp = {}
-    resp["apikey"] = User.objects.get(email = "alex.gatech@berkeley.edu").apikey
+    resp["apikey"] = User.objects.get(id=1).apikey
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
@@ -605,7 +605,7 @@ def select_ride(request):
             rq = ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
             if (rq.status=="Cancelled"):
                 status='Pending'
-                request_ride(rider,route_id,status,departlat,departlong,destlat,destlong)
+                request_ride(apikey,route_id,departlat,departlong,destlat,destlong,status)
                 url = "http://carpool1691.herokuapp.com/driver/accept"
                 url += "?from=" + apikey
                 url += "&to=" + str(driver_info.driver_id)
@@ -621,7 +621,7 @@ def select_ride(request):
 
         except ride_request.DoesNotExist:
             status='Pending' 
-            request_ride(apikey,route_id,status)
+            request_ride(apikey,route_id,departlat,departlong,destlat,destlong,status)
             url = "http://carpool1691.herokuapp.com/driver/accept"
             url += "?from=" + apikey
             url += "&to=" + str(driver_info.driver_id)
@@ -796,7 +796,7 @@ def rides_pending(request):
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
 
-def request_ride(rider_apikey,route_id,status='Pending',departlat,departlong,destlat,destlong):
+def request_ride(rider_apikey,route_id,departlat,departlong,destlat,destlong,status='Pending'):
     rq= ride_request(rider_apikey =rider_apikey,route_id =route_id,status=status,depart_lat=departlat,depart_lg=departlong,dest_lat=destlat,dest_lg=destlong)
     dr = Route.objects.get(id=route_id)
     dr_info = dr.driver_info
@@ -818,7 +818,7 @@ def delete_route(request):
             route_to_delete.delete()
             resp["errCode"] = SUCCESS
             affected_riders = ride_request.objects.get(driver_apikey = apikey)
-            for all rr in affected_riders:
+            for rr in affected_riders:
                 #send email to riders that have requests to this cancelled ride
                 rider_to_notify = User.objects.get(apikey = rr.rider_apikey)
                 rider_email = rider_to_notify.email
@@ -833,7 +833,7 @@ def delete_route(request):
         else:
             resp["errCode"] = ERR_BAD_CREDENTIALS
 
-       return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
     except Exception: 
         resp["errCode"] = ERR_BAD_APIKEY
