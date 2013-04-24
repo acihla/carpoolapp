@@ -41,6 +41,7 @@ class UnitTest(unittest.TestCase):
         """
         Unittests for the Users model class (a sample, incomplete)
         """
+        '''
         def setUp(self):
             os.environ['DJANGO_SETTINGS_MODULE'] = "mysite.settings"
             testUtils.genDriver()
@@ -50,7 +51,7 @@ class UnitTest(unittest.TestCase):
             self.users = models.User()
             self.routes = models.Route()
 
-
+        '''
         #
         # SIGNUP USER AND DRIVER!
         #
@@ -62,7 +63,7 @@ class UnitTest(unittest.TestCase):
             response = views.signup(newrequest)
             response = json.loads(response.content)
             #print(response)
-            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_EMAIL, response.get("errCode"))
 
         #successful addition of a user
         def testAddUser2(self):

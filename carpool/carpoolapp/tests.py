@@ -48,7 +48,7 @@ ERR_BAD_DRIVER_INFO = -19
 ERR_BAD_CREDENTIALS = -20
 
 
-class TestUnit(testLib.RestTestCase):
+class TestUnit(unittest.TestCase):
 
 
     """Issue a REST API request to run the unit tests, and analyze the result"""
