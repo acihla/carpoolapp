@@ -6,7 +6,7 @@ class User(models.Model):
     firstname = models.CharField(max_length=20)
     lastname = models.CharField(max_length=20)
     email = models.CharField(max_length=50)
-    dob = models.DateField()
+    dob = models.DateField(default="")
     sex = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
     cellphone = models.CharField(max_length=20)
@@ -57,10 +57,10 @@ class DriverInfo(models.Model):
     driver = models.ForeignKey(User)
     license_no = models.CharField(max_length=50)
     license_exp = models.DateField()
-    car_make = models.CharField(max_length=20)
-    car_type = models.CharField(max_length=20)
-    car_mileage = models.IntegerField()
-    max_passengers = models.CharField(null=True, max_length=3)
+    car_make = models.CharField(max_length=20,default="")
+    car_type = models.CharField(max_length=20,default="")
+    car_mileage = models.IntegerField(default=0)
+    max_passengers = models.CharField(default="", max_length=3)
 
     def __unicode__(self):
         return self.license_no
@@ -104,8 +104,9 @@ class Route(models.Model):
     arrive_lg = models.CharField(max_length=20, null=True)
     maps_info = models.CharField(max_length=1000, default="")
     status = models.CharField(max_length=64, default="valid") #valid, invalid
-    available_seats = models.IntegerField()
-
+    available_seats = models.IntegerField(default = 0)
+    start = models.CharField(max_length=100, default = "")
+    end = models.CharField(max_length=100, default = "")
 
 
     def to_dict(self):
@@ -126,12 +127,15 @@ class ride_request(models.Model):
     rider_apikey = models.CharField(max_length=40)
     route_id = models.IntegerField()
     status = models.CharField(max_length=64)
-    depart_lat = models.CharField(max_length=20,default="")
-    depart_lg = models.CharField(max_length=20, default="")
-    arrive_lat = models.CharField(max_length=20, default="")
-    arrive_lg = models.CharField(max_length=20, default="")
+    depart_lat = models.CharField(max_length=20,null=True)
+    depart_lg = models.CharField(max_length=20, null=True)
+    arrive_lat = models.CharField(max_length=20, null=True)
+    arrive_lg = models.CharField(max_length=20, null=True)
     driver_apikey = models.CharField(max_length=40,default="")
     depart_time = models.CharField(max_length=20,default="")
+    req_start = models.CharField(max_length=100, default = "")
+    req_end = models.CharField(max_length=100, default = "")
+
     def to_dict(self):
         rtn = {}
         rtn["id"] = self.id
