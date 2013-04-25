@@ -609,24 +609,29 @@ def addroute(request):
 
 @csrf_exempt
 def select_ride(request):
-    #print "yooh"
     try:
-        #print "in the try"
         data = json.loads(request.raw_post_data)
-        #print "after decoding the data"
         apikey = data.get("apikey", "")
-        #print "after getting apikey"
         user = None
         route_id = data.get("route_id",-1)
-        departloc = rdata.get("depart-loc", {})
-        destloc = rdata.get("dest-loc", {})
-        date = rdata.get("date", "")
-        departtime = rdata.get("depart_time", "")
+        departloc = data.get("depart-loc", {})
+        destloc = data.get("dest-loc", {})
+        rider_departloc = data.get("rider_depart_loc",{})
+        rider_arriveloc = data.get("rider_arrive_loc",{})
+        date = data.get("date", "")
+        departtime = data.get("depart_time", "")
         departlat = departloc.get("lat", "") #was previously hardcoded?!
         departlong = departloc.get("long", "") #was previously hardcoded?!
         destlat = destloc.get("lat", "")
         destlong = destloc.get("long", "")
         #print route_id
+        rider_departtime = data.get("rider_depart_time", "")
+        rider_departlat = rider_departloc.get("rider_d_lat", "") 
+        rider_departlong = rider_departloc.get("rider_d_long", "") 
+        rider_destlat = rider_arriveloc.get("rider_a_lat", "")
+        rider_destlong = rider_arriveloc.get("rider_a_long", "")
+        print str(rider_departtime)
+        print "rider depart_lat " + str(rider_departlat)
 
         try:
             #print "in the try for user_exist"
@@ -651,16 +656,13 @@ def select_ride(request):
             driver_lastname  = driver_info.driver.lastname
 
         except Route.DoesNotExist:
-            #print "in the exception of bad route"
             err = ERR_UNKNOWN_ROUTE
-            #print err
-        
             return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
         try:
             rq = ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
             if (rq.status=="Cancelled"):
                 status='Pending'
-                request_ride(apikey,route_id,departlat,departlong,destlat,destlong,status)
+                request_ride(apikey,route_id,str(rider_departlat),str(rider_departlong),str(rider_destlat),str(rider_destlong),str(rider_departtime),status)
                 url = "http://carpool1691.herokuapp.com/driver/accept"
                 url += "?from=" + apikey
                 url += "&to=" + str(driver_info.driver_id)
@@ -676,7 +678,7 @@ def select_ride(request):
 
         except ride_request.DoesNotExist:
             status='Pending' 
-            request_ride(apikey,route_id,departlat,departlong,destlat,destlong,status)
+            request_ride(apikey,route_id,str(rider_departlat),str(rider_departlong),str(rider_destlat),str(rider_destlong),str(rider_departtime),status)
             url = "http://carpool1691.herokuapp.com/driver/accept"
             url += "?from=" + apikey
             url += "&to=" + str(driver_info.driver_id)
@@ -851,8 +853,8 @@ def rides_pending(request):
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
 
-def request_ride(rider_apikey,route_id,departlat,departlong,destlat,destlong,status='Pending'):
-    rq= ride_request(rider_apikey =rider_apikey,route_id =route_id,status=status,depart_lat=departlat,depart_lg=departlong,dest_lat=destlat,dest_lg=destlong)
+def request_ride(rider_apikey,route_id,rider_departlat,rider_departlong,rider_destlat,rider_destlong,rider_departtime,status='Pending'):
+    rq= ride_request(rider_apikey =rider_apikey,route_id =route_id,status=status,depart_lat=rider_departlat,depart_lg=rider_departlong,arrive_lat=rider_destlat,depart_time=rider_departtime,arrive_lg=rider_destlong)
     dr = Route.objects.get(id=route_id)
     dr_info = dr.driver_info
     dr_id = dr_info.driver_id
@@ -1003,7 +1005,7 @@ def TESTAPI_unitTests(request):
 @csrf_exempt
 def leave_feedback(request):
     print "top of leave feedback"
-    '''
+    
     try:
         data = json.loads(request.raw_post_data)
         apikey= data['apikey']
@@ -1013,22 +1015,30 @@ def leave_feedback(request):
             driver_info = route.driver_info
             driver =driver_info.driver 
             owner_apikey = driver.apikey
-            rating = data['rating']
+        except Route.DoesNotExist:
+            err = ERR_UNKNOWN_ROUTE
+            return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
+        try:
             author =User.objects.get(apikey= apikey)
             author_name = author.firstname + " " + author.lastname
-            comment = data['comment']
-            print "before the try"
-            try:
-                print "in the try"
-                ride_request.objects.get(rider_apikey=apikey,route_id=route_id
-                fback = Rating(owner=driver,author = author_name,rating=rating,comment=comment)
-                fback.save()
-            except ride_request.DoesNotExist:
-                print "in the ride_request not exist exception"
-                return HttpResponse(json.dumps({'errCode':ERR_NO_RIDER_DRIVER_CONTACT}),content_type="application/json")
+        except User.DoesNotExist:
+            resp={}
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+        rating = data['rating']
+        comment = data['comment']
+        try:
+            print "in the try"
+            ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
+            fback = Rating(owner=driver,author = author_name,rating=rating,comment=comment)
+            fback.save()
+        except ride_request.DoesNotExist:
+            print "in the ride_request not exist exception"
+            return HttpResponse(json.dumps({'errCode':ERR_NO_RIDER_DRIVER_CONTACT}),content_type="application/json")
                 
-                return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
                 
     except KeyError:
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
-    '''
+    
+    return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")

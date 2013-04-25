@@ -127,11 +127,12 @@ class ride_request(models.Model):
     rider_apikey = models.CharField(max_length=40)
     route_id = models.IntegerField()
     status = models.CharField(max_length=64)
-    depart_lat = models.CharField(max_length=20, null=True)
+    depart_lat = models.CharField(max_length=20,null=True)
     depart_lg = models.CharField(max_length=20, null=True)
     arrive_lat = models.CharField(max_length=20, null=True)
     arrive_lg = models.CharField(max_length=20, null=True)
     driver_apikey = models.CharField(max_length=40,default="")
+    depart_time = models.CharField(max_length=20,default="")
     req_start = models.CharField(max_length=100, default = "")
     req_end = models.CharField(max_length=100, default = "")
 
