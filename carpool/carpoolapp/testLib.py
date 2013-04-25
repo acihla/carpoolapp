@@ -68,7 +68,6 @@ class RestTestCase(unittest.TestCase):
         except Exception, e:
             if str(e).find("Connection refused") >= 0:
                 print "Cannot connect to the server "+RestTestCase.serverToTest+". You should start the server first, or pass the proper TEST_SERVER environment variable"
-                sys.exit(1)
             raise
 
         self.conn.sock.settimeout(100.0) # Give time to the remote server to start and respond
@@ -111,7 +110,7 @@ class RestTestCase(unittest.TestCase):
         testUtils.genRide
         testUtils.genRide
         testUtils.genRide
-        #self.makeRequest("/TESTAPI/resetFixture", method="GET")
+        self.makeRequest("/TESTAPI/resetFixture", method="GET")
         
     def tearDown(self):
         self.conn.close ()
