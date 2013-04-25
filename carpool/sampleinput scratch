@@ -28,6 +28,8 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"license_no":"123acz","sex":"female","car_make":"hekko","lastname":"bu","firstname":"mom","password":"hi","car_mileage":1234,"car_type":"buddy ","max_passengers":4,"email":"msombu@test.com","cellphone":"650-630-5875","dob":"4-19-2013","driver":1,"license_exp":"4-19-2017"}' http://127.0.0.1:8000/rider/signup > response.html
 
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"license_no":"qwerasdf","sex":"male","car_make":"aaa","lastname":"vu","firstname":"sam","password":"sam","car_mileage":12345,"car_type":"bbb","max_passengers":4,"email":"samcivu@gmail.com","cellphone":"415-713-6205","dob":"4-24-2007","driver":1,"license_exp":"4-24-2015"}' http://carpool1691.herokuapp.com/rider/signup > response.html
+
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"819209c12a07e94c12f976cca3e28bfde61e6f9f"}' http://127.0.0.1:8000/driver/manageRoute > response.html
 
@@ -38,7 +40,7 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"route_id":118,"apikey":"a5e8b6a412fb7cc661d6077a8d742d29dc4c9c02"}' http://127.0.0.1:8000/rider/select > response.html
 
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"route_id":211,"apikey":"b9d7869bc50f4cf1fe5f971212aec91a84361341"}' http://carpool1691.herokuapp.com/rider/select > response.html
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"route_id":216,"apikey":"b9d7869bc50f4cf1fe5f971212aec91a84361341"}' http://carpool1691.herokuapp.com/rider/select > response.html
 
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"edt":"1:27","dest-lat":"37.773569003840514","depart-long":"-122.29195822030306","depart-lat":"37.88635556945343","date":"4-19-2013","dest-long":"-122.18801591545342","apikey":"98c422a50e6119957f9812372562f2351cdae4fd"}' http://carpool1691.herokuapp.com/driver/addroute > response.html

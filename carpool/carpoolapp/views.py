@@ -535,12 +535,6 @@ def addroute(request):
                     indstep = indstep.replace('<div class="google_note">', ' *** ')
                     indstep = indstep.replace('</div>', ' *** ')
                     directions += indstep 
-                    
-            
-
-            
-            
-
         except Exception, err:
             resp = {"errCode" : err}
         """
