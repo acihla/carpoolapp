@@ -98,10 +98,10 @@ class Route(models.Model):
     driver_info = models.ForeignKey(DriverInfo)
     depart_time = models.DateTimeField()
     #arrival_time = models.DateTimeField()
-    depart_lat = models.CharField(max_length=15, null=True)
-    depart_lg = models.CharField(max_length=15, null=True)
-    arrive_lat = models.CharField(max_length=15, null=True)
-    arrive_lg = models.CharField(max_length=15, null=True)
+    depart_lat = models.CharField(max_length=20, null=True)
+    depart_lg = models.CharField(max_length=20, null=True)
+    arrive_lat = models.CharField(max_length=20, null=True)
+    arrive_lg = models.CharField(max_length=20, null=True)
     maps_info = models.CharField(max_length=1000, default="")
     status = models.CharField(max_length=64, default="valid") #valid, invalid
     available_seats = models.IntegerField()
@@ -126,6 +126,10 @@ class ride_request(models.Model):
     rider_apikey = models.CharField(max_length=40)
     route_id = models.IntegerField()
     status = models.CharField(max_length=64)
+    depart_lat = models.CharField(max_length=20, null=True)
+    depart_lg = models.CharField(max_length=20, null=True)
+    arrive_lat = models.CharField(max_length=20, null=True)
+    arrive_lg = models.CharField(max_length=20, null=True)
     driver_apikey = models.CharField(max_length=40,default="")
 
     def to_dict(self):

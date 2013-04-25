@@ -56,6 +56,9 @@ ERR_UNKOWN_IN_SIGNUP = -21
 ERR_UNKNOWN_ROUTE = -22
 #sample_date = "1992-04-17"
 
+class request:
+    body = {}
+
 sex_list = ['male','female']
 
 @csrf_exempt
@@ -111,7 +114,7 @@ def signup(request):
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
         print str(err)
-        resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
+        resp = {"errCode:" : str(rdata)} #ERR_UNKOWN_IN_SIGNUP}
 
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
@@ -441,7 +444,7 @@ def changeDriverInfo(request):
 @csrf_exempt
 def getTestDriver(request):
     resp = {}
-    resp["apikey"] = User.objects.get(email = "alex.gatech@berkeley.edu").apikey
+    resp["apikey"] = User.objects.get(id=1).apikey
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
@@ -545,50 +548,58 @@ def addroute(request):
 
 @csrf_exempt
 def select_ride(request):
-    print "yooh"
+    #print "yooh"
     try:
-        print "in the try"
+        #print "in the try"
         data = json.loads(request.raw_post_data)
-        print "after decoding the data"
+        #print "after decoding the data"
         apikey = data.get("apikey", "")
-        print "after getting apikey"
+        #print "after getting apikey"
         user = None
         route_id = data.get("route_id",-1)
-        print route_id
+        departloc = rdata.get("depart-loc", {})
+        destloc = rdata.get("dest-loc", {})
+        date = rdata.get("date", "")
+        departtime = rdata.get("depart_time", "")
+        departlat = departloc.get("lat", "") #was previously hardcoded?!
+        departlong = departloc.get("long", "") #was previously hardcoded?!
+        destlat = destloc.get("lat", "")
+        destlong = destloc.get("long", "")
+        #print route_id
 
         try:
-            print "in the try for user_exist"
+            #print "in the try for user_exist"
             user = User.objects.get(apikey = apikey)
-            print "after getting user"
+            #print "after getting user"
             rider = user
-            print "im after route_id"
+            #print "im after route_id"
             rider_email = rider.email
-            print 'rider email is:' + rider_email
-            print "before user doesnotexist ecxception"
+            #print 'rider email is:' + rider_email
+            #print "before user doesnotexist ecxception"
         except User.DoesNotExist:
             resp={}
             resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
         try:
-            print "try for bad route_id"
+            #print "try for bad route_id"
             route = Route.objects.get(id=route_id)
-            print route_id
+            #print route_id
             driver_info =route.driver_info
             driver_email = driver_info.driver.email
             driver_firstname = driver_info.driver.firstname
             driver_lastname  = driver_info.driver.lastname
 
         except Route.DoesNotExist:
-            print "in the exception of bad route"
+            #print "in the exception of bad route"
             err = ERR_UNKNOWN_ROUTE
-            print err
+            #print err
         
             return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
         try:
             rq = ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
-            if (rq.status=="Canceled"):
+            if (rq.status=="Cancelled"):
                 status='Pending'
-                request_ride(rider,route_id,status)
+                request_ride(apikey,route_id,departlat,departlong,destlat,destlong,status)
                 url = "http://carpool1691.herokuapp.com/driver/accept"
                 url += "?from=" + apikey
                 url += "&to=" + str(driver_info.driver_id)
@@ -604,7 +615,7 @@ def select_ride(request):
 
         except ride_request.DoesNotExist:
             status='Pending' 
-            request_ride(apikey,route_id,status)
+            request_ride(apikey,route_id,departlat,departlong,destlat,destlong,status)
             url = "http://carpool1691.herokuapp.com/driver/accept"
             url += "?from=" + apikey
             url += "&to=" + str(driver_info.driver_id)
@@ -777,6 +788,87 @@ def rides_pending(request):
 
     except KeyError:
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
+
+
+def request_ride(rider_apikey,route_id,departlat,departlong,destlat,destlong,status='Pending'):
+    rq= ride_request(rider_apikey =rider_apikey,route_id =route_id,status=status,depart_lat=departlat,depart_lg=departlong,dest_lat=destlat,dest_lg=destlong)
+    dr = Route.objects.get(id=route_id)
+    dr_info = dr.driver_info
+    dr_id = dr_info.driver_id
+    u = User.objects.get(id= dr_id)
+    dr_apikey = u.apikey
+    rq.driver_apikey=dr_apikey
+    rq.save()
+
+@csrf_exempt
+def delete_route(request):
+    try:
+        respt = {}
+        data = json.loads(request.raw_post_data)
+        apikey = data['apikey']
+        route_id = data['route_id']
+        route_to_delete = Route.objects.get(id = route_id)
+        if (route_to_delete.driver_info.driver.apikey == apikey):
+            route_to_delete.delete()
+            resp["errCode"] = SUCCESS
+            affected_riders = ride_request.objects.get(driver_apikey = apikey)
+            for rr in affected_riders:
+                #send email to riders that have requests to this cancelled ride
+                rider_to_notify = User.objects.get(apikey = rr.rider_apikey)
+                rider_email = rider_to_notify.email
+                message = "A route that you have requested has been cancelled by the driver! We are sorry for any inconvenience that this may have caused you. Please check your scheduled rendezvous and find a new ride." #rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
+                try:
+                    send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+
+                except BadHeaderError:
+                    print "The delete route notification system has failed"
+                    return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="application/json")
+
+        else:
+            resp["errCode"] = ERR_BAD_CREDENTIALS
+
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+    except Exception: 
+        resp["errCode"] = ERR_BAD_APIKEY
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+
+@csrf_exempt
+def cancel_request(request):
+    try:
+        data = json.loads(request.raw_post_data)
+        apikey= data['apikey']
+        route_id = data['route_id']
+        route= Route.objects.get(id=route_id)
+        print "available_seats before"
+        print route.available_seats
+        rider = User.objects.get(apikey=apikey)
+        try:
+            print "right before i check"
+            rq = ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
+            if (rq.status=="Pending" or rq.status=="Accepted"):
+                status="Canceled"
+                rq.status=status
+                rq.save()
+                if (req.status == "Accepted"):
+                    route.available_seats +=1
+                route.save()
+                print "available seats after"
+                print route.available_seats
+            else:
+                print "either your ride was denied or you canceled it"
+
+        except ride_request.DoesNotExist:
+            return HttpResponse(json.dumps({'errCode':ERR_KEY_VAL_DOES_NOT_EXISTS}),content_type="application/json")
+     
+            
+        return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
+
+
+    except KeyError:
+        return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
+
     
 #handles that coordinates are legit and uid exists in db
 def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destinationLocLat):
@@ -794,20 +886,7 @@ def handleRouteData(uid, departLocLong, departLocLat, destinationLocLong, destin
         return ERR_BAD_USERID #-3
     
     return SUCCESS
-    
-@csrf_exempt
-def TESTAPI_resetFixture(request):
-    
-    resp = {"errCode" : SUCCESS}
-    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
-@csrf_exempt
-def TESTAPI_unitTests(request):
-    buffer = StringIO.StringIO()
-    suite = unittest.TestLoader().loadTestsFromTestCase(UnitTest)
-    result = unittest.TextTestRunner(stream = buffer, verbosity = 2).run(suite)
-    rv = {"totalTests": result.testsRun, "nrFailed": len(result.failures), "output": buffer.getvalue()}
-    return HttpResponse(json.dumps(rv), content_type = "application/json")
 
 #from https://gist.github.com/rochacbruno/2883505
 def distance(lat1, lon1, lat2, lon2):
@@ -819,8 +898,8 @@ def distance(lat1, lon1, lat2, lon2):
         * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     d = radius * c
- 
     return d
+
 @csrf_exempt
 def deleteRides(request):
     resp = {"errCode":SUCCESS}
@@ -840,51 +919,21 @@ def generateExamples(request):
         testUtils.genRide()
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
-def request_ride(rider_apikey,route_id,status='Pending'):
-    rq= ride_request(rider_apikey =rider_apikey,route_id =route_id,status=status)
-    dr = Route.objects.get(id=route_id)
-    dr_info = dr.driver_info
-    dr_id = dr_info.driver_id
-    u = User.objects.get(id= dr_id)
-    dr_apikey = u.apikey
-    rq.driver_apikey=dr_apikey
-    rq.save()
 
+    
+@csrf_exempt
+def TESTAPI_resetFixture(request):
+    
+    resp = {"errCode" : SUCCESS}
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
-def cancel_ride(request):
-    try:
-        data = json.loads(request.raw_post_data)
-        apikey= data['apikey']
-        route_id = data['route_id']
-        route= Route.objects.get(id=route_id)
-        print "available_seats before"
-        print route.available_seats
-        rider = User.objects.get(apikey=apikey)
-        try:
-            print "right before i check"
-            rq = ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
-            if (rq.status=="Pending" or rq.status=="Accepted"):
-                status="Canceled"
-                rq.status=status
-                rq.save()
-                route.available_seats +=1
-                route.save()
-                print "available seats after"
-                print route.available_seats
-            else:
-                print "either your ride was denied or you canceled it"
-
-        except ride_request.DoesNotExist:
-            return HttpResponse(json.dumps({'errCode':ERR_KEY_VAL_DOES_NOT_EXISTS}),content_type="application/json")
-     
-            
-        return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
-
-
-    except KeyError:
-        return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
-
+def TESTAPI_unitTests(request):
+    buffer = StringIO.StringIO()
+    suite = unittest.TestLoader().loadTestsFromTestCase(UnitTest)
+    result = unittest.TextTestRunner(stream = buffer, verbosity = 2).run(suite)
+    rv = {"totalTests": result.testsRun, "nrFailed": len(result.failures), "output": buffer.getvalue()}
+    return HttpResponse(json.dumps(rv), content_type = "application/json")
 
 '''
 @csrf_exempt
