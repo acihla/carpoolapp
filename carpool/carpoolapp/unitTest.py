@@ -1,11 +1,8 @@
-from django.test import TestCase
 from django.utils import unittest
 import json
 import testLib
 import testUtils
-import os
 from datetime import date, datetime, time, timedelta
-from django.test.client import Client
 import views
 import models
 
@@ -62,8 +59,8 @@ class UnitTest(unittest.TestCase):
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@yahoo.com', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
             response = views.signup(newrequest)
             response = json.loads(response.content)
-            #print(response)
-            self.assertEquals(testLib.RestTestCase.ERR_BAD_EMAIL, response.get("errCode"))
+            print (response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
         #successful addition of a user
         def testAddUser2(self):
@@ -71,7 +68,7 @@ class UnitTest(unittest.TestCase):
             newrequest.body = json.dumps({ 'firstname' : 'Symb!@#$%^&*', 'lastname' : 'Symb!@#$%^&*', 'email' : 'alex.christ@be.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
             response = views.signup(newrequest)
             response = json.loads(response.content)
-            #print(response)
+            print (response)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
         #long firstname
@@ -80,7 +77,7 @@ class UnitTest(unittest.TestCase):
             newrequest.body = json.dumps({ 'firstname' : 'Longfirstnameiswayyyyywayyyytoolong', 'lastname' : 'Cihla', 'email' : 'alex.pena@bs2.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
             response = views.signup(newrequest)
             response = json.loads(response.content)
-            #print(response)
+            print(response)
             self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
 
         #long lastname
@@ -478,9 +475,3 @@ class UnitTest(unittest.TestCase):
                 for field in fields:
                     self.assertEquals(dic.get(field,None), eval("route."+field))
 
-        
-# If this file is invoked as a Python script, run the tests in this module
-if __name__ == "__main__":
-    # Add a verbose argument
-    sys.argv = [sys.argv[0]] + ["-v"] + sys.argv[1:]
-    unittest.main()
