@@ -54,6 +54,7 @@ ERR_BAD_DRIVER_INFO = -19
 ERR_BAD_CREDENTIALS = -20
 ERR_UNKOWN_IN_SIGNUP = -21
 ERR_UNKNOWN_ROUTE = -22
+ERR_NO_RIDER_DRIVER_CONTACT =-23
 #sample_date = "1992-04-17"
 
 sex_list = ['male','female']
@@ -300,8 +301,11 @@ def search(request):
         resp = {"errCode":ERR_BAD_JSON}
         print str(err)
     #TODO Parse json here.
-    departloc = rdata.get("depart-loc", {})
-    destloc = rdata.get("dest-loc", {})
+    departloc = json.loads(rdata.get("depart-loc", "{}"))
+    destloc = json.loads(rdata.get("dest-loc", "{}"))
+    print rdata
+    print departloc 
+    print destloc
     date = rdata.get("date", "")
     departtime = rdata.get("time-depart", "")
     distThresh = int(rdata.get("dist-thresh", "50"))
@@ -329,35 +333,6 @@ def search(request):
             resp["errCode"] = ERR_DATABASE_SEARCH_ERROR
             resp["errMsg"] = str(err)
             print str(err)
-    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-
-
-@csrf_exempt
-def manageRoute(request):
-    resp = {}
-    rdata = json.loads(request.body)
-    apikey = rdata.get("apikey", "")
-    user = None
-    try:
-        user = User.objects.get(apikey = apikey)
-        resp["errCode"] = SUCCESS
-    except User.DoesNotExist:
-            resp["errCode"] = ERR_BAD_APIKEY
-            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-    try:
-        if user.user_type == 1:
-            driver_info = DriverInfo.objects.get(driver=user.id)
-            routes = Route.objects.filter(driver_info = driver_info)
-            routes_dict = []
-            for route in routes:
-                routes_dict.append(route.to_dict())
-            resp["rides"] = routes_dict
-            resp['size'] = len(routes_dict)
-        else:
-            resp["errCode"] = ERR_BAD_DRIVER_INFO
-    except DriverInfo.DoesNotExist:
-        resp["errCode"] = ERR_BAD_DRIVER_INFO
-        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 
@@ -872,20 +847,36 @@ def cancel_ride(request):
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
 
-'''
+
 @csrf_exempt
-
 def leave_feedback(request):
-    data = json.loads(request.raw_post_data)
-    apikey= data['apikey']
-    route_id = data['route_id']
-    route= Route.objects.get(id=route_id)
-    driver_info = route.driver_info
-    driver =driver_info.driver 
-    owner_apikey = driver.apikey
-    rating = data['rating']
-    author_apikey = apikey
-    comment = data['comment']
-
-    rating = Rating(owner=driver,author = 
-'''
+    print "top of leave feedback"
+    '''
+    try:
+        data = json.loads(request.raw_post_data)
+        apikey= data['apikey']
+        route_id = data['route_id']
+        try:
+            route= Route.objects.get(id=route_id)
+            driver_info = route.driver_info
+            driver =driver_info.driver 
+            owner_apikey = driver.apikey
+            rating = data['rating']
+            author =User.objects.get(apikey= apikey)
+            author_name = author.firstname + " " + author.lastname
+            comment = data['comment']
+            print "before the try"
+            try:
+                print "in the try"
+                ride_request.objects.get(rider_apikey=apikey,route_id=route_id
+                fback = Rating(owner=driver,author = author_name,rating=rating,comment=comment)
+                fback.save()
+            except ride_request.DoesNotExist:
+                print "in the ride_request not exist exception"
+                return HttpResponse(json.dumps({'errCode':ERR_NO_RIDER_DRIVER_CONTACT}),content_type="application/json")
+                
+                return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
+                
+    except KeyError:
+        return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
+    '''
