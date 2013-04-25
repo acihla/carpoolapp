@@ -59,7 +59,7 @@ class UnitTest(unittest.TestCase):
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.cihla@yahoo.com', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
             response = views.signup(newrequest)
             response = json.loads(response.content)
-            print (response)
+            #print (response)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
         #successful addition of a user
@@ -68,7 +68,7 @@ class UnitTest(unittest.TestCase):
             newrequest.body = json.dumps({ 'firstname' : 'Symb!@#$%^&*', 'lastname' : 'Symb!@#$%^&*', 'email' : 'alex.christ@be.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 0})
             response = views.signup(newrequest)
             response = json.loads(response.content)
-            print (response)
+            #print (response)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
         #long firstname
@@ -363,7 +363,43 @@ class UnitTest(unittest.TestCase):
 
 
 
-            
+        #
+        #CHECK ROUTE DELETION
+        #
+        def testDeleteRoute1(self):
+            newrequest = views.request
+            testRoute = testUtils.genRide()
+            testRouteId = testRoute.id 
+            testDriverApi = testRoute.driver_info.driver.apikey
+            newrequest.body = json.dumps({ 'apikey' : testDriverApi, 'route_id' : testRouteId })
+            response = views.delete_route(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+
+        #
+        #CHECK MANAGING REQUESTS
+        #
+        def testManageRequestsDriver1(self):
+            newrequest = views.request
+            testDriver = testUtils.genDriver()
+            testApi = testDriver.driver.apikey
+            #print str(testDriver.driver.user_type) + "CHECKKKK THISSS OUT"
+            newrequest.body = json.dumps({ 'apikey' : testApi,"edt":"0:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-09-2013","dest-long":"-122.27281998842956"} )
+            response = views.addroute(newrequest)
+            newrequest.body = json.dumps({ 'apikey' : testApi,"edt":"0:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-09-2013","dest-long":"-122.27281998842956"} )
+            response = views.addroute(newrequest)
+            newrequest.body = json.dumps({ 'apikey' : testApi,"edt":"0:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-09-2013","dest-long":"-122.27281998842956"} )
+            response = views.addroute(newrequest)
+            newrequest.body = json.dumps({'apikey' : testApi})
+            #print (newrequest)
+            response = views.manageRequest(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+
         #
         #CHECK SANITIZATION EFFORTS
         #

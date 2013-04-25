@@ -339,6 +339,69 @@ def search(request):
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
+def manageRoute(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp["errCode"] = SUCCESS
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    try:
+        if user.user_type == 1:
+            driver_info = DriverInfo.objects.get(driver=user.id)
+            routes = Route.objects.filter(driver_info = driver_info)
+            routes_dict = []
+            for route in routes:
+                routes_dict.append(route.to_dict())
+            resp["rides"] = routes_dict
+            resp['size'] = len(routes_dict)
+        else:
+            resp["errCode"] = ERR_BAD_DRIVER_INFO
+    except DriverInfo.DoesNotExist:
+        resp["errCode"] = ERR_BAD_DRIVER_INFO
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+@csrf_exempt
+def manageRequest(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp["errCode"] = SUCCESS
+        #print("this is the user type!!!!!" + str(user.user_type))
+        if user.user_type == 1:
+            routes = ride_request.objects.filter(driver_apikey = apikey)
+            requests_dict = []
+            for route in routes:
+                requests_dict.append(route.to_dict())
+            resp["rides"] = requests_dict
+            resp['size'] = len(requests_dict)
+        elif user.user_type == 0:
+            routes = ride_request.objects.filter(rider_apikey = apikey)
+            requests_dict = []
+            for route in routes:
+                requests_dict.append(route.to_dict())
+            resp["rides"] = requests_dict
+            resp['size'] = len(requests_dict)
+        else:
+            resp["errCode"] = ERR_BAD_APIKEY
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    except ride_request.DoesNotExist:
+        resp["errCode"] = SUCCESS
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+
+@csrf_exempt
 def getProfile(request):
     resp = {}
     rdata = json.loads(request.body)
@@ -780,15 +843,13 @@ def request_ride(rider_apikey,route_id,rider_departlat,rider_departlong,rider_de
 @csrf_exempt
 def delete_route(request):
     try:
-        respt = {}
-        data = json.loads(request.raw_post_data)
+        resp = {}
+        data = json.loads(request.body)
         apikey = data['apikey']
         route_id = data['route_id']
         route_to_delete = Route.objects.get(id = route_id)
         if (route_to_delete.driver_info.driver.apikey == apikey):
-            route_to_delete.delete()
-            resp["errCode"] = SUCCESS
-            affected_riders = ride_request.objects.get(driver_apikey = apikey)
+            '''affected_riders = ride_request.objects.get(route_id = route_id)
             for rr in affected_riders:
                 #send email to riders that have requests to this cancelled ride
                 rider_to_notify = User.objects.get(apikey = rr.rider_apikey)
@@ -800,13 +861,18 @@ def delete_route(request):
                 except BadHeaderError:
                     print "The delete route notification system has failed"
                     return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="application/json")
-
+            '''
+            route_to_delete.delete()
+            resp["errCode"] = SUCCESS
         else:
+            print(route_to_delete.driver_info.driver.apikey)
+            print(apikey)
             resp["errCode"] = ERR_BAD_CREDENTIALS
 
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
-    except Exception: 
+    except Exception,err: 
+        print(err)
         resp["errCode"] = ERR_BAD_APIKEY
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
