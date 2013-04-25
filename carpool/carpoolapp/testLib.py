@@ -41,6 +41,10 @@ class RestTestCase(unittest.TestCase):
     ERR_KEY_VAL_DOES_NOT_EXISTS =-18
     ERR_BAD_DRIVER_INFO = -19
     ERR_BAD_CREDENTIALS = -20
+    ERR_UNKOWN_IN_SIGNUP = -21
+    ERR_UNKNOWN_ROUTE = -22
+    ERR_NO_RIDER_DRIVER_CONTACT =-23
+    ERR_BAD_PASSWORD = -24
     # Lookup the name of the server to test
 
     serverToTest = "127.0.0.1:8000"

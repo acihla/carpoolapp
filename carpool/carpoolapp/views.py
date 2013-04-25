@@ -55,6 +55,7 @@ ERR_BAD_CREDENTIALS = -20
 ERR_UNKOWN_IN_SIGNUP = -21
 ERR_UNKNOWN_ROUTE = -22
 ERR_NO_RIDER_DRIVER_CONTACT =-23
+ERR_BAD_PASSWORD = -24
 #sample_date = "1992-04-17"
 
 class request:
@@ -249,10 +250,16 @@ def login(request):
           email = rdata.get("email", "")
           password = rdata.get("password", "")
           try:
-            u = User.objects.get(email =email,password = password)
-            resp["errCode"] = SUCCESS
-            resp["apikey"] = u.apikey
-            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+            u = User.objects.get(email =email)
+            
+            if u.password == password:
+                resp["errCode"] = SUCCESS
+                resp["apikey"] = u.apikey
+                return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+            else:
+                resp["errCode"] = ERR_BAD_PASSWORD
+                resp["apikey"] = "None"
+                return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
           except User.DoesNotExist:
             resp["errCode"] = ERR_NOT_USER
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
