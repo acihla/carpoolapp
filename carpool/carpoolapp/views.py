@@ -81,6 +81,19 @@ def signup(request):
 
             date_obj = datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
 
+            phonePattern = re.compile(r'''
+                    # don't match beginning of string, number can start anywhere
+            (\d{3})     # area code is 3 digits (e.g. '800')
+            \D*         # optional separator is any number of non-digits
+            (\d{3})     # trunk is 3 digits (e.g. '555')
+            \D*         # optional separator
+            (\d{4})     # rest of number is 4 digits (e.g. '1212')
+            \D*         # optional separator
+            (\d*)       # extension is optional and can be any number of digits
+            $           # end of string
+            ''', re.VERBOSE)
+            phonedict = phonePattern.search(cellphone).groups()
+            cellphone = "".join(phonedict)
             newUser = User(firstname = firstname, lastname = lastname, email = email, dob = date_obj, sex = sex, password = password, cellphone = cellphone, user_type = driver)
             apikey = newUser.generate_apikey()
             newUser.apikey = apikey
@@ -157,10 +170,13 @@ def  sanitizeSignupData(rdata):
       if(not password or len(password)> MAX_LENGTH_FIRST_LAST_PASS):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
       #validate phone us phone number
+        
+      '''
       phonePattern = re.match(r'^\d{3}-\d{3}-\d{4}$',cellphone)
       phonePattern2 = re.match(r'^\d{10}$',cellphone)
       if phonePattern == None and phonePattern2 == None:
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+      '''
       #validate if driver boolean type
       if (type(driver) is not int) and (driver not in [0,1]):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
@@ -471,15 +487,15 @@ def changeDriverInfo(request):
 
 @csrf_exempt
 def getTestDriver(request):
-    resp = {}
-    testDriver = testUtils.genDriver()
-    resp["apikey"] = testDriver.apikey
-    '''try: 
+    #resp = {}
+    #estDriver = testLib.makeRequest("/signup", method="POST", data = {'firstname':'AJ','lastname':'Cihla','email':'alex.samuel@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblahbla','license_exp':'05-15-2017','car_make':'','car_type':'sedan','car_mileage':100000,'max_passengers':2} )
+    #resp["apikey"] = testDriver.apikey
+    try: 
         testDriver = User.objects.get(email = "alex.samuel@yahoo.com")
         resp["apikey"] = testDriver.apikey
     except User.DoesNotExist:
         resp["apikey"] = "None"
-    '''    
+        
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt

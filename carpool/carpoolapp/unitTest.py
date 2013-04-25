@@ -134,23 +134,23 @@ class UnitTest(unittest.TestCase):
             #print(response)
             self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
 
-        #cell phone formatted incorrectly
+        #cell phone formatted incorrectly but should still work
         def testAddUser10(self):
             newrequest = views.request
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.peter@bs7.com', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '(408)8269366', 'driver' : 0})
             response = views.signup(newrequest)
             response = json.loads(response.content)
             #print(response)
-            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
-        #cell number too long
+        #cell number too long but should be parsed and saved
         def testAddUser11(self):
             newrequest = views.request
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.anita@bs10.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-93668', 'driver' : 0})
             response = views.signup(newrequest)
             response = json.loads(response.content)
             #print(response)
-            self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
         #all good here... rechecking with different info
         def testAddUser12(self):
