@@ -400,12 +400,18 @@ def manageRequest(request):
         resp["errCode"] = SUCCESS
         #print("this is the user type!!!!!" + str(user.user_type))
         if user.user_type == 1:
-            routes = ride_request.objects.filter(driver_apikey = apikey)
-            requests_dict = []
-            for route in routes:
-                requests_dict.append(route.to_dict())
-            resp["rides"] = requests_dict
-            resp['size'] = len(requests_dict)
+            driver_info = DriverInfo.objects.get(driver=user.id)
+            driver_requests = ride_request.objects.filter(driver_apikey = user.apikey)
+            requests = []
+            for request in driver_request:
+                req = request.to_dict()
+                route = Route.objects.get(id=request.route_id)
+                req["route"] = route.to_dict()
+                rider = User.objects.get(apikey = request.rider_apikey)
+                req["rider"] = rider.to_dict()
+                requests.append(req)
+            resp["requests"] = requests
+            resp['size'] = len(requests)
         elif user.user_type == 0:
             routes = ride_request.objects.filter(rider_apikey = apikey)
             requests_dict = []
@@ -514,7 +520,7 @@ def  sanitizeChangeUserInfoData(rdata):
 def changeUserInfo(request):
     resp = {}
     rdata = json.loads(request.body)
-    errCode = sanitizeChangeUserInfoData(rdata)
+    errCode = sanitizeSignupData(rdata)
     resp["errCode"] = errCode
 
     if errCode == SUCCESS:
