@@ -403,7 +403,7 @@ def manageRequest(request):
             driver_info = DriverInfo.objects.get(driver=user.id)
             driver_requests = ride_request.objects.filter(driver_apikey = user.apikey)
             requests = []
-            for request in driver_request:
+            for request in driver_requests:
                 req = request.to_dict()
                 route = Route.objects.get(id=request.route_id)
                 req["route"] = route.to_dict()
