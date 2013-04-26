@@ -33,6 +33,10 @@ ERR_REQUEST_EXISTS =-17
 ERR_KEY_VAL_DOES_NOT_EXISTS =-18
 ERR_BAD_DRIVER_INFO = -19
 ERR_BAD_CREDENTIALS = -20
+ERR_UNKOWN_IN_SIGNUP = -21
+ERR_UNKNOWN_ROUTE = -22
+ERR_NO_RIDER_DRIVER_CONTACT =-23
+ERR_BAD_PASSWORD = -24
 
 class UnitTest(unittest.TestCase):
         """
@@ -299,7 +303,7 @@ class UnitTest(unittest.TestCase):
             #print(response)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
-        #clean login
+        #bad email
         def testLoginUser2(self):
             newrequest = views.request
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
@@ -310,7 +314,7 @@ class UnitTest(unittest.TestCase):
             #print(response)
             self.assertEquals(testLib.RestTestCase.ERR_BAD_EMAIL, response.get("errCode"))
 
-        #clean login
+        #bad password is too long
         def testLoginUser3(self):
             newrequest = views.request
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
@@ -321,7 +325,7 @@ class UnitTest(unittest.TestCase):
             #print(response)
             self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
 
-        #clean login
+        #bad email
         def testLoginUser4(self):
             newrequest = views.request
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
@@ -332,7 +336,7 @@ class UnitTest(unittest.TestCase):
             #print(response)
             self.assertEquals(testLib.RestTestCase.ERR_NOT_USER, response.get("errCode"))
 
-        #clean login
+        #bad password
         def testLoginUser5(self):
             newrequest = views.request
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
@@ -341,7 +345,7 @@ class UnitTest(unittest.TestCase):
             response = views.login(newrequest)
             response = json.loads(response.content)
             #print(response)
-            self.assertEquals(testLib.RestTestCase.ERR_NOT_USER, response.get("errCode"))
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_PASSWORD, response.get("errCode"))
 
 
 
@@ -396,7 +400,7 @@ class UnitTest(unittest.TestCase):
             #print (newrequest)
             response = views.manageRequest(newrequest)
             response = json.loads(response.content)
-            #print(response)
+            print(response)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
 
