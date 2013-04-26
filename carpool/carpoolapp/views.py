@@ -327,7 +327,7 @@ def search(request):
         print str(err)
 
     #TODO Parse json here.
-    departloc = data.get("depart-loc", {})
+    departloc = rdata.get("depart-loc", {})
     destloc = rdata.get("dest-loc", {})
     print rdata
     print departloc 
