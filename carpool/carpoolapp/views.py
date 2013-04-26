@@ -647,6 +647,13 @@ def select_ride(request):
                 yesUrl = url + "&response=1"
                 noUrl = url + "&response=0"
                 message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
+                loc_url = "http://127.0.0.0:8000/driver/accept"
+                loc_url += "?from=" + apikey
+                loc_url += "&to=" + str(driver_info.driver_id)
+                loc_url += "&route_id=" + str(route_id)
+                yes_loc_Url = loc_url + "&response=1"
+                no_loc_Url = loc_url + "&response=0"
+                loc_message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yes_loc_Url + "\n to deny click, \n" + no_loc_Url
 
 
             else:
@@ -663,12 +670,22 @@ def select_ride(request):
             yesUrl = url + "&response=1"
             noUrl = url + "&response=0"
             message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
+            print "now writting my local url"
+            loc_url = "http://127.0.0.1:8000/driver/accept"
+            loc_url += "?from=" + apikey
+            loc_url += "&to=" + str(driver_info.driver_id)
+            loc_url += "&route_id=" + str(route_id)
+            yes_loc_Url = loc_url + "&response=1"
+            no_loc_Url = loc_url + "&response=0"
+            loc_message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yes_loc_Url + "\n to deny click, \n" + no_loc_Url
 
     except KeyError:
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
     try:
-        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+        send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+
+        send_mail('Carpool Ride Notification',loc_message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
     except BadHeaderError:
         print "my fault is this"
@@ -685,9 +702,9 @@ def accept_ride(request):
         r = request.GET
         route_id = r.get("route_id", -1)
         response = r.get("response", "") #-1) What is going on here? this is request right? Why do we have a response segment?
-        rider_id= r.get("from","")
+        rider_apikey= r.get("from","")
         driver_id =r.get("to","")
-        rider =User.objects.get(id=rider_id)
+        rider =User.objects.get(apikey=rider_apikey)
         rider_email = rider.email
         rider_firstname = rider.firstname
         rider_lastname= rider.lastname
@@ -712,9 +729,8 @@ def accept_ride(request):
 
             comment = "I am really excited to have this ride"
             status  = 'Accepted'
-            rq = ride_request.objects.get(rider =rider,route_id=route_id)
+            rq = ride_request.objects.get(rider_apikey =rider_apikey,route_id=route_id)
             rq.status = status
-            rq.comment = comment
             rq.save()
             send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
@@ -724,9 +740,8 @@ def accept_ride(request):
             message = "Sorry " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that the trip you selected with \n" + driver_firstname + " " +driver_lastname + "was denied please select another ride\n"
             comment = "I am sorry but I cannot ride with you"
             status  = 'Denied'
-            rq = ride_request.objects.get(rider =rider,route_id=route_id)
+            rq = ride_request.objects.get(rider_apikey =rider_apikey,route_id=route_id)
             rq.status = status
-            rq.comment = comment
             rq.save()
         
             send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
@@ -830,7 +845,7 @@ def rides_pending(request):
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
 
-def request_ride(rider_apikey,route_id,rider_departlat,rider_departlong,rider_destlat,rider_destlong,rider_departtime,status='Pending'):
+def request_ride(rider_apikey,route_id,rider_departlat="",rider_departlong="",rider_destlat="",rider_destlong="",rider_departtime="",status='Pending'):
     rq= ride_request(rider_apikey =rider_apikey,route_id =route_id,status=status,depart_lat=rider_departlat,depart_lg=rider_departlong,arrive_lat=rider_destlat,depart_time=rider_departtime,arrive_lg=rider_destlong)
     dr = Route.objects.get(id=route_id)
     dr_info = dr.driver_info
