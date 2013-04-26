@@ -870,9 +870,9 @@ def delete_route(request):
 
     except Exception,err: 
         print(err)
+        print "just to get some changes"
         resp["errCode"] = ERR_BAD_APIKEY
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-
 
 @csrf_exempt
 def cancel_request(request):
