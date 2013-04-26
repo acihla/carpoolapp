@@ -112,7 +112,7 @@ def signup(request):
                     car_make = rdata.get("car_make", "")
                     car_type = rdata.get("car_type", "")
                     car_mileage = rdata.get("car_mileage", "")
-                    max_passengers = rdata.get("max_passengers", 0)
+                    max_passengers = str(rdata.get("max_passengers", 0))
                     license_date_obj = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
                     try:
                         newDriverInfo = DriverInfo(driver = newUser, license_no = license_no, license_exp = license_date_obj, car_make = car_make, car_type = car_type, car_mileage = car_mileage, max_passengers = max_passengers)
@@ -192,7 +192,7 @@ def driver_check(rdata):
     car_make = rdata.get("car_make", "")
     car_type = rdata.get("car_type", "")
     car_mileage = rdata.get("car_mileage", "")
-    max_passengers = rdata.get("max_passengers", "")
+    max_passengers = rdata.get("max_passengers", 0)
     resp = {"errCode":SUCCESS}
 
     if(not license_no or len(license_no)> MAX_LENGTH_FIRST_LAST_PASS):
@@ -472,25 +472,59 @@ def changePassword(request):
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
+
+def  sanitizeChangeUserInfoData(rdata): 
+    firstname = rdata.get("firstname", "")
+    lastname = rdata.get("lastname", "")
+    email = rdata.get("email", None)
+    dob = rdata.get("dob", "")
+    sex = rdata.get("sex", "")
+    cellphone = rdata.get("cellphone", "")
+    driver = rdata.get("driverOrNot", 0)
+    resp = {"errCode":SUCCESS}
+    try:
+      u = User.objects.get(email =email)
+      resp["errCode"] = ERR_USER_EXISTS
+    except User.DoesNotExist:
+      #validate not null and not too long firstname
+      if(not firstname or len(firstname)> MAX_LENGTH_FIRST_LAST_PASS):
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+      #validate not null and not too long lastname
+      if(not lastname or len(lastname)> MAX_LENGTH_FIRST_LAST_PASS):
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+      is_valid = validate_email(email)
+      if not is_valid:
+        resp["errCode"] = ERR_BAD_EMAIL
+
+      #validate gooe date of birth
+      #dob format mm-dd-yyyy e.g 04-17-1992
+      try:
+        datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
+      except ValueError,SyntaxError:
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+      #validate sex
+      if sex not in sex_list:
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+      #validate if driver boolean type
+      if (type(driver) is not int) and (driver not in [0,1]):
+        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+    return resp
+
 @csrf_exempt
 def changeUserInfo(request):
     resp = {}
     rdata = json.loads(request.body)
-    apikey = rdata.get("apikey", "")
-    firstname = rdata.get("firstname","")
-    lastname = rdata.get("lastname","")
-    sex = rdata.get("sex","")
-    email = rdata.get("email","")
-    cellphone = rdata.get("email","")
-    dob = rdata.get("dob","")
-    driverOrNot = rdata.get("driverOrNot",0)
-    rdata["driver"] = driverOrNot
-    errCode = sanitizeSignupData(rdata)
+    errCode = sanitizeChangeUserInfoData(rdata)
     resp["errCode"] = errCode
+
     if errCode == SUCCESS:
         user = None
         try:
+            apikey = rdata.get("apikey", "")
             user = User.objects.get(apikey = apikey)
+            
+            cellphone = rdata.get("cellphone","")
+            dob = rdata.get("dob","")
             date_obj = datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
 
             phonePattern = re.compile(r'''
@@ -507,13 +541,13 @@ def changeUserInfo(request):
             phonedict = phonePattern.search(cellphone).groups()
             cellphone = "".join(phonedict)
 
-            user.firstname = firstname
-            user.lastname = lastname
-            user.sex = sex
-            user.email = email
+            user.firstname = rdata.get("firstname","")
+            user.lastname = rdata.get("lastname","")
+            user.sex = rdata.get("sex","")
+            user.email = rdata.get("email","")
             user.cellphone = cellphone
             user.dob = date_obj
-            user.user_type = driverOrNot
+            user.user_type = rdata.get("driverOrNot", 0)
             user.save()
             resp["errCode"] = SUCCESS
         except User.DoesNotExist:
@@ -525,14 +559,28 @@ def changeUserInfo(request):
 def changeDriverInfo(request):
     resp = {}
     rdata = json.loads(request.body)
-    apikey = rdata.get("apikey", "")
-    user = None
-    try:
-        user = User.objects.get(apikey = apikey)
-        resp["errCode"] = SUCCESS
-    except User.DoesNotExist:
-            resp["errCode"] = ERR_BAD_APIKEY
-            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    errCode = driver_check(rdata)
+    resp["errCode"] = errCode
+
+    if errCode == SUCCESS:
+        try:
+            apikey = rdata.get("apikey", "")
+            user = User.objects.get(apikey = apikey)
+            driver_info = DriverInfo.objects.get(driver = user)
+            
+            driver_info.license_no = rdata.get("license_no", "")
+            driver_info.car_make = rdata.get("car_make", "")
+            driver_info.car_type = rdata.get("car_type", "")
+            driver_info.car_mileage = rdata.get("car_mileage", 0)
+            driver_info.max_passengers = str(rdata.get("max_passengers", 0))
+            license_exp = rdata.get("license_exp", "")
+            driver_info.license_exp = datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
+            driver_info.save()
+
+            resp["errCode"] = SUCCESS
+        except User.DoesNotExist:
+                resp["errCode"] = ERR_BAD_APIKEY
+                return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
@@ -586,7 +634,7 @@ def addroute(request):
         else:
             try:
                 driver_info = DriverInfo.objects.get(driver= User.objects.get(apikey=apikey))
-                newRoute = Route(driver_info = driver_info, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = "valid", available_seats = driver_info.max_passengers) #maps_info = directions, 
+                newRoute = Route(driver_info = driver_info, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = "valid", available_seats = int(driver_info.max_passengers)) #maps_info = directions, 
                 newRoute.save()
                 resp = {"errCode" : SUCCESS}
 
