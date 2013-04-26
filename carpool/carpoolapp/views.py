@@ -477,14 +477,48 @@ def changeUserInfo(request):
     resp = {}
     rdata = json.loads(request.body)
     apikey = rdata.get("apikey", "")
-    user = None
-    try:
-        user = User.objects.get(apikey = apikey)
-        resp = user.to_dict()
-        resp["errCode"] = SUCCESS
-    except User.DoesNotExist:
-            resp["errCode"] = ERR_BAD_APIKEY
-            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    firstname = rdata.get("firstname","")
+    lastname = rdata.get("lastname","")
+    sex = rdata.get("sex","")
+    email = rdata.get("email","")
+    cellphone = rdata.get("email","")
+    dob = rdata.get("dob","")
+    driverOrNot = rdata.get("driverOrNot",0)
+    rdata["driver"] = driverOrNot
+    errCode = sanitizeSignupData(rdata)
+    resp["errCode"] = errCode
+    if errCode == SUCCESS:
+        user = None
+        try:
+            user = User.objects.get(apikey = apikey)
+            date_obj = datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
+
+            phonePattern = re.compile(r'''
+                    # don't match beginning of string, number can start anywhere
+            (\d{3})     # area code is 3 digits (e.g. '800')
+            \D*         # optional separator is any number of non-digits
+            (\d{3})     # trunk is 3 digits (e.g. '555')
+            \D*         # optional separator
+            (\d{4})     # rest of number is 4 digits (e.g. '1212')
+            \D*         # optional separator
+            (\d*)       # extension is optional and can be any number of digits
+            $           # end of string
+            ''', re.VERBOSE)
+            phonedict = phonePattern.search(cellphone).groups()
+            cellphone = "".join(phonedict)
+
+            user.firstname = firstname
+            user.lastname = lastname
+            user.sex = sex
+            user.email = email
+            user.cellphone = cellphone
+            user.dob = date_obj
+            user.user_type = driverOrNot
+            user.save()
+            resp["errCode"] = SUCCESS
+        except User.DoesNotExist:
+                resp["errCode"] = ERR_BAD_APIKEY
+                return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 @csrf_exempt
@@ -495,7 +529,6 @@ def changeDriverInfo(request):
     user = None
     try:
         user = User.objects.get(apikey = apikey)
-        resp = user.to_dict()
         resp["errCode"] = SUCCESS
     except User.DoesNotExist:
             resp["errCode"] = ERR_BAD_APIKEY
