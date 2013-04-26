@@ -400,7 +400,7 @@ class UnitTest(unittest.TestCase):
             #print (newrequest)
             response = views.manageRequest(newrequest)
             response = json.loads(response.content)
-            #print(response)
+            print(response)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
 
