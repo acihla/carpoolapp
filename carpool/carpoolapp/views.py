@@ -55,7 +55,6 @@ ERR_BAD_CREDENTIALS = -20
 ERR_UNKOWN_IN_SIGNUP = -21
 ERR_UNKNOWN_ROUTE = -22
 ERR_NO_RIDER_DRIVER_CONTACT =-23
-ERR_BAD_PASSWORD = -24
 #sample_date = "1992-04-17"
 
 class request:
@@ -234,16 +233,10 @@ def login(request):
           email = rdata.get("email", "")
           password = rdata.get("password", "")
           try:
-            u = User.objects.get(email =email)
-            
-            if u.password == password:
-                resp["errCode"] = SUCCESS
-                resp["apikey"] = u.apikey
-                return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-            else:
-                resp["errCode"] = ERR_BAD_PASSWORD
-                resp["apikey"] = "None"
-                return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+            u = User.objects.get(email =email,password = password)
+            resp["errCode"] = SUCCESS
+            resp["apikey"] = u.apikey
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
           except User.DoesNotExist:
             resp["errCode"] = ERR_NOT_USER
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
@@ -594,46 +587,29 @@ def addroute(request):
 @csrf_exempt
 def select_ride(request):
     try:
-        data = json.loads(request.raw_post_data)
+        data = json.loads(request.body)
         apikey = data.get("apikey", "")
         user = None
         route_id = data.get("route_id",-1)
-        departloc = data.get("depart-loc", {})
-        destloc = data.get("dest-loc", {})
         rider_departloc = data.get("rider_depart_loc",{})
         rider_arriveloc = data.get("rider_arrive_loc",{})
-        date = data.get("date", "")
-        departtime = data.get("depart_time", "")
-        departlat = departloc.get("lat", "") #was previously hardcoded?!
-        departlong = departloc.get("long", "") #was previously hardcoded?!
-        destlat = destloc.get("lat", "")
-        destlong = destloc.get("long", "")
         #print route_id
         rider_departtime = data.get("rider_depart_time", "")
         rider_departlat = rider_departloc.get("rider_d_lat", "") 
         rider_departlong = rider_departloc.get("rider_d_long", "") 
         rider_destlat = rider_arriveloc.get("rider_a_lat", "")
         rider_destlong = rider_arriveloc.get("rider_a_long", "")
-        print str(rider_departtime)
-        print "rider depart_lat " + str(rider_departlat)
 
         try:
-            #print "in the try for user_exist"
             user = User.objects.get(apikey = apikey)
-            #print "after getting user"
             rider = user
-            #print "im after route_id"
             rider_email = rider.email
-            #print 'rider email is:' + rider_email
-            #print "before user doesnotexist ecxception"
         except User.DoesNotExist:
             resp={}
             resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
         try:
-            #print "try for bad route_id"
             route = Route.objects.get(id=route_id)
-            #print route_id
             driver_info =route.driver_info
             driver_email = driver_info.driver.email
             driver_firstname = driver_info.driver.firstname
@@ -677,7 +653,6 @@ def select_ride(request):
             yesUrl = url + "&response=1"
             noUrl = url + "&response=0"
             message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
-            print "now writting my local url"
             loc_url = "http://127.0.0.1:8000/driver/accept"
             loc_url += "?from=" + apikey
             loc_url += "&to=" + str(driver_info.driver_id)
