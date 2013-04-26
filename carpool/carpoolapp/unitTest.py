@@ -137,7 +137,7 @@ class UnitTest(unittest.TestCase):
             #print(response)
             self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
 
-        #cell phone formatted incorrectly but should still work
+        #cell phone formatted incorrectly  should not work
         def testAddUser10(self):
             newrequest = views.request
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.peter@bs7.com', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '(408)8269366', 'driver' : 0})
