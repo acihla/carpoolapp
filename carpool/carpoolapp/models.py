@@ -127,11 +127,11 @@ class ride_request(models.Model):
     rider_apikey = models.CharField(max_length=40)
     route_id = models.IntegerField()
     status = models.CharField(max_length=64)
+    driver_apikey = models.CharField(max_length=40,default="")
     depart_lat = models.CharField(max_length=20,null=True)
     depart_lg = models.CharField(max_length=20, null=True)
     arrive_lat = models.CharField(max_length=20, null=True)
-    arrive_lg = models.CharField(max_length=20, null=True)
-    driver_apikey = models.CharField(max_length=40,default="")
+    arrive_lg = models.CharField(max_length=20, null=True)  
     depart_time = models.CharField(max_length=20,default="")
     req_start = models.CharField(max_length=100, default = "")
     req_end = models.CharField(max_length=100, default = "")
@@ -141,6 +141,13 @@ class ride_request(models.Model):
         rtn["id"] = self.id
         rtn["route_id"] = self.route_id
         rtn["status"] = self.status
+        rtn["depart_lat"] = self.depart_lat
+        rtn["depart_lg"] = self.depart_lg
+        rtn["arrive_lat"] = self.arrive_lat
+        rtn["arriver_lg"] =  self.arrive_lg
+        rtn["depart_time"] = self.depart_time
+        rtn["req_start"] = self.req_start
+        rtn["req_end"] = self.req_end
 
     def to_dict_unsecure(self):
         rtn = {}
@@ -149,6 +156,13 @@ class ride_request(models.Model):
         rtn["route_id"] = self.route_id
         rtn["status"] = self.status
         rtn["driver_apikey"] = self.driver_apikey
+        rtn["depart_lat"] = self.depart_lat
+        rtn["depart_lg"] = self.depart_lg
+        rtn["arrive_lat"] = self.arrive_lat
+        rtn["arriver_lg"] =  self.arrive_lg
+        rtn["depart_time"] = self.depart_time
+        rtn["req_start"] = self.req_start
+        rtn["req_end"] = self.req_end
 
 
 #from http://djangosnippets.org/snippets/199/
