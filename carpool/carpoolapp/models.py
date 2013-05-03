@@ -25,9 +25,9 @@ class User(models.Model):
         try:
             ratings = Rating.objects.filter(owner = self)
             for rate in ratings:
-                comments = rate.author+": ("+rate.rating+") " + rate.comment +"\n" + comments
+                comments = rate.author+": ("+str(rate.rating)+") " + rate.comment +"\n" + comments
         except Exception, err:
-            pass
+            comments=""
 
         rtn["comments"] = comments
 
