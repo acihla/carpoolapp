@@ -48,6 +48,7 @@ Superclass for our functional tests. Defines the boilerplate for the tests
     ERR_UNKNOWN_ROUTE = -22
     ERR_NO_RIDER_DRIVER_CONTACT =-23
     ERR_BAD_PASSWORD = -24
+    ERR_UNKNOWN_DRIVER = -26
     # Lookup the name of the server to test
 
     serverToTest = "127.0.0.1:8000"

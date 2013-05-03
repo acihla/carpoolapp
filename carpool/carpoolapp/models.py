@@ -126,7 +126,7 @@ class Route(models.Model):
 class ride_request(models.Model):
     rider_apikey = models.CharField(max_length=40)
     route_id = models.IntegerField()
-    status = models.CharField(max_length=64)
+    status = models.CharField(max_length=64) #Cancelled, Pending, Accepted, Denied
     driver_apikey = models.CharField(max_length=40,default="")
     depart_lat = models.CharField(max_length=20,null=True)
     depart_lg = models.CharField(max_length=20, null=True)
