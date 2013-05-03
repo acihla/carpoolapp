@@ -300,9 +300,9 @@ self.routes = models.Route()
         #clean login
         def testLoginUser1(self):
             newrequest = views.request
-            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.unique@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.neverseen@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
             views.signup(newrequest)
-            newrequest.body = json.dumps({'email':'alex.unique@berkeley.edu', 'password':'password'})
+            newrequest.body = json.dumps({'email':'alex.neverseen@berkeley.edu', 'password':'password'})
             response = views.login(newrequest)
             response = json.loads(response.content)
             #print(response)
@@ -352,7 +352,93 @@ self.routes = models.Route()
             #print(response)
             self.assertEquals(testLib.RestTestCase.ERR_BAD_PASSWORD, response.get("errCode"))
 
+        def testLoginUser6(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest = json.dumps({'email' :'alex.gatech@berkeley.edu','password':'doualacameroun'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_KEY, response.get("errCode"))
 
+
+        #bad password
+        def testLoginUser7(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest.body = json.dumps({'email' :'alex.gatech@berkeley.eduthisshouldbewaywaywaytoooooooooooooooooooolonggggggg','password':'doualacameroun'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_EMAIL, response.get("errCode"))
+
+
+        #
+        #TESTING SEARCH 
+        #
+
+        #good search request
+        def testSearch1(self):
+            newrequest = views.request
+            testRide= testUtils.genRide()
+            departLocLat = testRide.depart_lat
+            departLocLong = testRide.depart_lg
+            destLocLat = testRide.arrive_lat
+            destLocLong = testRide.arrive_lg
+            testDate = "bullcrapdate"
+            testTime = "craptime"
+            testThresh = "50"
+            newrequest.body = json.dumps({ "depart-loc": {"lat" : departLocLat, "long" : departLocLong} , "dest-loc" : {"lat" : destLocLat, "long" : destLocLong} , "time-depart" : "0:36", "date":"04-09-2013", "dist-thresh" : testThresh} )
+            response = views.search(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+        #badly formed json request
+        def testSearch2(self):
+            newrequest = views.request
+            testRide= testUtils.genRide()
+            departLocLat = testRide.depart_lat
+            departLocLong = testRide.depart_lg
+            destLocLat = testRide.arrive_lat
+            destLocLong = testRide.arrive_lg
+            testDate = "bullcrapdate"
+            testTime = "craptime"
+            testThresh = "50"
+            newrequest = json.dumps({ "depart-loc": {"lat" : departLocLat, "long" : departLocLong} , "dest-loc" : {"lat" : destLocLat, "long" : destLocLong} , "time-depart" : "0:36", "date":"04-09-2013", "dist-thresh" : testThresh} )
+            response = views.search(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_JSON, response.get("errCode"))
+
+
+        #
+        #TESTING MANAGE ROUTES 
+        #
+
+        #good manageRoute request
+        def testManageRoutes1(self):
+            newrequest = views.request
+            testRide= testUtils.genRide()
+            testApi = testRide.driver_info.driver.apikey
+            newrequest.body = json.dumps({ "apikey" : testApi })
+            response = views.manageRoute(newrequest)
+            response = json.loads(response.content)
+            print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+        #bad manageRoute request, api invalid
+        def testManageRoutes2(self):
+            newrequest = views.request
+            testRide= testUtils.genRide()
+            testApi = testRide.driver_info.driver.apikey
+            newrequest.body = json.dumps({ "apikey" : "23094802394029352" })
+            response = views.manageRoute(newrequest)
+            response = json.loads(response.content)
+            print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_APIKEY, response.get("errCode"))
 
 
         #
@@ -401,11 +487,27 @@ self.routes = models.Route()
             response = views.addroute(newrequest)
             newrequest.body = json.dumps({ 'apikey' : testApi,"edt":"0:36","dest-lat":"37.83421105081068","depart-long":"-122.27687716484068","depart-lat":"37.856989109666834","date":"04-09-2013","dest-long":"-122.27281998842956"} )
             response = views.addroute(newrequest)
+            
+            testRider = testUtils.genUser()
+            testRide = testUtils.genRide()
+            testId = testRide.id
+            testApi = testRide.driver_info.driver.apikey
+            departLocLat = testRide.depart_lat
+            departLocLong = testRide.depart_lg
+            destLocLat = testRide.arrive_lat
+            destLocLong = testRide.arrive_lg
+
+            newrequest.body = json.dumps({ "apikey" : testRider.apikey , "route_id" : testId, "depart-loc": {"lat" : departLocLat, "long" : departLocLong} , "dest-loc" : {"lat" : destLocLat, "long" : destLocLong} , "rider_depart_loc": {"rider_d_lat" : departLocLat, "rider_d_long" : departLocLong} , "rider_arrive_loc" : {"rider_a_lat" : destLocLat, "rider_a_long" : destLocLong}, "depart_time" : "0:36", "date":"04-09-2013", "rider_depart_time" : "0:38"} )
+            response = views.select_ride(newrequest)
+            print response
             newrequest.body = json.dumps({'apikey' : testApi})
             #print (newrequest)
+            print("!!!!!!!!!!!!!!!!!!!!" + str(response))
+            print(response)
             response = views.manageRequest(newrequest)
             response = json.loads(response.content)
-            print(response)
+
+            #print(response)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
 
