@@ -59,6 +59,7 @@ ERR_UNKOWN_IN_SIGNUP = -21
 ERR_UNKNOWN_ROUTE = -22
 ERR_NO_RIDER_DRIVER_CONTACT =-23
 ERR_BAD_PASSWORD = -24
+ERR_SEE_ERR_MSG = -25
 #sample_date = "1992-04-17"
 
 class request:
@@ -380,19 +381,23 @@ def manageRequest(request):
             for request in driver_requests:
                 req = request.to_dict()
                 route = Route.objects.get(id=request.route_id)
-                req["route"] = route.to_dict()
+                if route is None:
+                    resp["errMsg"] =  "route is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["route"] = route.to_dict()
                 rider = User.objects.get(apikey = request.rider_apikey)
-                req["rider"] = rider.to_dict()
+                if rider is None:
+                    resp["errMsg"] = "rider is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["rider"] = rider.to_dict()
                 requests.append(req)
             resp["requests"] = requests
             resp['size'] = len(requests)
         elif user.user_type == 0:
-            routes = ride_request.objects.filter(rider_apikey = apikey)
-            requests_dict = []
-            for route in routes:
-                requests_dict.append(route.to_dict())
-            resp["rides"] = requests_dict
-            resp['size'] = len(requests_dict)
+            resp["errCode"] = ERR_SEE_ERR_MSG
+            resp["errMsg"] = "Not a driver"
         else:
             resp["errCode"] = ERR_BAD_APIKEY
     except User.DoesNotExist:
