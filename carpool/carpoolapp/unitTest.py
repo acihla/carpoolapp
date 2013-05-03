@@ -686,12 +686,12 @@ self.routes = models.Route()
             testRide  = testUtils.genRide()
             testApi = testRider.apikey
             testRouteID = testRide.id
-            driver_id = testRide.driver_info.driver.id
+            driver_api = testRide.driver_info.driver.apikey
             newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
             response = views.select_ride(newrequest)
             response = json.loads(response.content)
             accept_request = views.request
-            accept_request.body =json.dumps({"route_id":testRouteID,"response":1,"from":testApi,"to":driver_id})
+            accept_request.body =json.dumps({"request_id":1,"response":1,"driver_api":driver_api})
             response1 = views.accept_ride(accept_request)
             response1 = json.loads(response1.content)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response1.get("errCode"))
@@ -703,12 +703,12 @@ self.routes = models.Route()
             testRide  = testUtils.genRide()
             testApi = testRider.apikey
             testRouteID = testRide.id
-            driver_id = testRide.driver_info.driver.id
+            driver_api = testRide.driver_info.driver.apikey
             newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
             response = views.select_ride(newrequest)
             response = json.loads(response.content)
             accept_request = views.request
-            accept_request.body =json.dumps({"route_id":3000,"response":1,"from":testApi,"to":driver_id})
+            accept_request.body =json.dumps({"request_id":-1,"response":1,"driver_api":driver_api})
             response1 = views.accept_ride(accept_request)
             response1 = json.loads(response1.content)
             self.assertEquals(testLib.RestTestCase.ERR_UNKNOWN_ROUTE, response1.get("errCode"))
@@ -720,35 +720,17 @@ self.routes = models.Route()
             testRide  = testUtils.genRide()
             testApi = testRider.apikey
             testRouteID = testRide.id
-            driver_id = testRide.driver_info.driver.id
+            driver_api = testRide.driver_info.driver.apikey
             newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
             response = views.select_ride(newrequest)
             response = json.loads(response.content)
             accept_request = views.request
-            accept_request.body =json.dumps({"route_id":testRouteID,"response":1,"from":"AAAA","to":driver_id})
+            accept_request.body =json.dumps({"request_id":1,"response":1,"driver_api":"2323423"})
             response1 = views.accept_ride(accept_request)
             response1 = json.loads(response1.content)
             self.assertEquals(testLib.RestTestCase.ERR_BAD_APIKEY, response1.get("errCode"))
 
 
-
-        
-        #test fail because of bad driver_info id  accept_ride
-        def testBadDriverInfoIDAcceptRide(self):
-            newrequest = views.request
-            testRider = testUtils.genUser()
-            testRide  = testUtils.genRide()
-            testApi = testRider.apikey
-            testRouteID = testRide.id
-            driver_id = testRide.driver_info.driver.id
-            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
-            response = views.select_ride(newrequest)
-            response = json.loads(response.content)
-            accept_request = views.request
-            accept_request.body =json.dumps({"route_id":testRouteID,"response":1,"from":testApi,"to":600000})
-            response1 = views.accept_ride(accept_request)
-            response1 = json.loads(response1.content)
-            self.assertEquals(testLib.RestTestCase.ERR_UNKNOWN_DRIVER, response1.get("errCode"))
 
         #test pass  accept_ride
         def testGoodDenyRide(self):
@@ -757,12 +739,12 @@ self.routes = models.Route()
             testRide  = testUtils.genRide()
             testApi = testRider.apikey
             testRouteID = testRide.id
-            driver_id = testRide.driver_info.driver.id
+            driver_api = testRide.driver_info.driver.apikey
             newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
             response = views.select_ride(newrequest)
             response = json.loads(response.content)
             accept_request = views.request
-            accept_request.body =json.dumps({"route_id":testRouteID,"response":0,"from":testApi,"to":driver_id})
+            accept_request.body =json.dumps({"request_id":1,"response":0,"driver_api":driver_api})
             response1 = views.accept_ride(accept_request)
             response1 = json.loads(response1.content)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response1.get("errCode"))
@@ -774,12 +756,12 @@ self.routes = models.Route()
             testRide  = testUtils.genRide()
             testApi = testRider.apikey
             testRouteID = testRide.id
-            driver_id = testRide.driver_info.driver.id
+            driver_api = testRide.driver_info.driver.apikey
             newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
             response = views.select_ride(newrequest)
             response = json.loads(response.content)
             accept_request = views.request
-            accept_request.body =json.dumps({"route_id":3000,"response":0,"from":testApi,"to":driver_id})
+            accept_request.body =json.dumps({"request_id":-1,"response":1,"driver_api":driver_api})
             response1 = views.accept_ride(accept_request)
             response1 = json.loads(response1.content)
             self.assertEquals(testLib.RestTestCase.ERR_UNKNOWN_ROUTE, response1.get("errCode"))
@@ -791,17 +773,15 @@ self.routes = models.Route()
             testRide  = testUtils.genRide()
             testApi = testRider.apikey
             testRouteID = testRide.id
-            driver_id = testRide.driver_info.driver.id
+            driver_api = testRide.driver_info.driver.apikey
             newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
             response = views.select_ride(newrequest)
             response = json.loads(response.content)
             accept_request = views.request
-            accept_request.body =json.dumps({"route_id":testRouteID,"response":0,"from":"AAAA","to":driver_id})
+            accept_request.body =json.dumps({"request_id":1,"response":1,"driver_api":"s23924234"})
             response1 = views.accept_ride(accept_request)
             response1 = json.loads(response1.content)
             self.assertEquals(testLib.RestTestCase.ERR_BAD_APIKEY, response1.get("errCode"))
-
-
 
         #test fail because of bad driver_info id  accept_ride
         def testBadDriverInfoIDDenyRide(self):
@@ -819,7 +799,6 @@ self.routes = models.Route()
             response1 = views.accept_ride(accept_request)
             response1 = json.loads(response1.content)
             self.assertEquals(testLib.RestTestCase.ERR_UNKNOWN_DRIVER, response1.get("errCode"))
-        
 
         #test  past good cancel request
         def testGoodCancelRide(self):
