@@ -937,7 +937,7 @@ def accept_ride(request):
         return HttpResponse(json.dumps({'errCode':ERR_BAD_SERVER_RESPONSE}),content_type="application/json")
 
     return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json") 
- 
+'''
 def rides_accepted(request):
     try:
         print "in the begining of accepted"
@@ -1026,7 +1026,7 @@ def rides_pending(request):
     except KeyError:
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
-
+'''
 def request_ride(rider_apikey,route_id,rider_departlat,rider_departlong,rider_destlat,rider_destlong,rider_departtime,status='Pending'):
     rq= ride_request(rider_apikey =rider_apikey,route_id =route_id,status=status,depart_lat=rider_departlat,depart_lg=rider_departlong,arrive_lat=rider_destlat,depart_time=rider_departtime,arrive_lg=rider_destlong)
     dr = Route.objects.get(id=route_id)
@@ -1159,7 +1159,7 @@ def deleteRides(request):
 @csrf_exempt
 def generateExamples(request):
     resp = {"errCode":SUCCESS}
-    r = request.GET
+    r = json.loads(request.body)
     num = int(r.get("num", 0))
     resp['num'] = num
     for i in xrange(0,num):

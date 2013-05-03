@@ -647,6 +647,34 @@ self.routes = models.Route()
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
 
+        #managing requests fails because bad api
+        def testManageRequestsDriverBad1(self):
+            newrequest = views.request
+            testDriver = testUtils.genDriver()
+    
+            testRider = testUtils.genUser()
+            testRide = testUtils.genRide()
+            testId = testRide.id
+            testApi = testRide.driver_info.driver.apikey
+            departLocLat = testRide.depart_lat
+            departLocLong = testRide.depart_lg
+            destLocLat = testRide.arrive_lat
+            destLocLong = testRide.arrive_lg
+
+            newrequest.body = json.dumps({ "apikey" : testRider.apikey , "route_id" : testId, "depart-loc": {"lat" : departLocLat, "long" : departLocLong} , "dest-loc" : {"lat" : destLocLat, "long" : destLocLong} , "rider_depart_loc": {"rider_d_lat" : departLocLat, "rider_d_long" : departLocLong} , "rider_arrive_loc" : {"rider_a_lat" : destLocLat, "rider_a_long" : destLocLong}, "depart_time" : "0:36", "date":"04-09-2013", "rider_depart_time" : "0:38"} )
+            response = views.select_ride(newrequest)
+            #print response
+            newrequest.body = json.dumps({'apikey' : "23423523Api"})
+            #print (newrequest)
+            #print("!!!!!!!!!!!!!!!!!!!!" + str(response))
+            #print(response)
+            response = views.manageRequest(newrequest)
+            response = json.loads(response.content)
+
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_APIKEY, response.get("errCode"))
+
+
         def testManageRequestsRiderPending1(self):
             newrequest = views.request
             
@@ -670,6 +698,29 @@ self.routes = models.Route()
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
 
+        #bad manage request rider pending... bad api
+        def testManageRequestsRiderPendingBad1(self):
+            newrequest = views.request
+            
+            testRider = testUtils.genUser()
+            testRide = testUtils.genRide()
+            testId = testRide.id
+            testApi = testRider.apikey
+            departLocLat = testRide.depart_lat
+            departLocLong = testRide.depart_lg
+            destLocLat = testRide.arrive_lat
+            destLocLong = testRide.arrive_lg
+
+            newrequest.body = json.dumps({ "apikey" : testApi , "route_id" : testId, "depart-loc": {"lat" : departLocLat, "long" : departLocLong} , "dest-loc" : {"lat" : destLocLat, "long" : destLocLong} , "rider_depart_loc": {"rider_d_lat" : departLocLat, "rider_d_long" : departLocLong} , "rider_arrive_loc" : {"rider_a_lat" : destLocLat, "rider_a_long" : destLocLong}, "depart_time" : "0:36", "date":"04-09-2013", "rider_depart_time" : "0:38"} )
+            response = views.select_ride(newrequest)
+            #print response
+            newrequest.body = json.dumps({'apikey' : "232323423"})
+            response = views.managePendingRequest(newrequest)
+            response = json.loads(response.content)
+            #print "!!!!!!!!!!!!!" + str(response.get("errMsg"))
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_APIKEY, response.get("errCode"))
+
 
         def testManageRequestsRiderAccepted1(self):
             newrequest = views.request
@@ -691,6 +742,30 @@ self.routes = models.Route()
             #print "!!!!!!!!!!!!!" + str(response.get("errMsg"))
             #print(response)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+
+        #bad version of above due to bad apikey
+        def testManageRequestsRiderAcceptedBad1(self):
+            newrequest = views.request
+            testRider = testUtils.genUser()
+            testRide = testUtils.genRide()
+            testId = testRide.id
+            testApi = testRider.apikey
+            departLocLat = testRide.depart_lat
+            departLocLong = testRide.depart_lg
+            destLocLat = testRide.arrive_lat
+            destLocLong = testRide.arrive_lg
+
+            newrequest.body = json.dumps({ "apikey" : testApi , "route_id" : testId, "depart-loc": {"lat" : departLocLat, "long" : departLocLong} , "dest-loc" : {"lat" : destLocLat, "long" : destLocLong} , "rider_depart_loc": {"rider_d_lat" : departLocLat, "rider_d_long" : departLocLong} , "rider_arrive_loc" : {"rider_a_lat" : destLocLat, "rider_a_long" : destLocLong}, "depart_time" : "0:36", "date":"04-09-2013", "rider_depart_time" : "0:38"} )
+            response = views.select_ride(newrequest)
+            #print response
+            newrequest.body = json.dumps({'apikey' : "23423423423423"})
+            response = views.manageAcceptedRequest(newrequest)
+            response = json.loads(response.content)
+            #print "!!!!!!!!!!!!!" + str(response.get("errMsg"))
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_APIKEY, response.get("errCode"))
+
 
         #
         #CHECK SANITIZATION EFFORTS
@@ -1176,7 +1251,21 @@ self.routes = models.Route()
             response1 = views.cancel_request(feedback_rq)
             response1 = json.loads(response1.content)
             self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response1.get("errCode"))
-           ''' 
+        ''' 
+        #so that we dont delete db
+        '''
+        #testing deleting db function
+        def testDelDB(self):
+            newrequest = views.request
+            response = views.deleteRides(newrequest)
+            response = json.loads(response.content)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
-
-
+        '''
+        #testing generating examples function
+        def testGenEx(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({"num" : 5})
+            response = views.generateExamples(newrequest)
+            response = json.loads(response.content)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
