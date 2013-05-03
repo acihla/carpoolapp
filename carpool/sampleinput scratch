@@ -51,3 +51,5 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"048d75afcc16a9879d577b186e7586e362d9518f"}' http://carpool1691.herokuapp.com/driver/manageRequest > response.html
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"email":"sku@test.com", "password":"test"}' http://carpool1691.herokuapp.com/rider/login > response.html
+
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"15057db3147e947361b6870becf5450fb1e83cae"}' http://carpool1691.herokuapp.com/driver/manageAcceptedRequest > response.html

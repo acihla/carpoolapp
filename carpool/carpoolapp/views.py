@@ -60,6 +60,7 @@ ERR_UNKNOWN_ROUTE = -22
 ERR_NO_RIDER_DRIVER_CONTACT =-23
 ERR_BAD_PASSWORD = -24
 ERR_SEE_ERR_MSG = -25
+ERR_UNKNOWN_DRIVER =-26
 #sample_date = "1992-04-17"
 
 class request:
@@ -379,20 +380,21 @@ def manageRequest(request):
             driver_requests = ride_request.objects.filter(driver_apikey = user.apikey)
             requests = []
             for request in driver_requests:
-                req = request.to_dict()
-                route = Route.objects.get(id=request.route_id)
-                if route is None:
-                    resp["errMsg"] =  "route is None"
-                    resp["errCode"] = ERR_SEE_ERR_MSG
-                else:
-                    req["route"] = route.to_dict()
-                rider = User.objects.get(apikey = request.rider_apikey)
-                if rider is None:
-                    resp["errMsg"] = "rider is None"
-                    resp["errCode"] = ERR_SEE_ERR_MSG
-                else:
-                    req["rider"] = rider.to_dict()
-                requests.append(req)
+                if request.status != "Cancelled":
+                    req = request.to_dict()
+                    try:
+                        route = Route.objects.get(id=request.route_id)
+                        req["route"] = route.to_dict()
+                    except Exception, err:
+                        req["route"] = "Cancelled"
+                        
+                    rider = User.objects.get(apikey = request.rider_apikey)
+                    if rider is None:
+                        resp["errMsg"] = "rider is None"
+                        resp["errCode"] = ERR_SEE_ERR_MSG
+                    else:
+                        req["rider"] = rider.to_dict()
+                    requests.append(req)
             resp["requests"] = requests
             resp['size'] = len(requests)
         elif user.user_type == 0:
@@ -864,24 +866,43 @@ def select_ride(request):
         return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="application/json")
 
     return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
-
 @csrf_exempt
 def accept_ride(request):
     print "in accept_ride"
     try:
         r = json.loads(request.body)
         route_id = r.get("route_id", -1)
+        driver_id =r.get("to","")
         response = r.get("response", -1) #-1) What is going on here? this is request right? Why do we have a response segment?
         rider_apikey= r.get("from","")
-        driver_id =r.get("to","")
-        rider =User.objects.get(apikey=rider_apikey)
-        print 'rider_apikey: ' + rider_apikey
-        rider_email = rider.email
-        rider_firstname = rider.firstname
-        rider_lastname= rider.lastname
-        driver_info = DriverInfo.objects.get(driver_id=driver_id)
-        driver_firstname= driver_info.driver.firstname
-        driver_lastname= driver_info.driver.lastname
+
+        try:
+            route = Route.objects.get(id=route_id)
+        except Route.DoesNotExist:
+            err = ERR_UNKNOWN_ROUTE
+            return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
+        try:
+            driver_info = DriverInfo.objects.get(driver_id=driver_id)
+            driver_firstname= driver_info.driver.firstname
+            driver_lastname= driver_info.driver.lastname
+
+        except DriverInfo.DoesNotExist:
+            err = ERR_UNKNOWN_DRIVER
+            return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
+
+        try:
+
+            rider =User.objects.get(apikey=rider_apikey)
+            print 'rider_apikey: ' + rider_apikey
+            rider_email = rider.email
+            rider_firstname = rider.firstname
+            rider_lastname= rider.lastname
+
+        except User.DoesNotExist:
+            resp={}
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
         print "route id: " + str(route_id)
         print "response: " + str(response)
         print "rider_email:" + rider_email
@@ -889,8 +910,6 @@ def accept_ride(request):
         print "rider_lastname:" + rider_lastname
         print "driver_firstname:"+ driver_firstname
         print "driver_lastname:" + driver_lastname
-        route = Route.objects.get(id=route_id)
-        print route
         if response == 1:
             print "in response 1"
             message = "Congratulation " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that your trip is now confirmed with \n" + driver_firstname + " "+ driver_lastname
