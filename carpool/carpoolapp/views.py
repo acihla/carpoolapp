@@ -796,20 +796,14 @@ def select_ride(request):
         route_id = data.get("route_id",-1)
         departloc = data.get("depart-loc", {})
         destloc = data.get("dest-loc", {})
-        rider_departloc = data.get("rider_depart_loc",{})
-        rider_arriveloc = data.get("rider_arrive_loc",{})
+
+        rider_departlat= departloc.get("lat", "0")[:14]
+        rider_departlong = departloc.get("long", "0")[:14]
+        rider_destlat = destloc.get("lat", "0")[:14]
+        rider_destlong = destloc.get("long", "0")[:14]
         date = data.get("date", "")
-        departtime = data.get("depart_time", "")
-        departlat = departloc.get("lat", "") #was previously hardcoded?!
-        departlong = departloc.get("long", "") #was previously hardcoded?!
-        destlat = destloc.get("lat", "")
-        destlong = destloc.get("long", "")
-        #print route_id
-        rider_departtime = data.get("rider_depart_time", "")
-        rider_departlat = rider_departloc.get("rider_d_lat", "")
-        rider_departlong = rider_departloc.get("rider_d_long", "")
-        rider_destlat = rider_arriveloc.get("rider_a_lat", "")
-        rider_destlong = rider_arriveloc.get("rider_a_long", "")
+        rider_departtime = data.get("time-depart", "")
+
         print str(rider_departtime)
         print "rider depart_lat " + str(rider_departlat)
 
@@ -850,7 +844,7 @@ def select_ride(request):
                 yesUrl = url + "&response=1"
                 noUrl = url + "&response=0"
                 '''
-                message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept or deny please check your account"
+                message = rider.firstname +" "+rider.lastname+ " would like a ride from you to accept or deny please check your account"
 
                 '''loc_url = "http://127.0.0.1:8000/driver/accept"
                 loc_url += "?from=" + apikey
@@ -875,7 +869,7 @@ def select_ride(request):
             yesUrl = url + "&response=1"
             noUrl = url + "&response=0"
             '''
-            message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept or deny, please visit your account"
+            message = rider.firstname +" "+rider.lastname+ " would like a ride from you to accept or deny, please visit your account"
             '''
             loc_url = "http://127.0.0.1:8000/driver/accept"
 
