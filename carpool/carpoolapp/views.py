@@ -410,6 +410,86 @@ def manageRequest(request):
 
 
 @csrf_exempt
+def managePendingRequest(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp["errCode"] = SUCCESS
+        rider_requests = ride_request.objects.filter(rider_apikey=apikey)
+        requests = []
+        for request in rider_requests:
+            if request.status == "Pending":
+                req = request.to_dict()
+                route = Route.objects.get(id=request.route_id)
+                if route is None:
+                    resp["errMsg"] =  "route is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["route"] = route.to_dict()
+
+                rider = User.objects.get(apikey = request.rider_apikey)
+                if rider is None:
+                    resp["errMsg"] = "rider is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["rider"] = rider.to_dict()
+                requests.append(req)
+        resp["requests"] = requests
+        resp['size'] = len(requests)
+
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    except ride_request.DoesNotExist:
+        resp["errCode"] = SUCCESS
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+
+@csrf_exempt
+def manageAcceptedRequest(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp["errCode"] = SUCCESS
+        rider_requests = ride_request.objects.filter(rider_apikey=apikey)
+        requests = []
+        for request in rider_requests:
+            if request.status == "Accepted":
+                req = request.to_dict()
+                route = Route.objects.get(id=request.route_id)
+                if route is None:
+                    resp["errMsg"] =  "route is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["route"] = route.to_dict()
+
+                rider = User.objects.get(apikey = request.rider_apikey)
+                if rider is None:
+                    resp["errMsg"] = "rider is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["rider"] = rider.to_dict()
+                requests.append(req)
+        resp["requests"] = requests
+        resp['size'] = len(requests)
+
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    except ride_request.DoesNotExist:
+        resp["errCode"] = SUCCESS
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+
+@csrf_exempt
 def getProfile(request):
     resp = {}
     rdata = json.loads(request.body)
