@@ -42,7 +42,7 @@ ERR_UNKOWN_IN_SIGNUP = -21
 ERR_UNKNOWN_ROUTE = -22
 ERR_NO_RIDER_DRIVER_CONTACT =-23
 ERR_BAD_PASSWORD = -24
-ERR_UNKNOWN_DRIVER =-25
+ERR_UNKNOWN_DRIVER =-26
 class UnitTest(unittest.TestCase):
         """
 Unittests for the Users model class (a sample, incomplete)
