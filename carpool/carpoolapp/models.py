@@ -11,7 +11,7 @@ class User(models.Model):
     password = models.CharField(max_length=20)
     cellphone = models.CharField(max_length=20)
     user_type = models.IntegerField(default = 0)
-    comments = models.CharField(default="", max_length=200)
+    comments = models.CharField(default="", max_length=200) #DO NOT USE
     avg_rating = models.FloatField(default = 0)
     apikey = models.CharField(max_length=40, default="")
 
@@ -20,6 +20,17 @@ class User(models.Model):
 
     def to_dict(self):
         rtn = {}
+        #Pulling comments from Rating table
+        comments = ""
+        try:
+            ratings = Rating.objects.filter(owner = self)
+            for rate in ratings:
+                comments = rate.author+": ("+rate.rating+") " + rate.comment +"\n" + comments
+        except Exception, err:
+            pass
+
+        rtn["comments"] = comments
+
         rtn["id"] = self.id
         rtn["firstname"] = self.firstname
         rtn["lastname"] = self.lastname
@@ -28,24 +39,13 @@ class User(models.Model):
         rtn["sex"] = self.sex
         rtn["cellphone"] = self.cellphone
         rtn["user_type"] = self.user_type
-        rtn["comments"] = self.comments
+        #rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
         return rtn
 
     def to_dict_unsecure(self):
-        rtn = {}
-        rtn["id"] = self.id
-        rtn["firstname"] = self.firstname
-        rtn["lastname"] = self.lastname
-        #rtn["username"] = self.username
-        rtn["email"] = self.email
-        rtn["dob"] = self.dob
-        rtn["sex"] = self.sex
+        rtn = self.to_dict()
         rtn["password"] = self.password
-        rtn["cellphone"] = self.cellphone
-        rtn["user_type"] = self.user_type
-        rtn["comments"] = self.comments
-        rtn["avg_rating"] = self.avg_rating
         rtn["apikey"] = self.apikey
         return rtn
 

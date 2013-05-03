@@ -27,4 +27,6 @@ urlpatterns = patterns('carpoolapp.views',
     url(r'^manageRequest', 'manageRequest'),
     url(r'^managePendingRequest', 'managePendingRequest'),
     url(r'^manageAcceptedRequest', 'manageAcceptedRequest'),
+    url(r'^comment', 'comment'),
+
 )

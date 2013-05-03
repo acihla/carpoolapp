@@ -1,6 +1,3 @@
-
-	
-
 from django.utils import simplejson as json
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect
@@ -128,7 +125,6 @@ $ # end of string
                         resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
                 else:
                     return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
-            
         else:
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
@@ -1164,26 +1160,31 @@ def leave_feedback(request):
     
     try:
         data = json.loads(request.body)
-        apikey= data['apikey']
-        route_id = data['route_id']
+        apikey= data.get("apikey", "")
+        route_id = data.get("route_id", "")
+        driver = None
         try:
-            route= Route.objects.get(id=route_id)
+            route = Route.objects.get(id=route_id)
             driver_info = route.driver_info
-            driver =driver_info.driver
+            driver = driver_info.driver
             owner_apikey = driver.apikey
         except Route.DoesNotExist:
             err = ERR_UNKNOWN_ROUTE
             return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
         try:
-            author =User.objects.get(apikey= apikey)
+            author = User.objects.get(apikey= apikey)
             author_name = author.firstname + " " + author.lastname
         except User.DoesNotExist:
             resp={}
             resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
-        rating = data['rating']
-        comment = data['comment']
+        rating = data.get("rating", -1)
+        if rating == -1:
+            resp["errCode"] = ERR_BAD_APIKEY
+            resp["errMsg"] = "No rating received"
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+        comment = data.get("comment", "")
         try:
             print "in the try"
             ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
@@ -1192,8 +1193,20 @@ def leave_feedback(request):
         except ride_request.DoesNotExist:
             print "in the ride_request not exist exception"
             return HttpResponse(json.dumps({'errCode':ERR_NO_RIDER_DRIVER_CONTACT}),content_type="application/json")
-                
-                
+
+        #Update driver's avg rating.
+        try:
+            ratings = Rating.objects.filter(owner = driver)
+            if len(ratings) > 0:
+                summ = 0
+                for r in ratings:
+                    summ  = summ + r.rating
+                driver.avg_rating = float(summ) / len(ratings)
+                driver.save()
+        except Exception, err:
+            #rating update failed
+            pass
+
     except KeyError:
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
     
