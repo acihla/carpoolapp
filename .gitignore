@@ -5,3 +5,4 @@ _init_.py
 migrations
 *.sw[op]
 .DS_Store
+response.html
