@@ -757,7 +757,7 @@ resp = {"errCode" : err}
     
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
-
+#request ride function
 @csrf_exempt
 def select_ride(request):
     try:
