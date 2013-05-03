@@ -1,3 +1,6 @@
+
+	
+
 from django.utils import simplejson as json
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect
@@ -126,6 +129,7 @@ $ # end of string
                         resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
                 else:
                     return HttpResponse(json.dumps(resp1, cls=DjangoJSONEncoder), content_type = "application/json")
+            
         else:
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     except Exception, err:
@@ -861,33 +865,30 @@ def select_ride(request):
         return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="application/json")
 
     return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
-
 @csrf_exempt
 def accept_ride(request):
     print "in accept_ride"
     try:
         r = json.loads(request.body)
-        request_id = r.get("request_id", -1)
-        driver_api =r.get("driver_api","")
-        response = r.get("response", -1) #0 to deny request, 1 to accept it 
-        #rider_api= r.get("rider_api","")
+        route_id = r.get("route_id", -1)
+        driver_id =r.get("to","")
+        response = r.get("response", -1) #-1) What is going on here? this is request right? Why do we have a response segment?
+        rider_apikey= r.get("from","")
 
         try:
-            request = ride_request.objects.get(id=request_id)
-        except ride_request.DoesNotExist:
+            route = Route.objects.get(id=route_id)
+        except Route.DoesNotExist:
             err = ERR_UNKNOWN_ROUTE
             return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
-        
         try:
-            driver_info = User.objects.get(apikey=driver_api)
-            driver_firstname= driver_info.firstname
-            driver_lastname= driver_info.lastname
+            driver_info = DriverInfo.objects.get(driver_id=driver_id)
+            driver_firstname= driver_info.driver.firstname
+            driver_lastname= driver_info.driver.lastname
 
-        except User.DoesNotExist:
-            err = ERR_BAD_APIKEY
+        except DriverInfo.DoesNotExist:
+            err = ERR_UNKNOWN_DRIVER
             return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
-        
-        '''
+
         try:
 
             rider =User.objects.get(apikey=rider_apikey)
@@ -900,7 +901,6 @@ def accept_ride(request):
             resp={}
             resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-        
 
         print "route id: " + str(route_id)
         print "response: " + str(response)
@@ -909,38 +909,32 @@ def accept_ride(request):
         print "rider_lastname:" + rider_lastname
         print "driver_firstname:"+ driver_firstname
         print "driver_lastname:" + driver_lastname
-        '''
-
         if response == 1:
-            '''
             print "in response 1"
             message = "Congratulation " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that your trip is now confirmed with \n" + driver_firstname + " "+ driver_lastname
-            '''
 
             status = 'Accepted'
-            rq = ride_request.objects.get(id=request_id)
+            rq = ride_request.objects.get(rider_apikey =rider_apikey,route_id=route_id)
             rq.status = status
             rq.save()
-            #send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+            send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
         elif response == 0:
-            '''
             message = "Sorry " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that the trip you selected with \n" + driver_firstname + " " +driver_lastname + "was denied please select another ride\n"
             status = 'Denied'
-            '''
-            status = 'Denied'
-            rq = ride_request.objects.get(id=request_id)
+            rq = ride_request.objects.get(rider_apikey =rider_apikey,route_id=route_id)
             rq.status = status
             rq.save()
         
-            #send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu',rider_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+            send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu',rider_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
         else:
             raise Exception("Invalid response " + str(response))
     
     except Exception, err:
         print str(err)
-        return HttpResponse(json.dumps({'errCode':str(ERR_BAD_SERVER_RESPONSE)}),content_type="application/json")
+        print "so error is bad server?"
+        return HttpResponse(json.dumps({'errCode':ERR_BAD_SERVER_RESPONSE}),content_type="application/json")
 
     return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json") 
  
@@ -1195,19 +1189,18 @@ def leave_feedback(request):
     
     try:
         data = json.loads(request.body)
-        apikey= data.get("apikey", "")
-        route_id = data.get("route_id", "")
-        driver = None
+        apikey= data['apikey']
+        route_id = data['route_id']
         try:
-            route = Route.objects.get(id=route_id)
+            route= Route.objects.get(id=route_id)
             driver_info = route.driver_info
-            driver = driver_info.driver
+            driver =driver_info.driver
             owner_apikey = driver.apikey
         except Route.DoesNotExist:
             err = ERR_UNKNOWN_ROUTE
             return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
         try:
-            author = User.objects.get(apikey= apikey)
+            author =User.objects.get(apikey= apikey)
             author_name = author.firstname + " " + author.lastname
         except User.DoesNotExist:
             resp={}
@@ -1223,10 +1216,6 @@ def leave_feedback(request):
         if not isinstance(comment, str):
             return HttpResponse(json.dumps({'errCode':ERR_BAD_INPUT_OR_LENGTH}),content_type="application/json")
 
-        if rating == -1:
-            resp["errCode"] = ERR_BAD_APIKEY
-            resp["errMsg"] = "No rating received"
-            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
         try:
             print "in the try"
             ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
@@ -1235,20 +1224,8 @@ def leave_feedback(request):
         except ride_request.DoesNotExist:
             print "in the ride_request not exist exception"
             return HttpResponse(json.dumps({'errCode':ERR_NO_RIDER_DRIVER_CONTACT}),content_type="application/json")
-
-        #Update driver's avg rating.
-        try:
-            ratings = Rating.objects.filter(owner = driver)
-            if len(ratings) > 0:
-                summ = 0
-                for r in ratings:
-                    summ  = summ + r.rating
-                driver.avg_rating = float(summ) / len(ratings)
-                driver.save()
-        except Exception, err:
-            #rating update failed
-            pass
-
+                
+                
     except KeyError:
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
     
