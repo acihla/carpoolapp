@@ -59,6 +59,7 @@ ERR_UNKOWN_IN_SIGNUP = -21
 ERR_UNKNOWN_ROUTE = -22
 ERR_NO_RIDER_DRIVER_CONTACT =-23
 ERR_BAD_PASSWORD = -24
+ERR_UNKNOWN_DRIVER =-26
 #sample_date = "1992-04-17"
 
 class request:
@@ -786,19 +787,39 @@ def select_ride(request):
 def accept_ride(request):
     print "in accept_ride"
     try:
-        r = request.GET
+        r = json.loads(request.body)
         route_id = r.get("route_id", -1)
-        response = r.get("response", "") #-1) What is going on here? this is request right? Why do we have a response segment?
-        rider_apikey= r.get("from","")
         driver_id =r.get("to","")
-        rider =User.objects.get(apikey=rider_apikey)
-        print 'rider_apikey: ' + rider_apikey
-        rider_email = rider.email
-        rider_firstname = rider.firstname
-        rider_lastname= rider.lastname
-        driver_info = DriverInfo.objects.get(driver_id=driver_id)
-        driver_firstname= driver_info.driver.firstname
-        driver_lastname= driver_info.driver.lastname
+        response = r.get("response", -1) #-1) What is going on here? this is request right? Why do we have a response segment?
+        rider_apikey= r.get("from","")
+
+        try:
+            route = Route.objects.get(id=route_id)
+        except Route.DoesNotExist:
+            err = ERR_UNKNOWN_ROUTE
+            return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
+        try:
+            driver_info = DriverInfo.objects.get(driver_id=driver_id)
+            driver_firstname= driver_info.driver.firstname
+            driver_lastname= driver_info.driver.lastname
+
+        except DriverInfo.DoesNotExist:
+            err = ERR_UNKNOWN_DRIVER
+            return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
+
+        try:
+
+            rider =User.objects.get(apikey=rider_apikey)
+            print 'rider_apikey: ' + rider_apikey
+            rider_email = rider.email
+            rider_firstname = rider.firstname
+            rider_lastname= rider.lastname
+
+        except User.DoesNotExist:
+            resp={}
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
         print "route id: " + str(route_id)
         print "response: " + str(response)
         print "rider_email:" + rider_email
@@ -806,9 +827,8 @@ def accept_ride(request):
         print "rider_lastname:" + rider_lastname
         print "driver_firstname:"+ driver_firstname
         print "driver_lastname:" + driver_lastname
-        route = Route.objects.get(id=route_id)
-        print route
-        if response == "1":
+        if response == 1:
+            print "in response 1"
             message = "Congratulation " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that your trip is now confirmed with \n" + driver_firstname + " "+ driver_lastname
 
             status = 'Accepted'
@@ -817,7 +837,7 @@ def accept_ride(request):
             rq.save()
             send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
-        elif response == "0":
+        elif response == 0:
             message = "Sorry " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that the trip you selected with \n" + driver_firstname + " " +driver_lastname + "was denied please select another ride\n"
             status = 'Denied'
             rq = ride_request.objects.get(rider_apikey =rider_apikey,route_id=route_id)
@@ -827,10 +847,11 @@ def accept_ride(request):
             send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu',rider_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
         else:
-            raise Exception("Invalid response" + str(response))
+            raise Exception("Invalid response " + str(response))
     
     except Exception, err:
         print str(err)
+        print "so error is bad server?"
         return HttpResponse(json.dumps({'errCode':ERR_BAD_SERVER_RESPONSE}),content_type="application/json")
 
     return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json") 
