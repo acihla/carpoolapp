@@ -522,6 +522,59 @@ self.routes = models.Route()
 
 
 
+ #test select ride with good inputs
+        def testGoodSelectRide(self):
+            newrequest = views.request
+            testRider = testUtils.genUser()
+            testRide  = testUtils.genRide()
+            testApi = testRider.apikey
+            testRouteID = testRide.id
+            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response = views.select_ride(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+        #test select ride wich user does not exist
+        def testNotUserSelectRide(self):
+            newrequest = views.request
+            testRider = testUtils.genUser()
+            testRide  = testUtils.genRide()
+            testApi = testRider.apikey
+            testRouteID = testRide.id
+            newrequest.body = json.dumps({ 'apikey' : "aaaa","route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response = views.select_ride(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_APIKEY, response.get("errCode"))
+        #test select ride wich route does not exists
+        def testNotRouteSelectRide(self):
+            newrequest = views.request
+            testRider = testUtils.genUser()
+            testRide  = testUtils.genRide()
+            testApi = testRider.apikey
+            testRouteID = testRide.id
+            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":40000,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response = views.select_ride(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_UNKNOWN_ROUTE, response.get("errCode"))
+        #test select ride wich already exists 
+        def testAlreadyExistsSelectRide(self):
+            newrequest = views.request
+            testRider = testUtils.genUser()
+            testRide  = testUtils.genRide()
+            testApi = testRider.apikey
+            testRouteID = testRide.id
+            prev_api = testApi
+            prev_route_id = testRouteID
+            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response = views.select_ride(newrequest)
+            response = json.loads(response.content)
+            newrequest.body = json.dumps({ 'apikey' : prev_api,"route_id":prev_route_id,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response1 = views.select_ride(newrequest)
+            response1 = json.loads(response1.content)
+
+            self.assertEquals(testLib.RestTestCase.ERR_REQUEST_EXISTS, response1.get("errCode"))
 
 
 

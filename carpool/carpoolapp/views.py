@@ -704,7 +704,7 @@ resp = {"errCode" : err}
 @csrf_exempt
 def select_ride(request):
     try:
-        data = json.loads(request.raw_post_data)
+        data = json.loads(request.body)
         apikey = data.get("apikey", "")
         user = None
         route_id = data.get("route_id",-1)
