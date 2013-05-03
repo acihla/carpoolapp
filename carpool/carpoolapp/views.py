@@ -265,7 +265,7 @@ def login(request):
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
         else:
           return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
-    except KeyError:
+    except Exception:
         resp["errCode"] = ERR_BAD_KEY
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
@@ -282,37 +282,6 @@ def check_credentials(rdata):
     resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
 
   return resp
-@csrf_exempt
-def filter(request):
-    try:
-        rdata = json.loads(request.body)
-    except Exception, err:
-        print str(err)
-
-    resp = {"errCode":SUCCESS}
-    eta = rdata.get("eta", "")
-    etd = rdata.get("etd", "")
-    depart_loc = rdata.get("depart_loc", "")
-    arrive_loc = rdata.get("arrive_loc", "")
-    #distance_proximity = rdata.get("distance_proximity", "") possibly of use in the future
-    requested_etd = rdata.get("requested_etd", "")
-
-    try:
-        routes = Route.objects.all()
-        rides = []
-        for route in routes: 
-            entry = route.to_dict()
-            rides.append(entry)
-
-        #algorithm here!
-
-        resp["rides"] = rides
-        resp["size"] = len(rides)
-    except Exception, err:
-            resp["errCode"] = ERR_DATABASE_SEARCH_ERROR
-            resp["errMsg"] = str(err)
-            print str(err)
-    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json") 
 
 @csrf_exempt
 def search(request):
@@ -325,6 +294,7 @@ def search(request):
     except Exception, err:
         resp = {"errCode":ERR_BAD_JSON}
         print str(err)
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
     #TODO Parse json here.
     departloc = rdata.get("depart-loc", {})
