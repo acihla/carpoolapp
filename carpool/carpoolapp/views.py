@@ -379,7 +379,7 @@ def manageRequest(request):
             driver_requests = ride_request.objects.filter(driver_apikey = user.apikey)
             requests = []
             for request in driver_requests:
-                if request.status != "Cancelled"
+                if request.status != "Cancelled":
                     req = request.to_dict()
                     try:
                         route = Route.objects.get(id=request.route_id)
