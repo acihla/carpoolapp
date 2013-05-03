@@ -384,7 +384,7 @@ def manageRequest(request):
                     try:
                         route = Route.objects.get(id=request.route_id)
                         req["route"] = route.to_dict()
-                    except Exception ex:
+                    except Exception, err:
                         req["route"] = "Cancelled"
                         resp["errMsg"] =  "Not a Valid Route."
                         resp["errCode"] = ERR_SEE_ERR_MSG
