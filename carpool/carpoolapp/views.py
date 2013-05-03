@@ -385,7 +385,7 @@ def manageRequest(request):
                     resp["errMsg"] =  "route is None"
                     resp["errCode"] = ERR_SEE_ERR_MSG
                 else:
-                    resp["route"] = route.to_dict()
+                    req["route"] = route.to_dict()
                 rider = User.objects.get(apikey = request.rider_apikey)
                 if rider is None:
                     resp["errMsg"] = "rider is None"

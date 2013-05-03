@@ -148,6 +148,7 @@ class ride_request(models.Model):
         rtn["depart_time"] = self.depart_time
         rtn["req_start"] = self.req_start
         rtn["req_end"] = self.req_end
+        return rtn
 
     def to_dict_unsecure(self):
         rtn = {}
@@ -163,6 +164,7 @@ class ride_request(models.Model):
         rtn["depart_time"] = self.depart_time
         rtn["req_start"] = self.req_start
         rtn["req_end"] = self.req_end
+        return rtn
 
 
 #from http://djangosnippets.org/snippets/199/

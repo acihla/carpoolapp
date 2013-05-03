@@ -150,7 +150,7 @@
 
     <tr>
       <th>Exception Location:</th>
-      <td>/app/carpool/carpoolapp/views.py in manageRequest, line 388</td>
+      <td>/app/carpool/carpoolapp/views.py in manageRequest, line 394</td>
     </tr>
 
     <tr>
@@ -177,7 +177,7 @@
     </tr>
     <tr>
       <th>Server time:</th>
-      <td>Fri, 3 May 2013 02:54:28 -0500</td>
+      <td>Fri, 3 May 2013 02:57:33 -0500</td>
     </tr>
   </table>
 </div>
@@ -195,13 +195,13 @@
           <code>/app/.heroku/python/lib/python2.7/site-packages/django/core/handlers/base.py</code> in <code>get_response</code>
 
           
-            <div class="context" id="c28409936">
+            <div class="context" id="c50436360">
               
-                <ol start="104" class="pre-context" id="pre28409936"><li onclick="toggle('pre28409936', 'post28409936')"><pre>                    for middleware_method in self._view_middleware:</pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre>                        response = middleware_method(request, callback, callback_args, callback_kwargs)</pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre>                        if response:</pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre>                            break</pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre></pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre>                if response is None:</pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre>                    try:</pre></li></ol>
+                <ol start="104" class="pre-context" id="pre50436360"><li onclick="toggle('pre50436360', 'post50436360')"><pre>                    for middleware_method in self._view_middleware:</pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre>                        response = middleware_method(request, callback, callback_args, callback_kwargs)</pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre>                        if response:</pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre>                            break</pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre></pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre>                if response is None:</pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre>                    try:</pre></li></ol>
               
-              <ol start="111" class="context-line"><li onclick="toggle('pre28409936', 'post28409936')"><pre>                        response = callback(request, *callback_args, **callback_kwargs)</pre> <span>...</span></li></ol>
+              <ol start="111" class="context-line"><li onclick="toggle('pre50436360', 'post50436360')"><pre>                        response = callback(request, *callback_args, **callback_kwargs)</pre> <span>...</span></li></ol>
               
-                <ol start='112' class="post-context" id="post28409936"><li onclick="toggle('pre28409936', 'post28409936')"><pre>                    except Exception, e:</pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre>                        # If the view raised an exception, run it through exception</pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre>                        # middleware, and if the exception middleware returns a</pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre>                        # response, use that. Otherwise, reraise the exception.</pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre>                        for middleware_method in self._exception_middleware:</pre></li><li onclick="toggle('pre28409936', 'post28409936')"><pre>                            response = middleware_method(request, e)</pre></li></ol>
+                <ol start='112' class="post-context" id="post50436360"><li onclick="toggle('pre50436360', 'post50436360')"><pre>                    except Exception, e:</pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre>                        # If the view raised an exception, run it through exception</pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre>                        # middleware, and if the exception middleware returns a</pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre>                        # response, use that. Otherwise, reraise the exception.</pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre>                        for middleware_method in self._exception_middleware:</pre></li><li onclick="toggle('pre50436360', 'post50436360')"><pre>                            response = middleware_method(request, e)</pre></li></ol>
               
             </div>
           
@@ -209,10 +209,10 @@
           
             <div class="commands">
                 
-                    <a href="#" onclick="return varToggle(this, '28409936')"><span>&#x25b6;</span> Local vars</a>
+                    <a href="#" onclick="return varToggle(this, '50436360')"><span>&#x25b6;</span> Local vars</a>
                 
             </div>
-            <table class="vars" id="v28409936">
+            <table class="vars" id="v50436360">
               <thead>
                 <tr>
                   <th>Variable</th>
@@ -222,13 +222,8 @@
               <tbody>
                 
                   <tr>
-                    <td>callback_args</td>
-                    <td class="code"><pre>()</pre></td>
-                  </tr>
-                
-                  <tr>
-                    <td>response</td>
-                    <td class="code"><pre>None</pre></td>
+                    <td>request</td>
+                    <td class="code"><pre>&#39;&lt;WSGIRequest\npath:/driver/manageRequest,\nGET:&lt;QueryDict: {}&gt;,\nPOST:&lt;QueryDict: {u\&#39;{&quot;apikey&quot;:&quot;048d75afcc16a9879d577b186e7586e362d9518f&quot;}\&#39;: [u\&#39;\&#39;]}&gt;,\nCOOKIES:{},\nMETA:{\&#39;CONTENT_LENGTH\&#39;: \&#39;53\&#39;,\n \&#39;CONTENT_TYPE\&#39;: \&#39;application/json\&#39;,\n \&#39;CSRF_COOKIE\&#39;: \&#39;48f18vd7FTcM1iQ2q56llsOqcfAsiU0O\&#39;,\n \&#39;DATABASE_URL\&#39;: \&#39;postgres://vfdtegcibsvzxc:1suaUchWtR-nhuWTGLWjV2s3Up@ec2-54-235-242-31.compute-1.amazonaws.com:5432/deglmb13pmdf04\&#39;,\n \&#39;DJANGO_SETTINGS_MODULE\&#39;: \&#39;carpool.settings\&#39;,\n \&#39;GATEWAY_INTERFACE\&#39;: \&#39;CGI/1.1\&#39;,\n \&#39;HEROKU_POSTGRESQL_TEAL_URL\&#39;: \&#39;postgres://vfdtegcibsvzxc:1suaUchWtR-nhuWTGLWjV2s3Up@ec2-54-235-242-31.compute-1.amazonaws.com:5432/deglmb13pmdf04\&#39;,\n \&#39;HOME\&#39;: \&#39;/app\&#39;,\n \&#39;HTTP_ACCEPT\&#39;: \&#39;application/json\&#39;,\n \&#39;HTTP_CONNECTION\&#39;: \&#39;close\&#39;,\n \&#39;HTTP_HOST\&#39;: \&#39;carpool1691.herokuapp.com\&#39;,\n \&#39;HTTP_USER_AGENT\&#39;: \&#39;curl/7.24.0 (x86_64-apple-darwin12.0) libcurl/7.24.0 OpenSSL/0.9.8r zlib/1.2.5\&#39;,\n \&#39;HTTP_X_FORWARDED_FOR\&#39;: \&#39;169.229.108.46\&#39;,\n \&#39;HTTP_X_FORWARDED_PORT\&#39;: \&#39;80\&#39;,\n \&#39;HTTP_X_FORWARDED_PROTO\&#39;: \&#39;http\&#39;,\n \&#39;HTTP_X_REQUEST_START\&#39;: \&#39;1367567850996\&#39;,\n \&#39;LANG\&#39;: \&#39;en_US.UTF-8\&#39;,\n \&#39;LD_LIBRARY_PATH\&#39;: \&#39;/app/.heroku/vendor/lib\&#39;,\n \&#39;LIBRARY_PATH\&#39;: \&#39;/app/.heroku/vendor/lib\&#39;,\n \&#39;PATH\&#39;: \&#39;/app/.heroku/python/bin:/usr/local/bin:/usr/bin:/bin\&#39;,\n \&#39;PATH_INFO\&#39;: u\&#39;/driver/manageRequest\&#39;,\n \&#39;PORT\&#39;: \&#39;16411\&#39;,\n \&#39;PS\&#39;: \&#39;web.1\&#39;,\n \&#39;PS1\&#39;: \&#39;\\\\[\\\\033[01;34m\\\\]\\\\w\\\\[\\\\033[00m\\\\] \\\\[\\\\033[01;32m\\\\]$ \\\\[\\\\033[00m\\\\]\&#39;,\n \&#39;PWD\&#39;: \&#39;/app\&#39;,\n \&#39;PYTHONHASHSEED\&#39;: \&#39;random\&#39;,\n \&#39;PYTHONHOME\&#39;: \&#39;/app/.heroku/python\&#39;,\n \&#39;PYTHONPATH\&#39;: \&#39;/app/\&#39;,\n \&#39;PYTHONUNBUFFERED\&#39;: \&#39;true\&#39;,\n \&#39;QUERY_STRING\&#39;: \&#39;\&#39;,\n \&#39;REMOTE_ADDR\&#39;: \&#39;10.12.234.160\&#39;,\n \&#39;REMOTE_HOST\&#39;: \&#39;\&#39;,\n \&#39;REQUEST_METHOD\&#39;: \&#39;POST\&#39;,\n \&#39;SCRIPT_NAME\&#39;: u\&#39;\&#39;,\n \&#39;SERVER_NAME\&#39;: \&#39;dde8c32f-60f0-468c-b8c9-f07481cd7285.prvt.dyno.rt.heroku.com\&#39;,\n \&#39;SERVER_PORT\&#39;: \&#39;16411\&#39;,\n \&#39;SERVER_PROTOCOL\&#39;: \&#39;HTTP/1.1\&#39;,\n \&#39;SERVER_SOFTWARE\&#39;: \&#39;WSGIServer/0.1 Python/2.7.4\&#39;,\n \&#39;SHLVL\&#39;: \&#39;1\&#39;,\n \&#39;TZ\&#39;: \&#39;America/Chicago\&#39;,\n \&#39;_\&#39;: \&#39;/app/.heroku/python/bin/python\&#39;,\n \&#39;wsgi.errors\&#39;: &lt;open file \&#39;&lt;stderr&gt;\&#39;, mode \&#39;w\&#39; at 0x7f93e86bb1e0&gt;,\n \&#39;wsgi.file_wrapper\&#39;: &lt;class wsgiref.util.FileWrapper at 0x29686d0&gt;,\n \&#39;wsgi.input\&#39;: &lt;socket._fileobject object at 0x2ebd6d0&gt;,\n \&#39;wsgi.multiprocess\&#39;: False,\n \&#39;wsgi.multithread\&#39;: True,\n \&#39;wsgi.run_once\&#39;: False,\n \&#39;wsgi.url_scheme\&#39;: \&#39;http\&#39;,\n \&#39;wsgi.version\&#39;: (1, 0)}&gt;&#39;</pre></td>
                   </tr>
                 
                   <tr>
@@ -237,43 +232,8 @@
                   </tr>
                 
                   <tr>
-                    <td>urlresolvers</td>
-                    <td class="code"><pre>&lt;module &#39;django.core.urlresolvers&#39; from &#39;/app/.heroku/python/lib/python2.7/site-packages/django/core/urlresolvers.pyc&#39;&gt;</pre></td>
-                  </tr>
-                
-                  <tr>
-                    <td>resolver</td>
-                    <td class="code"><pre>&lt;RegexURLResolver carpool.urls (None:None) ^/&gt;</pre></td>
-                  </tr>
-                
-                  <tr>
-                    <td>request</td>
-                    <td class="code"><pre>&#39;&lt;WSGIRequest\npath:/driver/manageRequest,\nGET:&lt;QueryDict: {}&gt;,\nPOST:&lt;QueryDict: {u\&#39;{&quot;apikey&quot;:&quot;048d75afcc16a9879d577b186e7586e362d9518f&quot;}\&#39;: [u\&#39;\&#39;]}&gt;,\nCOOKIES:{},\nMETA:{\&#39;CONTENT_LENGTH\&#39;: \&#39;53\&#39;,\n \&#39;CONTENT_TYPE\&#39;: \&#39;application/json\&#39;,\n \&#39;CSRF_COOKIE\&#39;: \&#39;6I7JdPlD2UjO3WOtTy6Ajm9qtJPUuwfu\&#39;,\n \&#39;DATABASE_URL\&#39;: \&#39;postgres://vfdtegcibsvzxc:1suaUchWtR-nhuWTGLWjV2s3Up@ec2-54-235-242-31.compute-1.amazonaws.com:5432/deglmb13pmdf04\&#39;,\n \&#39;DJANGO_SETTINGS_MODULE\&#39;: \&#39;carpool.settings\&#39;,\n \&#39;GATEWAY_INTERFACE\&#39;: \&#39;CGI/1.1\&#39;,\n \&#39;HEROKU_POSTGRESQL_TEAL_URL\&#39;: \&#39;postgres://vfdtegcibsvzxc:1suaUchWtR-nhuWTGLWjV2s3Up@ec2-54-235-242-31.compute-1.amazonaws.com:5432/deglmb13pmdf04\&#39;,\n \&#39;HOME\&#39;: \&#39;/app\&#39;,\n \&#39;HTTP_ACCEPT\&#39;: \&#39;application/json\&#39;,\n \&#39;HTTP_CONNECTION\&#39;: \&#39;close\&#39;,\n \&#39;HTTP_HOST\&#39;: \&#39;carpool1691.herokuapp.com\&#39;,\n \&#39;HTTP_USER_AGENT\&#39;: \&#39;curl/7.24.0 (x86_64-apple-darwin12.0) libcurl/7.24.0 OpenSSL/0.9.8r zlib/1.2.5\&#39;,\n \&#39;HTTP_X_FORWARDED_FOR\&#39;: \&#39;169.229.108.46\&#39;,\n \&#39;HTTP_X_FORWARDED_PORT\&#39;: \&#39;80\&#39;,\n \&#39;HTTP_X_FORWARDED_PROTO\&#39;: \&#39;http\&#39;,\n \&#39;HTTP_X_REQUEST_START\&#39;: \&#39;1367567663497\&#39;,\n \&#39;LANG\&#39;: \&#39;en_US.UTF-8\&#39;,\n \&#39;LD_LIBRARY_PATH\&#39;: \&#39;/app/.heroku/vendor/lib\&#39;,\n \&#39;LIBRARY_PATH\&#39;: \&#39;/app/.heroku/vendor/lib\&#39;,\n \&#39;PATH\&#39;: \&#39;/app/.heroku/python/bin:/usr/local/bin:/usr/bin:/bin\&#39;,\n \&#39;PATH_INFO\&#39;: u\&#39;/driver/manageRequest\&#39;,\n \&#39;PORT\&#39;: \&#39;12990\&#39;,\n \&#39;PS\&#39;: \&#39;web.1\&#39;,\n \&#39;PS1\&#39;: \&#39;\\\\[\\\\033[01;34m\\\\]\\\\w\\\\[\\\\033[00m\\\\] \\\\[\\\\033[01;32m\\\\]$ \\\\[\\\\033[00m\\\\]\&#39;,\n \&#39;PWD\&#39;: \&#39;/app\&#39;,\n \&#39;PYTHONHASHSEED\&#39;: \&#39;random\&#39;,\n \&#39;PYTHONHOME\&#39;: \&#39;/app/.heroku/python\&#39;,\n \&#39;PYTHONPATH\&#39;: \&#39;/app/\&#39;,\n \&#39;PYTHONUNBUFFERED\&#39;: \&#39;true\&#39;,\n \&#39;QUERY_STRING\&#39;: \&#39;\&#39;,\n \&#39;REMOTE_ADDR\&#39;: \&#39;10.82.38.219\&#39;,\n \&#39;REMOTE_HOST\&#39;: \&#39;\&#39;,\n \&#39;REQUEST_METHOD\&#39;: \&#39;POST\&#39;,\n \&#39;SCRIPT_NAME\&#39;: u\&#39;\&#39;,\n \&#39;SERVER_NAME\&#39;: \&#39;cd5eb83c-dadb-4218-af62-7a764befb57a.prvt.dyno.rt.heroku.com\&#39;,\n \&#39;SERVER_PORT\&#39;: \&#39;12990\&#39;,\n \&#39;SERVER_PROTOCOL\&#39;: \&#39;HTTP/1.1\&#39;,\n \&#39;SERVER_SOFTWARE\&#39;: \&#39;WSGIServer/0.1 Python/2.7.4\&#39;,\n \&#39;SHLVL\&#39;: \&#39;1\&#39;,\n \&#39;TZ\&#39;: \&#39;America/Chicago\&#39;,\n \&#39;_\&#39;: \&#39;/app/.heroku/python/bin/python\&#39;,\n \&#39;wsgi.errors\&#39;: &lt;open file \&#39;&lt;stderr&gt;\&#39;, mode \&#39;w\&#39; at 0x7f591915f1e0&gt;,\n \&#39;wsgi.file_wrapper\&#39;: &lt;class wsgiref.util.FileWrapper at 0x15106d0&gt;,\n \&#39;wsgi.input\&#39;: &lt;socket._fileobject object at 0x1a646d0&gt;,\n \&#39;wsgi.multiprocess\&#39;: False,\n \&#39;wsgi.multithread\&#39;: True,\n \&#39;wsgi.run_once\&#39;: False,\n \&#39;wsgi.url_scheme\&#39;: \&#39;http\&#39;,\n \&#39;wsgi.version\&#39;: (1, 0)}&gt;&#39;</pre></td>
-                  </tr>
-                
-                  <tr>
-                    <td>settings</td>
-                    <td class="code"><pre>&lt;django.conf.LazySettings object at 0xed3d10&gt;</pre></td>
-                  </tr>
-                
-                  <tr>
                     <td>callback</td>
-                    <td class="code"><pre>&lt;function manageRequest at 0x1d67320&gt;</pre></td>
-                  </tr>
-                
-                  <tr>
-                    <td>self</td>
-                    <td class="code"><pre>&lt;django.core.handlers.wsgi.WSGIHandler object at 0x1a57210&gt;</pre></td>
-                  </tr>
-                
-                  <tr>
-                    <td>urlconf</td>
-                    <td class="code"><pre>&#39;carpool.urls&#39;</pre></td>
-                  </tr>
-                
-                  <tr>
-                    <td>middleware_method</td>
-                    <td class="code"><pre>&lt;bound method CsrfViewMiddleware.process_view of &lt;django.middleware.csrf.CsrfViewMiddleware object at 0x1b06d90&gt;&gt;</pre></td>
+                    <td class="code"><pre>&lt;function manageRequest at 0x31c0320&gt;</pre></td>
                   </tr>
                 
                   <tr>
@@ -282,8 +242,48 @@
                   </tr>
                 
                   <tr>
+                    <td>middleware_method</td>
+                    <td class="code"><pre>&lt;bound method CsrfViewMiddleware.process_view of &lt;django.middleware.csrf.CsrfViewMiddleware object at 0x2f5fd90&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>urlresolvers</td>
+                    <td class="code"><pre>&lt;module &#39;django.core.urlresolvers&#39; from &#39;/app/.heroku/python/lib/python2.7/site-packages/django/core/urlresolvers.pyc&#39;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>settings</td>
+                    <td class="code"><pre>&lt;django.conf.LazySettings object at 0x232bd10&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>resolver</td>
+                    <td class="code"><pre>&lt;RegexURLResolver carpool.urls (None:None) ^/&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>response</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>urlconf</td>
+                    <td class="code"><pre>&#39;carpool.urls&#39;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>callback_args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
                     <td>e</td>
                     <td class="code"><pre>TypeError(&quot;&#39;NoneType&#39; object does not support item assignment&quot;,)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;django.core.handlers.wsgi.WSGIHandler object at 0x2eb0210&gt;</pre></td>
                   </tr>
                 
               </tbody>
@@ -295,13 +295,13 @@
           <code>/app/.heroku/python/lib/python2.7/site-packages/django/views/decorators/csrf.py</code> in <code>wrapped_view</code>
 
           
-            <div class="context" id="c28956144">
+            <div class="context" id="c50437080">
               
-                <ol start="70" class="pre-context" id="pre28956144"><li onclick="toggle('pre28956144', 'post28956144')"><pre>    &quot;&quot;&quot;</pre></li><li onclick="toggle('pre28956144', 'post28956144')"><pre>    Marks a view function as being exempt from the CSRF view protection.</pre></li><li onclick="toggle('pre28956144', 'post28956144')"><pre>    &quot;&quot;&quot;</pre></li><li onclick="toggle('pre28956144', 'post28956144')"><pre>    # We could just do view_func.csrf_exempt = True, but decorators</pre></li><li onclick="toggle('pre28956144', 'post28956144')"><pre>    # are nicer if they don&#39;t have side-effects, so we return a new</pre></li><li onclick="toggle('pre28956144', 'post28956144')"><pre>    # function.</pre></li><li onclick="toggle('pre28956144', 'post28956144')"><pre>    def wrapped_view(*args, **kwargs):</pre></li></ol>
+                <ol start="70" class="pre-context" id="pre50437080"><li onclick="toggle('pre50437080', 'post50437080')"><pre>    &quot;&quot;&quot;</pre></li><li onclick="toggle('pre50437080', 'post50437080')"><pre>    Marks a view function as being exempt from the CSRF view protection.</pre></li><li onclick="toggle('pre50437080', 'post50437080')"><pre>    &quot;&quot;&quot;</pre></li><li onclick="toggle('pre50437080', 'post50437080')"><pre>    # We could just do view_func.csrf_exempt = True, but decorators</pre></li><li onclick="toggle('pre50437080', 'post50437080')"><pre>    # are nicer if they don&#39;t have side-effects, so we return a new</pre></li><li onclick="toggle('pre50437080', 'post50437080')"><pre>    # function.</pre></li><li onclick="toggle('pre50437080', 'post50437080')"><pre>    def wrapped_view(*args, **kwargs):</pre></li></ol>
               
-              <ol start="77" class="context-line"><li onclick="toggle('pre28956144', 'post28956144')"><pre>        return view_func(*args, **kwargs)</pre> <span>...</span></li></ol>
+              <ol start="77" class="context-line"><li onclick="toggle('pre50437080', 'post50437080')"><pre>        return view_func(*args, **kwargs)</pre> <span>...</span></li></ol>
               
-                <ol start='78' class="post-context" id="post28956144"><li onclick="toggle('pre28956144', 'post28956144')"><pre>    wrapped_view.csrf_exempt = True</pre></li><li onclick="toggle('pre28956144', 'post28956144')"><pre>    return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)</pre></li></ol>
+                <ol start='78' class="post-context" id="post50437080"><li onclick="toggle('pre50437080', 'post50437080')"><pre>    wrapped_view.csrf_exempt = True</pre></li><li onclick="toggle('pre50437080', 'post50437080')"><pre>    return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)</pre></li></ol>
               
             </div>
           
@@ -309,10 +309,10 @@
           
             <div class="commands">
                 
-                    <a href="#" onclick="return varToggle(this, '28956144')"><span>&#x25b6;</span> Local vars</a>
+                    <a href="#" onclick="return varToggle(this, '50437080')"><span>&#x25b6;</span> Local vars</a>
                 
             </div>
-            <table class="vars" id="v28956144">
+            <table class="vars" id="v50437080">
               <thead>
                 <tr>
                   <th>Variable</th>
@@ -320,6 +320,16 @@
                 </tr>
               </thead>
               <tbody>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view_func</td>
+                    <td class="code"><pre>&lt;function manageRequest at 0x31c02a8&gt;</pre></td>
+                  </tr>
                 
                   <tr>
                     <td>args</td>
@@ -330,7 +340,7 @@ POST:&lt;QueryDict: {u&#39;{&quot;apikey&quot;:&quot;048d75afcc16a9879d577b186e7
 COOKIES:{},
 META:{&#39;CONTENT_LENGTH&#39;: &#39;53&#39;,
  &#39;CONTENT_TYPE&#39;: &#39;application/json&#39;,
- &#39;CSRF_COOKIE&#39;: &#39;6I7JdPlD2UjO3WOtTy6Ajm9qtJPUuwfu&#39;,
+ &#39;CSRF_COOKIE&#39;: &#39;48f18vd7FTcM1iQ2q56llsOqcfAsiU0O&#39;,
  &#39;DATABASE_URL&#39;: &#39;postgres://vfdtegcibsvzxc:1suaUchWtR-nhuWTGLWjV2s3Up@ec2-54-235-242-31.compute-1.amazonaws.com:5432/deglmb13pmdf04&#39;,
  &#39;DJANGO_SETTINGS_MODULE&#39;: &#39;carpool.settings&#39;,
  &#39;GATEWAY_INTERFACE&#39;: &#39;CGI/1.1&#39;,
@@ -343,13 +353,13 @@ META:{&#39;CONTENT_LENGTH&#39;: &#39;53&#39;,
  &#39;HTTP_X_FORWARDED_FOR&#39;: &#39;169.229.108.46&#39;,
  &#39;HTTP_X_FORWARDED_PORT&#39;: &#39;80&#39;,
  &#39;HTTP_X_FORWARDED_PROTO&#39;: &#39;http&#39;,
- &#39;HTTP_X_REQUEST_START&#39;: &#39;1367567663497&#39;,
+ &#39;HTTP_X_REQUEST_START&#39;: &#39;1367567850996&#39;,
  &#39;LANG&#39;: &#39;en_US.UTF-8&#39;,
  &#39;LD_LIBRARY_PATH&#39;: &#39;/app/.heroku/vendor/lib&#39;,
  &#39;LIBRARY_PATH&#39;: &#39;/app/.heroku/vendor/lib&#39;,
  &#39;PATH&#39;: &#39;/app/.heroku/python/bin:/usr/local/bin:/usr/bin:/bin&#39;,
  &#39;PATH_INFO&#39;: u&#39;/driver/manageRequest&#39;,
- &#39;PORT&#39;: &#39;12990&#39;,
+ &#39;PORT&#39;: &#39;16411&#39;,
  &#39;PS&#39;: &#39;web.1&#39;,
  &#39;PS1&#39;: &#39;\\[\\033[01;34m\\]\\w\\[\\033[00m\\] \\[\\033[01;32m\\]$ \\[\\033[00m\\]&#39;,
  &#39;PWD&#39;: &#39;/app&#39;,
@@ -358,35 +368,25 @@ META:{&#39;CONTENT_LENGTH&#39;: &#39;53&#39;,
  &#39;PYTHONPATH&#39;: &#39;/app/&#39;,
  &#39;PYTHONUNBUFFERED&#39;: &#39;true&#39;,
  &#39;QUERY_STRING&#39;: &#39;&#39;,
- &#39;REMOTE_ADDR&#39;: &#39;10.82.38.219&#39;,
+ &#39;REMOTE_ADDR&#39;: &#39;10.12.234.160&#39;,
  &#39;REMOTE_HOST&#39;: &#39;&#39;,
  &#39;REQUEST_METHOD&#39;: &#39;POST&#39;,
  &#39;SCRIPT_NAME&#39;: u&#39;&#39;,
- &#39;SERVER_NAME&#39;: &#39;cd5eb83c-dadb-4218-af62-7a764befb57a.prvt.dyno.rt.heroku.com&#39;,
- &#39;SERVER_PORT&#39;: &#39;12990&#39;,
+ &#39;SERVER_NAME&#39;: &#39;dde8c32f-60f0-468c-b8c9-f07481cd7285.prvt.dyno.rt.heroku.com&#39;,
+ &#39;SERVER_PORT&#39;: &#39;16411&#39;,
  &#39;SERVER_PROTOCOL&#39;: &#39;HTTP/1.1&#39;,
  &#39;SERVER_SOFTWARE&#39;: &#39;WSGIServer/0.1 Python/2.7.4&#39;,
  &#39;SHLVL&#39;: &#39;1&#39;,
  &#39;TZ&#39;: &#39;America/Chicago&#39;,
  &#39;_&#39;: &#39;/app/.heroku/python/bin/python&#39;,
- &#39;wsgi.errors&#39;: &lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f591915f1e0&gt;,
- &#39;wsgi.file_wrapper&#39;: &lt;class wsgiref.util.FileWrapper at 0x15106d0&gt;,
- &#39;wsgi.input&#39;: &lt;socket._fileobject object at 0x1a646d0&gt;,
+ &#39;wsgi.errors&#39;: &lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f93e86bb1e0&gt;,
+ &#39;wsgi.file_wrapper&#39;: &lt;class wsgiref.util.FileWrapper at 0x29686d0&gt;,
+ &#39;wsgi.input&#39;: &lt;socket._fileobject object at 0x2ebd6d0&gt;,
  &#39;wsgi.multiprocess&#39;: False,
  &#39;wsgi.multithread&#39;: True,
  &#39;wsgi.run_once&#39;: False,
  &#39;wsgi.url_scheme&#39;: &#39;http&#39;,
  &#39;wsgi.version&#39;: (1, 0)}&gt;,)</pre></td>
-                  </tr>
-                
-                  <tr>
-                    <td>kwargs</td>
-                    <td class="code"><pre>{}</pre></td>
-                  </tr>
-                
-                  <tr>
-                    <td>view_func</td>
-                    <td class="code"><pre>&lt;function manageRequest at 0x1d672a8&gt;</pre></td>
                   </tr>
                 
               </tbody>
@@ -398,13 +398,13 @@ META:{&#39;CONTENT_LENGTH&#39;: &#39;53&#39;,
           <code>/app/carpool/carpoolapp/views.py</code> in <code>manageRequest</code>
 
           
-            <div class="context" id="c28958088">
+            <div class="context" id="c49742768">
               
-                <ol start="381" class="pre-context" id="pre28958088"><li onclick="toggle('pre28958088', 'post28958088')"><pre>            for request in driver_requests:</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                req = request.to_dict()</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                route = Route.objects.get(id=request.route_id)</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                if route is None:</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                    resp[&quot;errMsg&quot;] =  &quot;route is None&quot;</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                    resp[&quot;errCode&quot;] = ERR_SEE_ERR_MSG</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                else:</pre></li></ol>
+                <ol start="387" class="pre-context" id="pre49742768"><li onclick="toggle('pre49742768', 'post49742768')"><pre>                else:</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>                    resp[&quot;route&quot;] = route.to_dict()</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>                rider = User.objects.get(apikey = request.rider_apikey)</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>                if rider is None:</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>                    resp[&quot;errMsg&quot;] = &quot;rider is None&quot;</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>                    resp[&quot;errCode&quot;] = ERR_SEE_ERR_MSG</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>                else:</pre></li></ol>
               
-              <ol start="388" class="context-line"><li onclick="toggle('pre28958088', 'post28958088')"><pre>                    req[&quot;route&quot;] = route.to_dict()</pre> <span>...</span></li></ol>
+              <ol start="394" class="context-line"><li onclick="toggle('pre49742768', 'post49742768')"><pre>                    req[&quot;rider&quot;] = rider.to_dict()</pre> <span>...</span></li></ol>
               
-                <ol start='389' class="post-context" id="post28958088"><li onclick="toggle('pre28958088', 'post28958088')"><pre>                rider = User.objects.get(apikey = request.rider_apikey)</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                if rider is None:</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                    resp[&quot;errMsg&quot;] = &quot;rider is None&quot;</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                    resp[&quot;errCode&quot;] = ERR_SEE_ERR_MSG</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                else:</pre></li><li onclick="toggle('pre28958088', 'post28958088')"><pre>                    req[&quot;rider&quot;] = rider.to_dict()</pre></li></ol>
+                <ol start='395' class="post-context" id="post49742768"><li onclick="toggle('pre49742768', 'post49742768')"><pre>                requests.append(req)</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>            resp[&quot;requests&quot;] = requests</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>            resp[&#39;size&#39;] = len(requests)</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>        elif user.user_type == 0:</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>            resp[&quot;errCode&quot;] = ERR_SEE_ERR_MSG</pre></li><li onclick="toggle('pre49742768', 'post49742768')"><pre>            resp[&quot;errMsg&quot;] = &quot;Not a driver&quot;</pre></li></ol>
               
             </div>
           
@@ -412,10 +412,10 @@ META:{&#39;CONTENT_LENGTH&#39;: &#39;53&#39;,
           
             <div class="commands">
                 
-                    <a href="#" onclick="return varToggle(this, '28958088')"><span>&#x25b6;</span> Local vars</a>
+                    <a href="#" onclick="return varToggle(this, '49742768')"><span>&#x25b6;</span> Local vars</a>
                 
             </div>
-            <table class="vars" id="v28958088">
+            <table class="vars" id="v49742768">
               <thead>
                 <tr>
                   <th>Variable</th>
@@ -425,13 +425,13 @@ META:{&#39;CONTENT_LENGTH&#39;: &#39;53&#39;,
               <tbody>
                 
                   <tr>
-                    <td>resp</td>
-                    <td class="code"><pre>{&#39;errCode&#39;: 1}</pre></td>
+                    <td>user</td>
+                    <td class="code"><pre>&lt;User: abc@def.com&gt;</pre></td>
                   </tr>
                 
                   <tr>
-                    <td>rdata</td>
-                    <td class="code"><pre>{u&#39;apikey&#39;: u&#39;048d75afcc16a9879d577b186e7586e362d9518f&#39;}</pre></td>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;ride_request: ride_request object&gt;</pre></td>
                   </tr>
                 
                   <tr>
@@ -440,13 +440,39 @@ META:{&#39;CONTENT_LENGTH&#39;: &#39;53&#39;,
                   </tr>
                 
                   <tr>
-                    <td>user</td>
-                    <td class="code"><pre>&lt;User: abc@def.com&gt;</pre></td>
+                    <td>resp</td>
+                    <td class="code"><pre>{&#39;errCode&#39;: 1,
+ &#39;route&#39;: {&#39;arrive_lat&#39;: u&#39;37.81486188906&#39;,
+           &#39;arrive_lg&#39;: u&#39;-122.258506044&#39;,
+           &#39;available_seats&#39;: 3,
+           &#39;depart_lat&#39;: u&#39;37.91327498844&#39;,
+           &#39;depart_lg&#39;: u&#39;-122.315667942&#39;,
+           &#39;depart_time&#39;: datetime.datetime(2013, 4, 26, 4, 36, tzinfo=&lt;UTC&gt;),
+           &#39;driver_info&#39;: {&#39;car_make&#39;: u&#39;a123&#39;,
+                           &#39;car_mileage&#39;: 1235,
+                           &#39;car_type&#39;: u&#39;a123&#39;,
+                           &#39;driver&#39;: {&#39;avg_rating&#39;: 0.0,
+                                      &#39;cellphone&#39;: u&#39;5101234567&#39;,
+                                      &#39;comments&#39;: u&#39;&#39;,
+                                      &#39;dob&#39;: datetime.date(2013, 4, 25),
+                                      &#39;email&#39;: u&#39;abc@def.com&#39;,
+                                      &#39;firstname&#39;: u&#39;abc&#39;,
+                                      &#39;id&#39;: 102,
+                                      &#39;lastname&#39;: u&#39;def&#39;,
+                                      &#39;sex&#39;: u&#39;male&#39;,
+                                      &#39;user_type&#39;: 1},
+                           &#39;id&#39;: 101,
+                           &#39;license_exp&#39;: datetime.date(2015, 4, 25),
+                           &#39;license_no&#39;: u&#39;a1234567&#39;,
+                           &#39;max_passengers&#39;: u&#39;3&#39;},
+           &#39;id&#39;: 101,
+           &#39;maps_info&#39;: u&#39;&#39;,
+           &#39;status&#39;: u&#39;valid&#39;}}</pre></td>
                   </tr>
                 
                   <tr>
-                    <td>requests</td>
-                    <td class="code"><pre>[]</pre></td>
+                    <td>driver_requests</td>
+                    <td class="code"><pre>[&lt;ride_request: ride_request object&gt;, &lt;ride_request: ride_request object&gt;, &lt;ride_request: ride_request object&gt;, &lt;ride_request: ride_request object&gt;, &lt;ride_request: ride_request object&gt;, &lt;ride_request: ride_request object&gt;]</pre></td>
                   </tr>
                 
                   <tr>
@@ -455,8 +481,18 @@ META:{&#39;CONTENT_LENGTH&#39;: &#39;53&#39;,
                   </tr>
                 
                   <tr>
-                    <td>driver_requests</td>
-                    <td class="code"><pre>[&lt;ride_request: ride_request object&gt;, &lt;ride_request: ride_request object&gt;, &lt;ride_request: ride_request object&gt;, &lt;ride_request: ride_request object&gt;, &lt;ride_request: ride_request object&gt;, &lt;ride_request: ride_request object&gt;]</pre></td>
+                    <td>requests</td>
+                    <td class="code"><pre>[]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>rider</td>
+                    <td class="code"><pre>&lt;User: abc@def.com&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>rdata</td>
+                    <td class="code"><pre>{u&#39;apikey&#39;: u&#39;048d75afcc16a9879d577b186e7586e362d9518f&#39;}</pre></td>
                   </tr>
                 
                   <tr>
@@ -467,11 +503,6 @@ META:{&#39;CONTENT_LENGTH&#39;: &#39;53&#39;,
                   <tr>
                     <td>route</td>
                     <td class="code"><pre>&lt;Route: Route object&gt;</pre></td>
-                  </tr>
-                
-                  <tr>
-                    <td>request</td>
-                    <td class="code"><pre>&lt;ride_request: ride_request object&gt;</pre></td>
                   </tr>
                 
               </tbody>
@@ -522,7 +553,7 @@ File "/app/.heroku/python/lib/python2.7/site-packages/django/core/handlers/base.
 File "/app/.heroku/python/lib/python2.7/site-packages/django/views/decorators/csrf.py" in wrapped_view
   77.         return view_func(*args, **kwargs)
 File "/app/carpool/carpoolapp/views.py" in manageRequest
-  388.                     req[&quot;route&quot;] = route.to_dict()
+  394.                     req[&quot;rider&quot;] = rider.to_dict()
 
 Exception Type: TypeError at /driver/manageRequest
 Exception Value: &#39;NoneType&#39; object does not support item assignment
@@ -585,23 +616,8 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
     <tbody>
       
         <tr>
-          <td>wsgi.multithread</td>
-          <td class="code"><pre>True</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SERVER_PROTOCOL</td>
-          <td class="code"><pre>&#39;HTTP/1.1&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>PATH</td>
-          <td class="code"><pre>&#39;/app/.heroku/python/bin:/usr/local/bin:/usr/bin:/bin&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>PS</td>
-          <td class="code"><pre>&#39;web.1&#39;</pre></td>
+          <td>HTTP_X_REQUEST_START</td>
+          <td class="code"><pre>&#39;1367567850996&#39;</pre></td>
         </tr>
       
         <tr>
@@ -610,58 +626,23 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>TZ</td>
-          <td class="code"><pre>&#39;America/Chicago&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>LANG</td>
-          <td class="code"><pre>&#39;en_US.UTF-8&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>REQUEST_METHOD</td>
-          <td class="code"><pre>&#39;POST&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>PYTHONHOME</td>
-          <td class="code"><pre>&#39;/app/.heroku/python&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>REMOTE_HOST</td>
-          <td class="code"><pre>&#39;&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>PORT</td>
-          <td class="code"><pre>&#39;12990&#39;</pre></td>
-        </tr>
-      
-        <tr>
           <td>LIBRARY_PATH</td>
           <td class="code"><pre>&#39;/app/.heroku/vendor/lib&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>CSRF_COOKIE</td>
-          <td class="code"><pre>&#39;6I7JdPlD2UjO3WOtTy6Ajm9qtJPUuwfu&#39;</pre></td>
+          <td>GATEWAY_INTERFACE</td>
+          <td class="code"><pre>&#39;CGI/1.1&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>LD_LIBRARY_PATH</td>
-          <td class="code"><pre>&#39;/app/.heroku/vendor/lib&#39;</pre></td>
+          <td>_</td>
+          <td class="code"><pre>&#39;/app/.heroku/python/bin/python&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>HOME</td>
-          <td class="code"><pre>&#39;/app&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SERVER_SOFTWARE</td>
-          <td class="code"><pre>&#39;WSGIServer/0.1 Python/2.7.4&#39;</pre></td>
+          <td>PYTHONPATH</td>
+          <td class="code"><pre>&#39;/app/&#39;</pre></td>
         </tr>
       
         <tr>
@@ -670,18 +651,43 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>QUERY_STRING</td>
+          <td>PYTHONHOME</td>
+          <td class="code"><pre>&#39;/app/.heroku/python&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHLVL</td>
+          <td class="code"><pre>&#39;1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REMOTE_HOST</td>
           <td class="code"><pre>&#39;&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>HTTP_X_REQUEST_START</td>
-          <td class="code"><pre>&#39;1367567663497&#39;</pre></td>
+          <td>HTTP_X_FORWARDED_PORT</td>
+          <td class="code"><pre>&#39;80&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>PYTHONPATH</td>
-          <td class="code"><pre>&#39;/app/&#39;</pre></td>
+          <td>PWD</td>
+          <td class="code"><pre>&#39;/app&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HEROKU_POSTGRESQL_TEAL_URL</td>
+          <td class="code"><pre>&#39;postgres://vfdtegcibsvzxc:1suaUchWtR-nhuWTGLWjV2s3Up@ec2-54-235-242-31.compute-1.amazonaws.com:5432/deglmb13pmdf04&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LD_LIBRARY_PATH</td>
+          <td class="code"><pre>&#39;/app/.heroku/vendor/lib&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PS1</td>
+          <td class="code"><pre>&#39;\\[\\033[01;34m\\]\\w\\[\\033[00m\\] \\[\\033[01;32m\\]$ \\[\\033[00m\\]&#39;</pre></td>
         </tr>
       
         <tr>
@@ -695,18 +701,23 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>PATH_INFO</td>
-          <td class="code"><pre>u&#39;/driver/manageRequest&#39;</pre></td>
+          <td>PYTHONHASHSEED</td>
+          <td class="code"><pre>&#39;random&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>SERVER_NAME</td>
-          <td class="code"><pre>&#39;cd5eb83c-dadb-4218-af62-7a764befb57a.prvt.dyno.rt.heroku.com&#39;</pre></td>
+          <td>wsgi.errors</td>
+          <td class="code"><pre>&lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f93e86bb1e0&gt;</pre></td>
         </tr>
       
         <tr>
-          <td>wsgi.url_scheme</td>
-          <td class="code"><pre>&#39;http&#39;</pre></td>
+          <td>REMOTE_ADDR</td>
+          <td class="code"><pre>&#39;10.12.234.160&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.multithread</td>
+          <td class="code"><pre>True</pre></td>
         </tr>
       
         <tr>
@@ -715,13 +726,103 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>PYTHONHASHSEED</td>
-          <td class="code"><pre>&#39;random&#39;</pre></td>
+          <td>PATH_INFO</td>
+          <td class="code"><pre>u&#39;/driver/manageRequest&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>PWD</td>
+          <td>SERVER_PROTOCOL</td>
+          <td class="code"><pre>&#39;HTTP/1.1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_SOFTWARE</td>
+          <td class="code"><pre>&#39;WSGIServer/0.1 Python/2.7.4&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_ACCEPT</td>
+          <td class="code"><pre>&#39;application/json&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DJANGO_SETTINGS_MODULE</td>
+          <td class="code"><pre>&#39;carpool.settings&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TZ</td>
+          <td class="code"><pre>&#39;America/Chicago&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PS</td>
+          <td class="code"><pre>&#39;web.1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>QUERY_STRING</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HOME</td>
           <td class="code"><pre>&#39;/app&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.url_scheme</td>
+          <td class="code"><pre>&#39;http&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANG</td>
+          <td class="code"><pre>&#39;en_US.UTF-8&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REQUEST_METHOD</td>
+          <td class="code"><pre>&#39;POST&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_PORT</td>
+          <td class="code"><pre>&#39;16411&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PORT</td>
+          <td class="code"><pre>&#39;16411&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_X_FORWARDED_FOR</td>
+          <td class="code"><pre>&#39;169.229.108.46&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_NAME</td>
+          <td class="code"><pre>&#39;dde8c32f-60f0-468c-b8c9-f07481cd7285.prvt.dyno.rt.heroku.com&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_CONNECTION</td>
+          <td class="code"><pre>&#39;close&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.input</td>
+          <td class="code"><pre>&lt;socket._fileobject object at 0x2ebd6d0&gt;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.version</td>
+          <td class="code"><pre>(1, 0)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATABASE_URL</td>
+          <td class="code"><pre>&#39;postgres://vfdtegcibsvzxc:1suaUchWtR-nhuWTGLWjV2s3Up@ec2-54-235-242-31.compute-1.amazonaws.com:5432/deglmb13pmdf04&#39;</pre></td>
         </tr>
       
         <tr>
@@ -735,18 +836,8 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>HTTP_X_FORWARDED_PORT</td>
-          <td class="code"><pre>&#39;80&#39;</pre></td>
-        </tr>
-      
-        <tr>
           <td>wsgi.multiprocess</td>
           <td class="code"><pre>False</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DATABASE_URL</td>
-          <td class="code"><pre>&#39;postgres://vfdtegcibsvzxc:1suaUchWtR-nhuWTGLWjV2s3Up@ec2-54-235-242-31.compute-1.amazonaws.com:5432/deglmb13pmdf04&#39;</pre></td>
         </tr>
       
         <tr>
@@ -755,63 +846,8 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>wsgi.errors</td>
-          <td class="code"><pre>&lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f591915f1e0&gt;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SERVER_PORT</td>
-          <td class="code"><pre>&#39;12990&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SHLVL</td>
-          <td class="code"><pre>&#39;1&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>HTTP_ACCEPT</td>
-          <td class="code"><pre>&#39;application/json&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>HTTP_CONNECTION</td>
-          <td class="code"><pre>&#39;close&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>_</td>
-          <td class="code"><pre>&#39;/app/.heroku/python/bin/python&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>wsgi.version</td>
-          <td class="code"><pre>(1, 0)</pre></td>
-        </tr>
-      
-        <tr>
-          <td>PS1</td>
-          <td class="code"><pre>&#39;\\[\\033[01;34m\\]\\w\\[\\033[00m\\] \\[\\033[01;32m\\]$ \\[\\033[00m\\]&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DJANGO_SETTINGS_MODULE</td>
-          <td class="code"><pre>&#39;carpool.settings&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>REMOTE_ADDR</td>
-          <td class="code"><pre>&#39;10.82.38.219&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>wsgi.input</td>
-          <td class="code"><pre>&lt;socket._fileobject object at 0x1a646d0&gt;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>HTTP_X_FORWARDED_FOR</td>
-          <td class="code"><pre>&#39;169.229.108.46&#39;</pre></td>
+          <td>CSRF_COOKIE</td>
+          <td class="code"><pre>&#39;48f18vd7FTcM1iQ2q56llsOqcfAsiU0O&#39;</pre></td>
         </tr>
       
         <tr>
@@ -820,13 +856,8 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>HEROKU_POSTGRESQL_TEAL_URL</td>
-          <td class="code"><pre>&#39;postgres://vfdtegcibsvzxc:1suaUchWtR-nhuWTGLWjV2s3Up@ec2-54-235-242-31.compute-1.amazonaws.com:5432/deglmb13pmdf04&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>GATEWAY_INTERFACE</td>
-          <td class="code"><pre>&#39;CGI/1.1&#39;</pre></td>
+          <td>PATH</td>
+          <td class="code"><pre>&#39;/app/.heroku/python/bin:/usr/local/bin:/usr/bin:/bin&#39;</pre></td>
         </tr>
       
     </tbody>
@@ -845,38 +876,38 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
     <tbody>
       
         <tr>
-          <td>LOCALE_PATHS</td>
-          <td class="code"><pre>()</pre></td>
+          <td>EMAIL_HOST</td>
+          <td class="code"><pre>&#39;smtp.gmail.com&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>SETTINGS_MODULE</td>
-          <td class="code"><pre>&#39;carpool.settings&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>APPEND_SLASH</td>
-          <td class="code"><pre>True</pre></td>
-        </tr>
-      
-        <tr>
-          <td>MEDIA_ROOT</td>
-          <td class="code"><pre>&#39;&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>LOGIN_URL</td>
-          <td class="code"><pre>&#39;/accounts/login/&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DEBUG_PROPAGATE_EXCEPTIONS</td>
+          <td>SESSION_COOKIE_SECURE</td>
           <td class="code"><pre>False</pre></td>
         </tr>
       
         <tr>
-          <td>CACHE_MIDDLEWARE_SECONDS</td>
-          <td class="code"><pre>600</pre></td>
+          <td>THOUSAND_SEPARATOR</td>
+          <td class="code"><pre>&#39;,&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_FILE_PATH</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MEDIA_URL</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATICFILES_STORAGE</td>
+          <td class="code"><pre>&#39;django.contrib.staticfiles.storage.StaticFilesStorage&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ROOT_URLCONF</td>
+          <td class="code"><pre>&#39;carpool.urls&#39;</pre></td>
         </tr>
       
         <tr>
@@ -885,73 +916,87 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>DISALLOWED_USER_AGENTS</td>
+          <td>SESSION_COOKIE_AGE</td>
+          <td class="code"><pre>1209600</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGOUT_URL</td>
+          <td class="code"><pre>&#39;/accounts/logout/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGGING</td>
+          <td class="code"><pre>{&#39;disable_existing_loggers&#39;: False,
+ &#39;filters&#39;: {&#39;require_debug_false&#39;: {&#39;()&#39;: &#39;django.utils.log.RequireDebugFalse&#39;}},
+ &#39;handlers&#39;: {&#39;mail_admins&#39;: {&#39;class&#39;: &#39;django.utils.log.AdminEmailHandler&#39;,
+                              &#39;filters&#39;: [&#39;require_debug_false&#39;],
+                              &#39;level&#39;: &#39;ERROR&#39;}},
+ &#39;loggers&#39;: {&#39;django.request&#39;: {&#39;handlers&#39;: [&#39;mail_admins&#39;],
+                                &#39;level&#39;: &#39;ERROR&#39;,
+                                &#39;propagate&#39;: True}},
+ &#39;version&#39;: 1}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ALLOWED_INCLUDE_ROOTS</td>
           <td class="code"><pre>()</pre></td>
         </tr>
       
         <tr>
-          <td>SESSION_COOKIE_DOMAIN</td>
-          <td class="code"><pre>None</pre></td>
+          <td>LANGUAGE_CODE</td>
+          <td class="code"><pre>&#39;en-us&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>USE_THOUSAND_SEPARATOR</td>
+          <td>DATABASE_ROUTERS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_SECURE</td>
           <td class="code"><pre>False</pre></td>
         </tr>
       
         <tr>
-          <td>TRANSACTIONS_MANAGED</td>
-          <td class="code"><pre>False</pre></td>
+          <td>DATE_INPUT_FORMATS</td>
+          <td class="code"><pre>(&#39;%Y-%m-%d&#39;,
+ &#39;%m/%d/%Y&#39;,
+ &#39;%m/%d/%y&#39;,
+ &#39;%b %d %Y&#39;,
+ &#39;%b %d, %Y&#39;,
+ &#39;%d %b %Y&#39;,
+ &#39;%d %b, %Y&#39;,
+ &#39;%B %d %Y&#39;,
+ &#39;%B %d, %Y&#39;,
+ &#39;%d %B %Y&#39;,
+ &#39;%d %B, %Y&#39;)</pre></td>
         </tr>
       
         <tr>
-          <td>CACHE_BACKEND</td>
-          <td class="code"><pre>&#39;locmem://&#39;</pre></td>
+          <td>MONTH_DAY_FORMAT</td>
+          <td class="code"><pre>&#39;F j&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>URL_VALIDATOR_USER_AGENT</td>
-          <td class="code"><pre>&#39;Django/1.4.3 (https://www.djangoproject.com)&#39;</pre></td>
+          <td>FILE_CHARSET</td>
+          <td class="code"><pre>&#39;utf-8&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>EMAIL_HOST_PASSWORD</td>
-          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+          <td>APPEND_SLASH</td>
+          <td class="code"><pre>True</pre></td>
         </tr>
       
         <tr>
-          <td>STATICFILES_DIRS</td>
-          <td class="code"><pre>()</pre></td>
-        </tr>
-      
-        <tr>
-          <td>CSRF_COOKIE_DOMAIN</td>
+          <td>FORCE_SCRIPT_NAME</td>
           <td class="code"><pre>None</pre></td>
         </tr>
       
         <tr>
-          <td>SHORT_DATETIME_FORMAT</td>
-          <td class="code"><pre>&#39;m/d/Y P&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DEFAULT_CONTENT_TYPE</td>
-          <td class="code"><pre>&#39;text/html&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SITE_ID</td>
-          <td class="code"><pre>1</pre></td>
-        </tr>
-      
-        <tr>
-          <td>TEMPLATE_DIRS</td>
-          <td class="code"><pre>()</pre></td>
-        </tr>
-      
-        <tr>
-          <td>NUMBER_GROUPING</td>
-          <td class="code"><pre>0</pre></td>
+          <td>TEMPLATE_LOADERS</td>
+          <td class="code"><pre>(&#39;django.template.loaders.filesystem.Loader&#39;,
+ &#39;django.template.loaders.app_directories.Loader&#39;)</pre></td>
         </tr>
       
         <tr>
@@ -971,43 +1016,23 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>USE_TZ</td>
-          <td class="code"><pre>True</pre></td>
+          <td>EMAIL_HOST_PASSWORD</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>DEBUG</td>
-          <td class="code"><pre>True</pre></td>
+          <td>CSRF_COOKIE_PATH</td>
+          <td class="code"><pre>&#39;/&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>LOGOUT_URL</td>
-          <td class="code"><pre>&#39;/accounts/logout/&#39;</pre></td>
+          <td>SHORT_DATETIME_FORMAT</td>
+          <td class="code"><pre>&#39;m/d/Y P&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>DECIMAL_SEPARATOR</td>
-          <td class="code"><pre>&#39;.&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>MESSAGE_STORAGE</td>
-          <td class="code"><pre>&#39;django.contrib.messages.storage.fallback.FallbackStorage&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DEFAULT_INDEX_TABLESPACE</td>
-          <td class="code"><pre>&#39;&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>TIME_INPUT_FORMATS</td>
-          <td class="code"><pre>(&#39;%H:%M:%S&#39;, &#39;%H:%M&#39;)</pre></td>
-        </tr>
-      
-        <tr>
-          <td>FILE_UPLOAD_PERMISSIONS</td>
-          <td class="code"><pre>None</pre></td>
+          <td>SECRET_KEY</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
         </tr>
       
         <tr>
@@ -1020,130 +1045,12 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>USE_ETAGS</td>
+          <td>USE_THOUSAND_SEPARATOR</td>
           <td class="code"><pre>False</pre></td>
         </tr>
       
         <tr>
-          <td>CSRF_COOKIE_NAME</td>
-          <td class="code"><pre>&#39;csrftoken&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DEFAULT_CHARSET</td>
-          <td class="code"><pre>&#39;utf-8&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>LOGIN_REDIRECT_URL</td>
-          <td class="code"><pre>&#39;/accounts/profile/&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SIGNING_BACKEND</td>
-          <td class="code"><pre>&#39;django.core.signing.TimestampSigner&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>EMAIL_PORT</td>
-          <td class="code"><pre>587</pre></td>
-        </tr>
-      
-        <tr>
-          <td>USE_I18N</td>
-          <td class="code"><pre>True</pre></td>
-        </tr>
-      
-        <tr>
-          <td>ADMIN_FOR</td>
-          <td class="code"><pre>()</pre></td>
-        </tr>
-      
-        <tr>
-          <td>AUTHENTICATION_BACKENDS</td>
-          <td class="code"><pre>(&#39;django.contrib.auth.backends.ModelBackend&#39;,)</pre></td>
-        </tr>
-      
-        <tr>
-          <td>CACHES</td>
-          <td class="code"><pre>{&#39;default&#39;: {&#39;BACKEND&#39;: &#39;django.core.cache.backends.locmem.LocMemCache&#39;,
-             &#39;LOCATION&#39;: &#39;&#39;}}</pre></td>
-        </tr>
-      
-        <tr>
-          <td>FILE_CHARSET</td>
-          <td class="code"><pre>&#39;utf-8&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>TIME_FORMAT</td>
-          <td class="code"><pre>&#39;P&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SESSION_ENGINE</td>
-          <td class="code"><pre>&#39;django.contrib.sessions.backends.db&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>TEMPLATE_LOADERS</td>
-          <td class="code"><pre>(&#39;django.template.loaders.filesystem.Loader&#39;,
- &#39;django.template.loaders.app_directories.Loader&#39;)</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DEFAULT_FROM_EMAIL</td>
-          <td class="code"><pre>&#39;webmaster@localhost&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>CSRF_COOKIE_SECURE</td>
-          <td class="code"><pre>False</pre></td>
-        </tr>
-      
-        <tr>
-          <td>STATICFILES_FINDERS</td>
-          <td class="code"><pre>(&#39;django.contrib.staticfiles.finders.FileSystemFinder&#39;,
- &#39;django.contrib.staticfiles.finders.AppDirectoriesFinder&#39;)</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DEFAULT_FILE_STORAGE</td>
-          <td class="code"><pre>&#39;django.core.files.storage.FileSystemStorage&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>EMAIL_HOST</td>
-          <td class="code"><pre>&#39;smtp.gmail.com&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>CACHE_MIDDLEWARE_ALIAS</td>
-          <td class="code"><pre>&#39;default&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>ABSOLUTE_URL_OVERRIDES</td>
-          <td class="code"><pre>{}</pre></td>
-        </tr>
-      
-        <tr>
-          <td>ROOT_URLCONF</td>
-          <td class="code"><pre>&#39;carpool.urls&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>CSRF_COOKIE_PATH</td>
-          <td class="code"><pre>&#39;/&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>USE_X_FORWARDED_HOST</td>
-          <td class="code"><pre>False</pre></td>
-        </tr>
-      
-        <tr>
-          <td>FIXTURE_DIRS</td>
+          <td>STATICFILES_DIRS</td>
           <td class="code"><pre>()</pre></td>
         </tr>
       
@@ -1153,21 +1060,64 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>DATE_FORMAT</td>
-          <td class="code"><pre>&#39;N j, Y&#39;</pre></td>
+          <td>DEBUG</td>
+          <td class="code"><pre>True</pre></td>
         </tr>
       
         <tr>
-          <td>LOGGING</td>
-          <td class="code"><pre>{&#39;disable_existing_loggers&#39;: False,
- &#39;filters&#39;: {&#39;require_debug_false&#39;: {&#39;()&#39;: &#39;django.utils.log.RequireDebugFalse&#39;}},
- &#39;handlers&#39;: {&#39;mail_admins&#39;: {&#39;class&#39;: &#39;django.utils.log.AdminEmailHandler&#39;,
-                              &#39;filters&#39;: [&#39;require_debug_false&#39;],
-                              &#39;level&#39;: &#39;ERROR&#39;}},
- &#39;loggers&#39;: {&#39;django.request&#39;: {&#39;handlers&#39;: [&#39;mail_admins&#39;],
-                                &#39;level&#39;: &#39;ERROR&#39;,
-                                &#39;propagate&#39;: True}},
- &#39;version&#39;: 1}</pre></td>
+          <td>DECIMAL_SEPARATOR</td>
+          <td class="code"><pre>&#39;.&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_EMAIL</td>
+          <td class="code"><pre>&#39;root@localhost&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOCALE_PATHS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATIC_ROOT</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SITE_ID</td>
+          <td class="code"><pre>1</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_ALIAS</td>
+          <td class="code"><pre>&#39;default&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_PERMISSIONS</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATABASES</td>
+          <td class="code"><pre>{&#39;default&#39;: {&#39;ENGINE&#39;: &#39;django.db.backends.postgresql_psycopg2&#39;,
+             &#39;HOST&#39;: &#39;ec2-54-235-242-31.compute-1.amazonaws.com&#39;,
+             &#39;NAME&#39;: &#39;deglmb13pmdf04&#39;,
+             &#39;OPTIONS&#39;: {},
+             &#39;PASSWORD&#39;: u&#39;********************&#39;,
+             &#39;PORT&#39;: 5432,
+             &#39;TEST_CHARSET&#39;: None,
+             &#39;TEST_COLLATION&#39;: None,
+             &#39;TEST_MIRROR&#39;: None,
+             &#39;TEST_NAME&#39;: None,
+             &#39;TIME_ZONE&#39;: &#39;UTC&#39;,
+             &#39;USER&#39;: &#39;vfdtegcibsvzxc&#39;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_ETAGS</td>
+          <td class="code"><pre>False</pre></td>
         </tr>
       
         <tr>
@@ -1176,13 +1126,23 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>LANGUAGE_COOKIE_NAME</td>
-          <td class="code"><pre>&#39;django_language&#39;</pre></td>
+          <td>MANAGERS</td>
+          <td class="code"><pre>()</pre></td>
         </tr>
       
         <tr>
-          <td>X_FRAME_OPTIONS</td>
-          <td class="code"><pre>&#39;SAMEORIGIN&#39;</pre></td>
+          <td>TIME_FORMAT</td>
+          <td class="code"><pre>&#39;P&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AUTHENTICATION_BACKENDS</td>
+          <td class="code"><pre>(&#39;django.contrib.auth.backends.ModelBackend&#39;,)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_FILE_STORAGE</td>
+          <td class="code"><pre>&#39;django.core.files.storage.FileSystemStorage&#39;</pre></td>
         </tr>
       
         <tr>
@@ -1191,144 +1151,49 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>YEAR_MONTH_FORMAT</td>
-          <td class="code"><pre>&#39;F Y&#39;</pre></td>
+          <td>DEBUG_PROPAGATE_EXCEPTIONS</td>
+          <td class="code"><pre>False</pre></td>
         </tr>
       
         <tr>
-          <td>SHORT_DATE_FORMAT</td>
-          <td class="code"><pre>&#39;m/d/Y&#39;</pre></td>
+          <td>DEFAULT_FROM_EMAIL</td>
+          <td class="code"><pre>&#39;webmaster@localhost&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>DATE_INPUT_FORMATS</td>
-          <td class="code"><pre>(&#39;%Y-%m-%d&#39;,
- &#39;%m/%d/%Y&#39;,
- &#39;%m/%d/%y&#39;,
- &#39;%b %d %Y&#39;,
- &#39;%b %d, %Y&#39;,
- &#39;%d %b %Y&#39;,
- &#39;%d %b, %Y&#39;,
- &#39;%B %d %Y&#39;,
- &#39;%B %d, %Y&#39;,
- &#39;%d %B %Y&#39;,
- &#39;%d %B, %Y&#39;)</pre></td>
+          <td>URL_VALIDATOR_USER_AGENT</td>
+          <td class="code"><pre>&#39;Django/1.4.3 (https://www.djangoproject.com)&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>FIRST_DAY_OF_WEEK</td>
-          <td class="code"><pre>0</pre></td>
+          <td>SECURE_PROXY_SSL_HEADER</td>
+          <td class="code"><pre>(&#39;HTTP_X_FORWARDED_PROTO&#39;, &#39;https&#39;)</pre></td>
         </tr>
       
         <tr>
-          <td>PASSWORD_HASHERS</td>
-          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+          <td>SIGNING_BACKEND</td>
+          <td class="code"><pre>&#39;django.core.signing.TimestampSigner&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>EMAIL_BACKEND</td>
-          <td class="code"><pre>&#39;django.core.mail.backends.smtp.EmailBackend&#39;</pre></td>
+          <td>CACHES</td>
+          <td class="code"><pre>{&#39;default&#39;: {&#39;BACKEND&#39;: &#39;django.core.cache.backends.locmem.LocMemCache&#39;,
+             &#39;LOCATION&#39;: &#39;&#39;}}</pre></td>
         </tr>
       
         <tr>
-          <td>SESSION_COOKIE_AGE</td>
-          <td class="code"><pre>1209600</pre></td>
+          <td>PREPEND_WWW</td>
+          <td class="code"><pre>False</pre></td>
         </tr>
       
         <tr>
-          <td>MEDIA_URL</td>
-          <td class="code"><pre>&#39;&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>CSRF_FAILURE_VIEW</td>
-          <td class="code"><pre>&#39;django.views.csrf.csrf_failure&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>FILE_UPLOAD_TEMP_DIR</td>
-          <td class="code"><pre>None</pre></td>
-        </tr>
-      
-        <tr>
-          <td>ADMINS</td>
-          <td class="code"><pre>()</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DEFAULT_EXCEPTION_REPORTER_FILTER</td>
-          <td class="code"><pre>&#39;django.views.debug.SafeExceptionReporterFilter&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DATETIME_FORMAT</td>
-          <td class="code"><pre>&#39;N j, Y, P&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>MONTH_DAY_FORMAT</td>
-          <td class="code"><pre>&#39;F j&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>LANGUAGES_BIDI</td>
-          <td class="code"><pre>(&#39;he&#39;, &#39;ar&#39;, &#39;fa&#39;)</pre></td>
-        </tr>
-      
-        <tr>
-          <td>TEST_RUNNER</td>
-          <td class="code"><pre>&#39;django.test.simple.DjangoTestSuiteRunner&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SESSION_COOKIE_HTTPONLY</td>
+          <td>USE_TZ</td>
           <td class="code"><pre>True</pre></td>
         </tr>
       
         <tr>
-          <td>FORMAT_MODULE_PATH</td>
-          <td class="code"><pre>None</pre></td>
-        </tr>
-      
-        <tr>
-          <td>FILE_UPLOAD_HANDLERS</td>
-          <td class="code"><pre>(&#39;django.core.files.uploadhandler.MemoryFileUploadHandler&#39;,
- &#39;django.core.files.uploadhandler.TemporaryFileUploadHandler&#39;)</pre></td>
-        </tr>
-      
-        <tr>
-          <td>EMAIL_USE_TLS</td>
-          <td class="code"><pre>True</pre></td>
-        </tr>
-      
-        <tr>
-          <td>USE_L10N</td>
-          <td class="code"><pre>True</pre></td>
-        </tr>
-      
-        <tr>
-          <td>STATIC_URL</td>
-          <td class="code"><pre>&#39;/static/&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>TIME_ZONE</td>
-          <td class="code"><pre>&#39;America/Chicago&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>ALLOWED_INCLUDE_ROOTS</td>
-          <td class="code"><pre>()</pre></td>
-        </tr>
-      
-        <tr>
-          <td>EMAIL_HOST_USER</td>
-          <td class="code"><pre>&#39;carpoolcs169@gmail.com&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>WSGI_APPLICATION</td>
-          <td class="code"><pre>&#39;carpool.wsgi.application&#39;</pre></td>
+          <td>TRANSACTIONS_MANAGED</td>
+          <td class="code"><pre>False</pre></td>
         </tr>
       
         <tr>
@@ -1407,18 +1272,28 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>LOGGING_CONFIG</td>
-          <td class="code"><pre>&#39;django.utils.log.dictConfig&#39;</pre></td>
+          <td>FORMAT_MODULE_PATH</td>
+          <td class="code"><pre>None</pre></td>
         </tr>
       
         <tr>
-          <td>STATICFILES_STORAGE</td>
-          <td class="code"><pre>&#39;django.contrib.staticfiles.storage.StaticFilesStorage&#39;</pre></td>
+          <td>USE_X_FORWARDED_HOST</td>
+          <td class="code"><pre>False</pre></td>
         </tr>
       
         <tr>
-          <td>THOUSAND_SEPARATOR</td>
-          <td class="code"><pre>&#39;,&#39;</pre></td>
+          <td>TEMPLATE_DIRS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>YEAR_MONTH_FORMAT</td>
+          <td class="code"><pre>&#39;F Y&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_KEY_PREFIX</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
         </tr>
       
         <tr>
@@ -1427,80 +1302,28 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>LANGUAGE_CODE</td>
-          <td class="code"><pre>&#39;en-us&#39;</pre></td>
+          <td>EMAIL_HOST_USER</td>
+          <td class="code"><pre>&#39;carpoolcs169@gmail.com&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>TEMPLATE_CONTEXT_PROCESSORS</td>
-          <td class="code"><pre>(&#39;django.contrib.auth.context_processors.auth&#39;,
- &#39;django.core.context_processors.debug&#39;,
- &#39;django.core.context_processors.i18n&#39;,
- &#39;django.core.context_processors.media&#39;,
- &#39;django.core.context_processors.static&#39;,
- &#39;django.core.context_processors.tz&#39;,
- &#39;django.contrib.messages.context_processors.messages&#39;)</pre></td>
+          <td>SETTINGS_MODULE</td>
+          <td class="code"><pre>&#39;carpool.settings&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>SESSION_COOKIE_SECURE</td>
-          <td class="code"><pre>False</pre></td>
-        </tr>
-      
-        <tr>
-          <td>IGNORABLE_404_URLS</td>
-          <td class="code"><pre>()</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SESSION_COOKIE_NAME</td>
-          <td class="code"><pre>&#39;sessionid&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DATABASE_ROUTERS</td>
-          <td class="code"><pre>[]</pre></td>
-        </tr>
-      
-        <tr>
-          <td>DATABASES</td>
-          <td class="code"><pre>{&#39;default&#39;: {&#39;ENGINE&#39;: &#39;django.db.backends.postgresql_psycopg2&#39;,
-             &#39;HOST&#39;: &#39;ec2-54-235-242-31.compute-1.amazonaws.com&#39;,
-             &#39;NAME&#39;: &#39;deglmb13pmdf04&#39;,
-             &#39;OPTIONS&#39;: {},
-             &#39;PASSWORD&#39;: u&#39;********************&#39;,
-             &#39;PORT&#39;: 5432,
-             &#39;TEST_CHARSET&#39;: None,
-             &#39;TEST_COLLATION&#39;: None,
-             &#39;TEST_MIRROR&#39;: None,
-             &#39;TEST_NAME&#39;: None,
-             &#39;TIME_ZONE&#39;: &#39;UTC&#39;,
-             &#39;USER&#39;: &#39;vfdtegcibsvzxc&#39;}}</pre></td>
-        </tr>
-      
-        <tr>
-          <td>TEMPLATE_DEBUG</td>
+          <td>EMAIL_USE_TLS</td>
           <td class="code"><pre>True</pre></td>
         </tr>
       
         <tr>
-          <td>FORCE_SCRIPT_NAME</td>
-          <td class="code"><pre>None</pre></td>
+          <td>STATIC_URL</td>
+          <td class="code"><pre>&#39;/static/&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>SESSION_FILE_PATH</td>
-          <td class="code"><pre>None</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SECRET_KEY</td>
-          <td class="code"><pre>u&#39;********************&#39;</pre></td>
-        </tr>
-      
-        <tr>
-          <td>SESSION_COOKIE_PATH</td>
-          <td class="code"><pre>&#39;/&#39;</pre></td>
+          <td>MESSAGE_STORAGE</td>
+          <td class="code"><pre>&#39;django.contrib.messages.storage.fallback.FallbackStorage&#39;</pre></td>
         </tr>
       
         <tr>
@@ -1517,38 +1340,94 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>SECURE_PROXY_SSL_HEADER</td>
-          <td class="code"><pre>(&#39;HTTP_X_FORWARDED_PROTO&#39;, &#39;https&#39;)</pre></td>
+          <td>SESSION_COOKIE_NAME</td>
+          <td class="code"><pre>&#39;sessionid&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>INTERNAL_IPS</td>
+          <td>ABSOLUTE_URL_OVERRIDES</td>
+          <td class="code"><pre>{}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NUMBER_GROUPING</td>
+          <td class="code"><pre>0</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_SECONDS</td>
+          <td class="code"><pre>600</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_FAILURE_VIEW</td>
+          <td class="code"><pre>&#39;django.views.csrf.csrf_failure&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ADMIN_FOR</td>
           <td class="code"><pre>()</pre></td>
         </tr>
       
         <tr>
-          <td>MANAGERS</td>
+          <td>MEDIA_ROOT</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_L10N</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>IGNORABLE_404_URLS</td>
           <td class="code"><pre>()</pre></td>
         </tr>
       
         <tr>
-          <td>CACHE_MIDDLEWARE_KEY_PREFIX</td>
+          <td>DISALLOWED_USER_AGENTS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ADMINS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_INPUT_FORMATS</td>
+          <td class="code"><pre>(&#39;%H:%M:%S&#39;, &#39;%H:%M&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PASSWORD_HASHERS</td>
           <td class="code"><pre>u&#39;********************&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>TEMPLATE_STRING_IF_INVALID</td>
-          <td class="code"><pre>&#39;&#39;</pre></td>
+          <td>SHORT_DATE_FORMAT</td>
+          <td class="code"><pre>&#39;m/d/Y&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>STATIC_ROOT</td>
-          <td class="code"><pre>&#39;&#39;</pre></td>
+          <td>FILE_UPLOAD_HANDLERS</td>
+          <td class="code"><pre>(&#39;django.core.files.uploadhandler.MemoryFileUploadHandler&#39;,
+ &#39;django.core.files.uploadhandler.TemporaryFileUploadHandler&#39;)</pre></td>
         </tr>
       
         <tr>
-          <td>PASSWORD_RESET_TIMEOUT_DAYS</td>
-          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+          <td>LANGUAGES_BIDI</td>
+          <td class="code"><pre>(&#39;he&#39;, &#39;ar&#39;, &#39;fa&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_ZONE</td>
+          <td class="code"><pre>&#39;America/Chicago&#39;</pre></td>
         </tr>
       
         <tr>
@@ -1557,23 +1436,175 @@ Exception Value: &#39;NoneType&#39; object does not support item assignment
         </tr>
       
         <tr>
-          <td>PROFANITIES_LIST</td>
-          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+          <td>SESSION_COOKIE_HTTPONLY</td>
+          <td class="code"><pre>True</pre></td>
         </tr>
       
         <tr>
-          <td>SERVER_EMAIL</td>
-          <td class="code"><pre>&#39;root@localhost&#39;</pre></td>
+          <td>TEMPLATE_STRING_IF_INVALID</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
         </tr>
       
         <tr>
-          <td>PREPEND_WWW</td>
-          <td class="code"><pre>False</pre></td>
+          <td>INTERNAL_IPS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FIRST_DAY_OF_WEEK</td>
+          <td class="code"><pre>0</pre></td>
         </tr>
       
         <tr>
           <td>SESSION_EXPIRE_AT_BROWSER_CLOSE</td>
           <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATETIME_FORMAT</td>
+          <td class="code"><pre>&#39;N j, Y, P&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_PATH</td>
+          <td class="code"><pre>&#39;/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATE_FORMAT</td>
+          <td class="code"><pre>&#39;N j, Y&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_CONTENT_TYPE</td>
+          <td class="code"><pre>&#39;text/html&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_BACKEND</td>
+          <td class="code"><pre>&#39;django.core.mail.backends.smtp.EmailBackend&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FIXTURE_DIRS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEMPLATE_CONTEXT_PROCESSORS</td>
+          <td class="code"><pre>(&#39;django.contrib.auth.context_processors.auth&#39;,
+ &#39;django.core.context_processors.debug&#39;,
+ &#39;django.core.context_processors.i18n&#39;,
+ &#39;django.core.context_processors.media&#39;,
+ &#39;django.core.context_processors.static&#39;,
+ &#39;django.core.context_processors.tz&#39;,
+ &#39;django.contrib.messages.context_processors.messages&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>X_FRAME_OPTIONS</td>
+          <td class="code"><pre>&#39;SAMEORIGIN&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGIN_URL</td>
+          <td class="code"><pre>&#39;/accounts/login/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_INDEX_TABLESPACE</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGGING_CONFIG</td>
+          <td class="code"><pre>&#39;django.utils.log.dictConfig&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_PORT</td>
+          <td class="code"><pre>587</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PROFANITIES_LIST</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_ENGINE</td>
+          <td class="code"><pre>&#39;django.contrib.sessions.backends.db&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PASSWORD_RESET_TIMEOUT_DAYS</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_NAME</td>
+          <td class="code"><pre>&#39;csrftoken&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_TEMP_DIR</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEMPLATE_DEBUG</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEST_RUNNER</td>
+          <td class="code"><pre>&#39;django.test.simple.DjangoTestSuiteRunner&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WSGI_APPLICATION</td>
+          <td class="code"><pre>&#39;carpool.wsgi.application&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGIN_REDIRECT_URL</td>
+          <td class="code"><pre>&#39;/accounts/profile/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATICFILES_FINDERS</td>
+          <td class="code"><pre>(&#39;django.contrib.staticfiles.finders.FileSystemFinder&#39;,
+ &#39;django.contrib.staticfiles.finders.AppDirectoriesFinder&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_CHARSET</td>
+          <td class="code"><pre>&#39;utf-8&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_NAME</td>
+          <td class="code"><pre>&#39;django_language&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_BACKEND</td>
+          <td class="code"><pre>&#39;locmem://&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_EXCEPTION_REPORTER_FILTER</td>
+          <td class="code"><pre>&#39;django.views.debug.SafeExceptionReporterFilter&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_I18N</td>
+          <td class="code"><pre>True</pre></td>
         </tr>
       
     </tbody>
