@@ -353,6 +353,67 @@ self.routes = models.Route()
             self.assertEquals(testLib.RestTestCase.ERR_BAD_PASSWORD, response.get("errCode"))
 
 
+        #bad format of request
+        def testLoginUser6(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest = json.dumps({'email' :'alex.gatech@berkeley.edu','password':'doualacameroun'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_KEY, response.get("errCode"))
+
+
+        #bad password
+        def testLoginUser7(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest.body = json.dumps({'email' :'alex.gatech@berkeley.eduthisshouldbewaywaywaytoooooooooooooooooooolonggggggg','password':'doualacameroun'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_EMAIL, response.get("errCode"))
+
+
+        #
+        #TESTING SEARCH FUNCTIONALITY
+        #
+
+        #good search request
+        def testSearch1(self):
+            newrequest = views.request
+            testRide= testUtils.genRide()
+            departLocLat = testRide.depart_lat
+            departLocLong = testRide.depart_lg
+            destLocLat = testRide.arrive_lat
+            destLocLong = testRide.arrive_lg
+            testDate = "bullcrapdate"
+            testTime = "craptime"
+            testThresh = "50"
+            newrequest.body = json.dumps({ "depart-loc": {"lat" : departLocLat, "long" : departLocLong} , "dest-loc" : {"lat" : destLocLat, "long" : destLocLong} , "time-depart" : "0:36", "date":"04-09-2013", "dist-thresh" : testThresh} )
+            response = views.search(newrequest)
+            response = json.loads(response.content)
+            print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+        #badly formed json request
+        def testSearch2(self):
+            newrequest = views.request
+            testRide= testUtils.genRide()
+            departLocLat = testRide.depart_lat
+            departLocLong = testRide.depart_lg
+            destLocLat = testRide.arrive_lat
+            destLocLong = testRide.arrive_lg
+            testDate = "bullcrapdate"
+            testTime = "craptime"
+            testThresh = "50"
+            newrequest = json.dumps({ "depart-loc": {"lat" : departLocLat, "long" : departLocLong} , "dest-loc" : {"lat" : destLocLat, "long" : destLocLong} , "time-depart" : "0:36", "date":"04-09-2013", "dist-thresh" : testThresh} )
+            response = views.search(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_JSON, response.get("errCode"))
 
 
         #
