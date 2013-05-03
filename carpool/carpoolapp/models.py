@@ -144,7 +144,7 @@ class ride_request(models.Model):
         rtn["depart_lat"] = self.depart_lat
         rtn["depart_lg"] = self.depart_lg
         rtn["arrive_lat"] = self.arrive_lat
-        rtn["arriver_lg"] = self.arrive_lg
+        rtn["arrive_lg"] = self.arrive_lg
         rtn["depart_time"] = self.depart_time
         rtn["req_start"] = self.req_start
         rtn["req_end"] = self.req_end
