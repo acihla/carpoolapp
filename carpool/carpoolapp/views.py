@@ -379,20 +379,23 @@ def manageRequest(request):
             driver_requests = ride_request.objects.filter(driver_apikey = user.apikey)
             requests = []
             for request in driver_requests:
-                req = request.to_dict()
-                route = Route.objects.get(id=request.route_id)
-                if route is None:
-                    resp["errMsg"] =  "route is None"
-                    resp["errCode"] = ERR_SEE_ERR_MSG
-                else:
-                    req["route"] = route.to_dict()
-                rider = User.objects.get(apikey = request.rider_apikey)
-                if rider is None:
-                    resp["errMsg"] = "rider is None"
-                    resp["errCode"] = ERR_SEE_ERR_MSG
-                else:
-                    req["rider"] = rider.to_dict()
-                requests.append(req)
+                if request.status != "Cancelled"
+                    req = request.to_dict()
+                    try:
+                        route = Route.objects.get(id=request.route_id)
+                        req["route"] = route.to_dict()
+                    except Exception ex:
+                        req["route"] = "Cancelled"
+                        resp["errMsg"] =  "Not a Valid Route."
+                        resp["errCode"] = ERR_SEE_ERR_MSG
+                        
+                    rider = User.objects.get(apikey = request.rider_apikey)
+                    if rider is None:
+                        resp["errMsg"] = "rider is None"
+                        resp["errCode"] = ERR_SEE_ERR_MSG
+                    else:
+                        req["rider"] = rider.to_dict()
+                    requests.append(req)
             resp["requests"] = requests
             resp['size'] = len(requests)
         elif user.user_type == 0:
