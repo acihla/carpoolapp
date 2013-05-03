@@ -1077,32 +1077,39 @@ return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="applica
 @csrf_exempt
 def cancel_request(request):
     try:
-        data = json.loads(request.raw_post_data)
+        data = json.loads(request.body)
         apikey= data['apikey']
         route_id = data['route_id']
-        route= Route.objects.get(id=route_id)
-        print "available_seats before"
-        print route.available_seats
-        rider = User.objects.get(apikey=apikey)
         try:
-            print "right before i check"
+            route = Route.objects.get(id=route_id)
+        except Route.DoesNotExist:
+            err = ERR_UNKNOWN_ROUTE
+            return HttpResponse(json.dumps({'errCode':err}),content_type="application/json")
+
+        print route.available_seats
+        try:
+
+            rider =User.objects.get(apikey=apikey)
+
+        except User.DoesNotExist:
+            resp={}
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+
+        try:
             rq = ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
             if (rq.status=="Pending" or rq.status=="Accepted"):
                 status="Canceled"
                 rq.status=status
                 rq.save()
-                if (req.status == "Accepted"):
+                if (rq.status == "Accepted"):
                     route.available_seats +=1
                 route.save()
-                print "available seats after"
                 print route.available_seats
-            else:
-                print "either your ride was denied or you canceled it"
 
         except ride_request.DoesNotExist:
-            return HttpResponse(json.dumps({'errCode':ERR_KEY_VAL_DOES_NOT_EXISTS}),content_type="application/json")
-     
-            
+            return HttpResponse(json.dumps({'errCode':ERR_NO_RIDER_DRIVER_CONTACT}),content_type="application/json")
         return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
 
 
