@@ -539,7 +539,7 @@ def changePassword(request):
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
-'''
+
 def sanitizeChangeUserInfoData(rdata):
     firstname = rdata.get("firstname", "")
     lastname = rdata.get("lastname", "")
@@ -576,7 +576,6 @@ def sanitizeChangeUserInfoData(rdata):
       if (type(driver) is not int) and (driver not in [0,1]):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
     return resp
-'''
 
 @csrf_exempt
 def changeUserInfo(request):
@@ -1209,7 +1208,14 @@ def leave_feedback(request):
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
         rating = data['rating']
+        if type(rating) != type(int):
+            return HttpResponse(json.dumps({'errCode':ERR_BAD_INPUT_OR_LENGTH}),content_type="application/json")
+
+
         comment = data['comment']
+        if not isinstance(comment, str):
+            return HttpResponse(json.dumps({'errCode':ERR_BAD_INPUT_OR_LENGTH}),content_type="application/json")
+
         try:
             print "in the try"
             ride_request.objects.get(rider_apikey=apikey,route_id=route_id)
