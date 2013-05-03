@@ -11,7 +11,7 @@ class User(models.Model):
     password = models.CharField(max_length=20)
     cellphone = models.CharField(max_length=20)
     user_type = models.IntegerField(default = 0)
-    comments = models.CharField(default="", max_length=200) #DO NOT USE
+    comments = models.CharField(default="", max_length=200)
     avg_rating = models.FloatField(default = 0)
     apikey = models.CharField(max_length=40, default="")
 
@@ -20,17 +20,6 @@ class User(models.Model):
 
     def to_dict(self):
         rtn = {}
-        #Pulling comments from Rating table
-        comments = ""
-        try:
-            ratings = Rating.objects.filter(owner = self)
-            for rate in ratings:
-                comments = rate.author+": ("+str(rate.rating)+") " + rate.comment +"\n" + comments
-        except Exception, err:
-            comments=""
-
-        rtn["comments"] = comments
-
         rtn["id"] = self.id
         rtn["firstname"] = self.firstname
         rtn["lastname"] = self.lastname
@@ -39,13 +28,24 @@ class User(models.Model):
         rtn["sex"] = self.sex
         rtn["cellphone"] = self.cellphone
         rtn["user_type"] = self.user_type
-        #rtn["comments"] = self.comments
+        rtn["comments"] = self.comments
         rtn["avg_rating"] = self.avg_rating
         return rtn
 
     def to_dict_unsecure(self):
-        rtn = self.to_dict()
+        rtn = {}
+        rtn["id"] = self.id
+        rtn["firstname"] = self.firstname
+        rtn["lastname"] = self.lastname
+        #rtn["username"] = self.username
+        rtn["email"] = self.email
+        rtn["dob"] = self.dob
+        rtn["sex"] = self.sex
         rtn["password"] = self.password
+        rtn["cellphone"] = self.cellphone
+        rtn["user_type"] = self.user_type
+        rtn["comments"] = self.comments
+        rtn["avg_rating"] = self.avg_rating
         rtn["apikey"] = self.apikey
         return rtn
 
@@ -126,7 +126,7 @@ class Route(models.Model):
 class ride_request(models.Model):
     rider_apikey = models.CharField(max_length=40)
     route_id = models.IntegerField()
-    status = models.CharField(max_length=64) #Cancelled, Pending, Accepted, Denied
+    status = models.CharField(max_length=64)
     driver_apikey = models.CharField(max_length=40,default="")
     depart_lat = models.CharField(max_length=20,null=True)
     depart_lg = models.CharField(max_length=20, null=True)
