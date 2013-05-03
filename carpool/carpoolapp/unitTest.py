@@ -1,3 +1,8 @@
+
+
+   
+	
+
 from django.utils import unittest
 import json
 import testLib
@@ -8,17 +13,17 @@ import models
 
 
 #responses to be handled by application
-SUCCESS               =   1  # : a success
-ERR_BAD_DEPARTURE  =  -1  # : Departure location is not valid
-ERR_BAD_DESTINATION       =  -2  # : Destination location is not valid
-ERR_BAD_USERID      =  -3  # : UID does not exist in db, or is not a driver
-ERR_BAD_TIME     =  -4   #format for time is bad
-ERR_DATABASE_SEARCH_ERROR   = -5  
+SUCCESS = 1 # : a success
+ERR_BAD_DEPARTURE = -1 # : Departure location is not valid
+ERR_BAD_DESTINATION = -2 # : Destination location is not valid
+ERR_BAD_USERID = -3 # : UID does not exist in db, or is not a driver
+ERR_BAD_TIME = -4 #format for time is bad
+ERR_DATABASE_SEARCH_ERROR = -5
 ERR_BAD_HEADER= -6
 ERR_BAD_SERVER_RESPONSE = -7
-MAX_LENGTH_IN = 200  #max length for all datums in our db
+MAX_LENGTH_IN = 200 #max length for all datums in our db
 MAX_LENGTH_FIRST_LAST_PASS = 15 #max length for first and last name and password
-MAX_LENGTH_EMAIL = 50  #max length email
+MAX_LENGTH_EMAIL = 50 #max length email
 COORD_LENGTH_IN = 20 # max length of coordinates
 ERR_BAD_KEY = -8
 ERR_NOT_USER = -9
@@ -40,22 +45,23 @@ ERR_BAD_PASSWORD = -24
 
 class UnitTest(unittest.TestCase):
         """
-        Unittests for the Users model class (a sample, incomplete)
-        """
+Unittests for the Users model class (a sample, incomplete)
+"""
         '''
-        def setUp(self):
-            os.environ['DJANGO_SETTINGS_MODULE'] = "mysite.settings"
-            testUtils.genDriver()
-            testUtils.genDriver()
-            testUtils.genUser()
-            testUtils.genUser()
-            self.users = models.User()
-            self.routes = models.Route()
+def setUp(self):
+os.environ['DJANGO_SETTINGS_MODULE'] = "mysite.settings"
+testUtils.genDriver()
+testUtils.genDriver()
+testUtils.genUser()
+testUtils.genUser()
+self.users = models.User()
+self.routes = models.Route()
 
-        '''
+'''
         #
         # SIGNUP USER AND DRIVER!
         #
+
         #successful addition of a user
         def testAddUser1(self):
             newrequest = views.request
@@ -137,7 +143,7 @@ class UnitTest(unittest.TestCase):
             #print(response)
             self.assertEquals(testLib.RestTestCase.ERR_BAD_INPUT_OR_LENGTH, response.get("errCode"))
 
-        #cell phone formatted incorrectly  should not work
+        #cell phone formatted incorrectly but should still work
         def testAddUser10(self):
             newrequest = views.request
             newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.peter@bs7.com', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '(408)8269366', 'driver' : 0})
@@ -364,59 +370,7 @@ class UnitTest(unittest.TestCase):
             #print(response)
             self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
 
-        #test select ride with good inputs
-        def testGoodSelectRide(self):
-            newrequest = views.request
-            testRider = testUtils.genUser()
-            testRide  = testUtils.genRide()
-            testApi = testRider.apikey
-            testRouteID = testRide.id
-            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
-            response = views.select_ride(newrequest)
-            response = json.loads(response.content)
-            #print(response)
-            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
-        #test select ride wich user does not exist
-        def testNotUserSelectRide(self):
-            newrequest = views.request
-            testRider = testUtils.genUser()
-            testRide  = testUtils.genRide()
-            testApi = testRider.apikey
-            testRouteID = testRide.id
-            newrequest.body = json.dumps({ 'apikey' : "aaaa","route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
-            response = views.select_ride(newrequest)
-            response = json.loads(response.content)
-            #print(response)
-            self.assertEquals(testLib.RestTestCase.ERR_BAD_APIKEY, response.get("errCode"))
-        #test select ride wich route does not exists
-        def testNotRouteSelectRide(self):
-            newrequest = views.request
-            testRider = testUtils.genUser()
-            testRide  = testUtils.genRide()
-            testApi = testRider.apikey
-            testRouteID = testRide.id
-            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":40000,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
-            response = views.select_ride(newrequest)
-            response = json.loads(response.content)
-            #print(response)
-            self.assertEquals(testLib.RestTestCase.ERR_UNKNOWN_ROUTE, response.get("errCode"))
-        #test select ride wich already exists 
-        def testAlreadyExistsSelectRide(self):
-            newrequest = views.request
-            testRider = testUtils.genUser()
-            testRide  = testUtils.genRide()
-            testApi = testRider.apikey
-            testRouteID = testRide.id
-            prev_api = testApi
-            prev_route_id = testRouteID
-            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
-            response = views.select_ride(newrequest)
-            response = json.loads(response.content)
-            newrequest.body = json.dumps({ 'apikey' : prev_api,"route_id":prev_route_id,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
-            response1 = views.select_ride(newrequest)
-            response1 = json.loads(response1.content)
 
-            self.assertEquals(testLib.RestTestCase.ERR_REQUEST_EXISTS, response1.get("errCode"))
 
         #
         #CHECK ROUTE DELETION
@@ -424,7 +378,7 @@ class UnitTest(unittest.TestCase):
         def testDeleteRoute1(self):
             newrequest = views.request
             testRoute = testUtils.genRide()
-            testRouteId = testRoute.id 
+            testRouteId = testRoute.id
             testDriverApi = testRoute.driver_info.driver.apikey
             newrequest.body = json.dumps({ 'apikey' : testDriverApi, 'route_id' : testRouteId })
             response = views.delete_route(newrequest)
@@ -542,7 +496,7 @@ class UnitTest(unittest.TestCase):
             if len(users) > 0:
                 user = users[0]
                 dic = user.to_dict_unsecure()
-                fields = ["firstname", "lastname",  "email", "dob", "sex", "password", "cellphone", "user_type", "comments", "avg_rating"]
+                fields = ["firstname", "lastname", "email", "dob", "sex", "password", "cellphone", "user_type", "comments", "avg_rating"]
                 for field in fields:
                     self.assertEquals(dic.get(field,None), eval("user."+field))
 
@@ -565,3 +519,9 @@ class UnitTest(unittest.TestCase):
                 fields = ["depart_time", "depart_lat", "depart_lg", "arrive_lat", "arrive_lg", "maps_info", "status"]
                 for field in fields:
                     self.assertEquals(dic.get(field,None), eval("route."+field))
+
+
+
+
+
+
