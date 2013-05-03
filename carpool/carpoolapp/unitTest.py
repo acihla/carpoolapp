@@ -353,6 +353,67 @@ self.routes = models.Route()
             self.assertEquals(testLib.RestTestCase.ERR_BAD_PASSWORD, response.get("errCode"))
 
 
+        #bad format of request
+        def testLoginUser6(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest = json.dumps({'email' :'alex.gatech@berkeley.edu','password':'doualacameroun'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_KEY, response.get("errCode"))
+
+
+        #bad password
+        def testLoginUser7(self):
+            newrequest = views.request
+            newrequest.body = json.dumps({ 'firstname' : 'AJ', 'lastname' : 'Cihla', 'email' : 'alex.gatech@berkeley.edu', 'dob' : '04-17-1992', 'sex' : 'male', 'password' : 'password', 'cellphone' : '408-826-9366', 'driver' : 1, 'license_no' : '20934089sf', 'license_exp' : '03-12-2015', 'car_make' : 'Honda Accord', 'car_type' : 'Sedan', 'car_mileage' : 30, 'max_passengers' : 2})
+            views.signup(newrequest)
+            newrequest.body = json.dumps({'email' :'alex.gatech@berkeley.eduthisshouldbewaywaywaytoooooooooooooooooooolonggggggg','password':'doualacameroun'})
+            response = views.login(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_EMAIL, response.get("errCode"))
+
+
+        #
+        #TESTING SEARCH FUNCTIONALITY
+        #
+
+        #good search request
+        def testSearch1(self):
+            newrequest = views.request
+            testRide= testUtils.genRide()
+            departLocLat = testRide.depart_lat
+            departLocLong = testRide.depart_lg
+            destLocLat = testRide.arrive_lat
+            destLocLong = testRide.arrive_lg
+            testDate = "bullcrapdate"
+            testTime = "craptime"
+            testThresh = "50"
+            newrequest.body = json.dumps({ "depart-loc": {"lat" : departLocLat, "long" : departLocLong} , "dest-loc" : {"lat" : destLocLat, "long" : destLocLong} , "time-depart" : "0:36", "date":"04-09-2013", "dist-thresh" : testThresh} )
+            response = views.search(newrequest)
+            response = json.loads(response.content)
+            print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+
+        #badly formed json request
+        def testSearch2(self):
+            newrequest = views.request
+            testRide= testUtils.genRide()
+            departLocLat = testRide.depart_lat
+            departLocLong = testRide.depart_lg
+            destLocLat = testRide.arrive_lat
+            destLocLong = testRide.arrive_lg
+            testDate = "bullcrapdate"
+            testTime = "craptime"
+            testThresh = "50"
+            newrequest = json.dumps({ "depart-loc": {"lat" : departLocLat, "long" : departLocLong} , "dest-loc" : {"lat" : destLocLat, "long" : destLocLong} , "time-depart" : "0:36", "date":"04-09-2013", "dist-thresh" : testThresh} )
+            response = views.search(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_JSON, response.get("errCode"))
 
 
         #
@@ -522,6 +583,59 @@ self.routes = models.Route()
 
 
 
+ #test select ride with good inputs
+        def testGoodSelectRide(self):
+            newrequest = views.request
+            testRider = testUtils.genUser()
+            testRide  = testUtils.genRide()
+            testApi = testRider.apikey
+            testRouteID = testRide.id
+            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response = views.select_ride(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response.get("errCode"))
+        #test select ride wich user does not exist
+        def testNotUserSelectRide(self):
+            newrequest = views.request
+            testRider = testUtils.genUser()
+            testRide  = testUtils.genRide()
+            testApi = testRider.apikey
+            testRouteID = testRide.id
+            newrequest.body = json.dumps({ 'apikey' : "aaaa","route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response = views.select_ride(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_BAD_APIKEY, response.get("errCode"))
+        #test select ride wich route does not exists
+        def testNotRouteSelectRide(self):
+            newrequest = views.request
+            testRider = testUtils.genUser()
+            testRide  = testUtils.genRide()
+            testApi = testRider.apikey
+            testRouteID = testRide.id
+            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":40000,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response = views.select_ride(newrequest)
+            response = json.loads(response.content)
+            #print(response)
+            self.assertEquals(testLib.RestTestCase.ERR_UNKNOWN_ROUTE, response.get("errCode"))
+        #test select ride wich already exists 
+        def testAlreadyExistsSelectRide(self):
+            newrequest = views.request
+            testRider = testUtils.genUser()
+            testRide  = testUtils.genRide()
+            testApi = testRider.apikey
+            testRouteID = testRide.id
+            prev_api = testApi
+            prev_route_id = testRouteID
+            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response = views.select_ride(newrequest)
+            response = json.loads(response.content)
+            newrequest.body = json.dumps({ 'apikey' : prev_api,"route_id":prev_route_id,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response1 = views.select_ride(newrequest)
+            response1 = json.loads(response1.content)
+
+            self.assertEquals(testLib.RestTestCase.ERR_REQUEST_EXISTS, response1.get("errCode"))
 
 
 
