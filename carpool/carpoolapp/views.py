@@ -59,6 +59,7 @@ ERR_UNKOWN_IN_SIGNUP = -21
 ERR_UNKNOWN_ROUTE = -22
 ERR_NO_RIDER_DRIVER_CONTACT =-23
 ERR_BAD_PASSWORD = -24
+ERR_SEE_ERR_MSG = -25
 #sample_date = "1992-04-17"
 
 class request:
@@ -380,21 +381,105 @@ def manageRequest(request):
             for request in driver_requests:
                 req = request.to_dict()
                 route = Route.objects.get(id=request.route_id)
-                req["route"] = route.to_dict()
+                if route is None:
+                    resp["errMsg"] =  "route is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["route"] = route.to_dict()
                 rider = User.objects.get(apikey = request.rider_apikey)
-                req["rider"] = rider.to_dict()
+                if rider is None:
+                    resp["errMsg"] = "rider is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["rider"] = rider.to_dict()
                 requests.append(req)
             resp["requests"] = requests
             resp['size'] = len(requests)
         elif user.user_type == 0:
-            routes = ride_request.objects.filter(rider_apikey = apikey)
-            requests_dict = []
-            for route in routes:
-                requests_dict.append(route.to_dict())
-            resp["rides"] = requests_dict
-            resp['size'] = len(requests_dict)
+            resp["errCode"] = ERR_SEE_ERR_MSG
+            resp["errMsg"] = "Not a driver"
         else:
             resp["errCode"] = ERR_BAD_APIKEY
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    except ride_request.DoesNotExist:
+        resp["errCode"] = SUCCESS
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+
+@csrf_exempt
+def managePendingRequest(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp["errCode"] = SUCCESS
+        rider_requests = ride_request.objects.filter(rider_apikey=apikey)
+        requests = []
+        for request in rider_requests:
+            if request.status == "Pending":
+                req = request.to_dict()
+                route = Route.objects.get(id=request.route_id)
+                if route is None:
+                    resp["errMsg"] =  "route is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["route"] = route.to_dict()
+
+                rider = User.objects.get(apikey = request.rider_apikey)
+                if rider is None:
+                    resp["errMsg"] = "rider is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["rider"] = rider.to_dict()
+                requests.append(req)
+        resp["requests"] = requests
+        resp['size'] = len(requests)
+
+    except User.DoesNotExist:
+            resp["errCode"] = ERR_BAD_APIKEY
+            return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    except ride_request.DoesNotExist:
+        resp["errCode"] = SUCCESS
+        return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+    return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
+
+
+@csrf_exempt
+def manageAcceptedRequest(request):
+    resp = {}
+    rdata = json.loads(request.body)
+    apikey = rdata.get("apikey", "")
+    user = None
+    try:
+        user = User.objects.get(apikey = apikey)
+        resp["errCode"] = SUCCESS
+        rider_requests = ride_request.objects.filter(rider_apikey=apikey)
+        requests = []
+        for request in rider_requests:
+            if request.status == "Accepted":
+                req = request.to_dict()
+                route = Route.objects.get(id=request.route_id)
+                if route is None:
+                    resp["errMsg"] =  "route is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["route"] = route.to_dict()
+
+                rider = User.objects.get(apikey = request.rider_apikey)
+                if rider is None:
+                    resp["errMsg"] = "rider is None"
+                    resp["errCode"] = ERR_SEE_ERR_MSG
+                else:
+                    req["rider"] = rider.to_dict()
+                requests.append(req)
+        resp["requests"] = requests
+        resp['size'] = len(requests)
+
     except User.DoesNotExist:
             resp["errCode"] = ERR_BAD_APIKEY
             return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
@@ -681,20 +766,14 @@ def select_ride(request):
         route_id = data.get("route_id",-1)
         departloc = data.get("depart-loc", {})
         destloc = data.get("dest-loc", {})
-        rider_departloc = data.get("rider_depart_loc",{})
-        rider_arriveloc = data.get("rider_arrive_loc",{})
+
+        rider_departlat= departloc.get("lat", "0")[:14]
+        rider_departlong = departloc.get("long", "0")[:14]
+        rider_destlat = destloc.get("lat", "0")[:14]
+        rider_destlong = destloc.get("long", "0")[:14]
         date = data.get("date", "")
-        departtime = data.get("depart_time", "")
-        departlat = departloc.get("lat", "") #was previously hardcoded?!
-        departlong = departloc.get("long", "") #was previously hardcoded?!
-        destlat = destloc.get("lat", "")
-        destlong = destloc.get("long", "")
-        #print route_id
-        rider_departtime = data.get("rider_depart_time", "")
-        rider_departlat = rider_departloc.get("rider_d_lat", "")
-        rider_departlong = rider_departloc.get("rider_d_long", "")
-        rider_destlat = rider_arriveloc.get("rider_a_lat", "")
-        rider_destlong = rider_arriveloc.get("rider_a_long", "")
+        rider_departtime = data.get("time-depart", "")
+
         print str(rider_departtime)
         print "rider depart_lat " + str(rider_departlat)
 
@@ -728,22 +807,23 @@ def select_ride(request):
             if (rq.status=="Cancelled"):
                 status='Pending'
                 request_ride(apikey,route_id,str(rider_departlat),str(rider_departlong),str(rider_destlat),str(rider_destlong),str(rider_departtime),status)
-                url = "http://carpool1691.herokuapp.com/driver/accept"
+                '''url = "http://carpool1691.herokuapp.com/driver/accept"
                 url += "?from=" + apikey
                 url += "&to=" + str(driver_info.driver_id)
                 url += "&route_id=" + str(route_id)
                 yesUrl = url + "&response=1"
                 noUrl = url + "&response=0"
-                message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
+                '''
+                message = rider.firstname +" "+rider.lastname+ " would like a ride from you to accept or deny please check your account"
 
-                loc_url = "http://127.0.0.1:8000/driver/accept"
+                '''loc_url = "http://127.0.0.1:8000/driver/accept"
                 loc_url += "?from=" + apikey
                 loc_url += "&to=" + str(driver_info.driver_id)
                 loc_url += "&route_id=" + str(route_id)
                 loc_yesUrl = loc_url + "&response=1"
                 loc_noUrl = loc_url + "&response=0"
                 loc_message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + loc_yesUrl + "\n to deny click, \n" + loc_noUrl
-
+                '''
 
             else:
                 return HttpResponse(json.dumps({'errCode':ERR_REQUEST_EXISTS}),content_type="application/json")
@@ -752,13 +832,15 @@ def select_ride(request):
         except ride_request.DoesNotExist:
             status='Pending'
             request_ride(apikey,route_id,str(rider_departlat),str(rider_departlong),str(rider_destlat),str(rider_destlong),str(rider_departtime),status)
-            url = "http://carpool1691.herokuapp.com/driver/accept"
+            '''url = "http://carpool1691.herokuapp.com/driver/accept"
             url += "?from=" + apikey
             url += "&to=" + str(driver_info.driver_id)
             url += "&route_id=" + str(route_id)
             yesUrl = url + "&response=1"
             noUrl = url + "&response=0"
-            message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
+            '''
+            message = rider.firstname +" "+rider.lastname+ " would like a ride from you to accept or deny, please visit your account"
+            '''
             loc_url = "http://127.0.0.1:8000/driver/accept"
 
             loc_url += "?from=" + apikey
@@ -767,14 +849,14 @@ def select_ride(request):
             loc_yesUrl = loc_url + "&response=1"
             loc_noUrl = loc_url + "&response=0"
             loc_message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + loc_yesUrl + "\n to deny click, \n" + loc_noUrl
-
+            '''
     except KeyError:
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
 
     try:
         send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
-        send_mail('Carpool Ride Notification',loc_message,'carpoolcs169@gmail.com',[driver_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+        #send_mail('Carpool Ride Notification',loc_message,'carpoolcs169@gmail.com',[driver_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
     except BadHeaderError:
         print "my fault is this"
@@ -786,9 +868,9 @@ def select_ride(request):
 def accept_ride(request):
     print "in accept_ride"
     try:
-        r = request.GET
+        r = json.loads(request.body)
         route_id = r.get("route_id", -1)
-        response = r.get("response", "") #-1) What is going on here? this is request right? Why do we have a response segment?
+        response = r.get("response", -1) #-1) What is going on here? this is request right? Why do we have a response segment?
         rider_apikey= r.get("from","")
         driver_id =r.get("to","")
         rider =User.objects.get(apikey=rider_apikey)
@@ -808,7 +890,8 @@ def accept_ride(request):
         print "driver_lastname:" + driver_lastname
         route = Route.objects.get(id=route_id)
         print route
-        if response == "1":
+        if response == 1:
+            print "in response 1"
             message = "Congratulation " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that your trip is now confirmed with \n" + driver_firstname + " "+ driver_lastname
 
             status = 'Accepted'
@@ -817,7 +900,7 @@ def accept_ride(request):
             rq.save()
             send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
-        elif response == "0":
+        elif response == 0:
             message = "Sorry " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that the trip you selected with \n" + driver_firstname + " " +driver_lastname + "was denied please select another ride\n"
             status = 'Denied'
             rq = ride_request.objects.get(rider_apikey =rider_apikey,route_id=route_id)
@@ -827,10 +910,11 @@ def accept_ride(request):
             send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu',rider_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
         else:
-            raise Exception("Invalid response" + str(response))
+            raise Exception("Invalid response " + str(response))
     
     except Exception, err:
         print str(err)
+        print "so error is bad server?"
         return HttpResponse(json.dumps({'errCode':ERR_BAD_SERVER_RESPONSE}),content_type="application/json")
 
     return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json") 
@@ -1078,7 +1162,7 @@ def leave_feedback(request):
     print "top of leave feedback"
     
     try:
-        data = json.loads(request.raw_post_data)
+        data = json.loads(request.body)
         apikey= data['apikey']
         route_id = data['route_id']
         try:

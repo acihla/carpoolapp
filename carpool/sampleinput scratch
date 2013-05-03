@@ -47,3 +47,7 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"edt":"1:27","dest-lat":"37.773569003840514","depart-long":"-122.29195822030306","depart-lat":"37.88635556945343","date":"4-19-2013","dest-long":"-122.18801591545342","apikey":"f816930c56e0ac16b59e72eb87cd2364ba6e7f78"}' http://127.0.0.1:8000/driver/addroute > response.html
+
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"apikey":"048d75afcc16a9879d577b186e7586e362d9518f"}' http://carpool1691.herokuapp.com/driver/manageRequest > response.html
+
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"email":"sku@test.com", "password":"test"}' http://carpool1691.herokuapp.com/rider/login > response.html

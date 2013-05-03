@@ -680,5 +680,19 @@ self.routes = models.Route()
 
             self.assertEquals(testLib.RestTestCase.ERR_REQUEST_EXISTS, response1.get("errCode"))
 
-
-
+        #test accept_ride
+        def testGoodAcceptRide(self):
+            newrequest = views.request
+            testRider = testUtils.genUser()
+            testRide  = testUtils.genRide()
+            testApi = testRider.apikey
+            testRouteID = testRide.id
+            driver_id = testRide.driver_info.driver.id
+            newrequest.body = json.dumps({ 'apikey' : testApi,"route_id":testRouteID,"rider_depart-loc":{"rider_d_lat":"00000","rider_d_long":"99999"},"rider_arrive_loc":{"rider_a_lat":"88888","rider_a_long":"77777"},"rider_depart_time":"11:37:25"} )
+            response = views.select_ride(newrequest)
+            response = json.loads(response.content)
+            accept_request = views.request
+            accept_request.body =json.dumps({"route_id":testRouteID,"response":1,"from":testApi,"to":driver_id})
+            response1 = views.accept_ride(accept_request)
+            response1 = json.loads(response1.content)
+            self.assertEquals(testLib.RestTestCase.SUCCESS, response1.get("errCode"))
