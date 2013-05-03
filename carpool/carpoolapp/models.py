@@ -90,7 +90,7 @@ class Rating(models.Model):
         rtn["owner"] = self.owner
         rtn["author"] = self.author
         rtn["rating"] = self.rating
-        rtn["comment"] =  self.comment
+        rtn["comment"] = self.comment
         return rtn
 
 
@@ -131,7 +131,7 @@ class ride_request(models.Model):
     depart_lat = models.CharField(max_length=20,null=True)
     depart_lg = models.CharField(max_length=20, null=True)
     arrive_lat = models.CharField(max_length=20, null=True)
-    arrive_lg = models.CharField(max_length=20, null=True)  
+    arrive_lg = models.CharField(max_length=20, null=True)
     depart_time = models.CharField(max_length=20,default="")
     req_start = models.CharField(max_length=100, default = "")
     req_end = models.CharField(max_length=100, default = "")
@@ -144,7 +144,7 @@ class ride_request(models.Model):
         rtn["depart_lat"] = self.depart_lat
         rtn["depart_lg"] = self.depart_lg
         rtn["arrive_lat"] = self.arrive_lat
-        rtn["arriver_lg"] =  self.arrive_lg
+        rtn["arriver_lg"] = self.arrive_lg
         rtn["depart_time"] = self.depart_time
         rtn["req_start"] = self.req_start
         rtn["req_end"] = self.req_end
@@ -159,7 +159,7 @@ class ride_request(models.Model):
         rtn["depart_lat"] = self.depart_lat
         rtn["depart_lg"] = self.depart_lg
         rtn["arrive_lat"] = self.arrive_lat
-        rtn["arriver_lg"] =  self.arrive_lg
+        rtn["arriver_lg"] = self.arrive_lg
         rtn["depart_time"] = self.depart_time
         rtn["req_start"] = self.req_start
         rtn["req_end"] = self.req_end
@@ -168,9 +168,9 @@ class ride_request(models.Model):
 #from http://djangosnippets.org/snippets/199/
 def instance_dict(instance, key_format=None):
     """
-    Returns a dictionary containing field names and values for the given
-    instance
-    """
+Returns a dictionary containing field names and values for the given
+instance
+"""
     from django.db.models.fields import DateField
     from django.db.models.fields.related import ForeignKey
     if key_format:
@@ -181,7 +181,7 @@ def instance_dict(instance, key_format=None):
     d = {}
     for field in instance._meta.fields:
         attr = field.name
-        if hasattr(instance, attr):  # django filer broke without this check
+        if hasattr(instance, attr): # django filer broke without this check
             value = getattr(instance, attr)
             if value is not None:
                 if isinstance(field, ForeignKey):

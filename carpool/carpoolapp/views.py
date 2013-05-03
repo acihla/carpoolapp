@@ -1,9 +1,12 @@
+
+	
+
 from django.utils import simplejson as json
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import  send_mail,BadHeaderError
+from django.core.mail import send_mail,BadHeaderError
 from validate_email import validate_email
 
 from carpoolapp.models import *
@@ -27,17 +30,17 @@ import math
 gmaps = GoogleMaps("AIzaSyAGf-Mbj40HtzmRmOvPWZX4RnE2RIG_tzc")
 
 #responses to be handled by application
-SUCCESS               =   1  # : a success
-ERR_BAD_DEPARTURE  =  -1  # : Departure location is not valid
-ERR_BAD_DESTINATION       =  -2  # : Destination location is not valid
-ERR_BAD_USERID      =  -3  # : UID does not exist in db, or is not a driver
-ERR_BAD_TIME     =  -4   #format for time is bad
-ERR_DATABASE_SEARCH_ERROR   = -5  
+SUCCESS = 1 # : a success
+ERR_BAD_DEPARTURE = -1 # : Departure location is not valid
+ERR_BAD_DESTINATION = -2 # : Destination location is not valid
+ERR_BAD_USERID = -3 # : UID does not exist in db, or is not a driver
+ERR_BAD_TIME = -4 #format for time is bad
+ERR_DATABASE_SEARCH_ERROR = -5
 ERR_BAD_HEADER= -6
 ERR_BAD_SERVER_RESPONSE = -7
-MAX_LENGTH_IN = 200  #max length for all datums in our db
+MAX_LENGTH_IN = 200 #max length for all datums in our db
 MAX_LENGTH_FIRST_LAST_PASS = 15 #max length for first and last name and password
-MAX_LENGTH_EMAIL = 50  #max length email
+MAX_LENGTH_EMAIL = 50 #max length email
 COORD_LENGTH_IN = 20 # max length of coordinates
 ERR_BAD_KEY = -8
 ERR_NOT_USER = -9
@@ -84,16 +87,16 @@ def signup(request):
             date_obj = datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
 
             phonePattern = re.compile(r'''
-                    # don't match beginning of string, number can start anywhere
-            (\d{3})     # area code is 3 digits (e.g. '800')
-            \D*         # optional separator is any number of non-digits
-            (\d{3})     # trunk is 3 digits (e.g. '555')
-            \D*         # optional separator
-            (\d{4})     # rest of number is 4 digits (e.g. '1212')
-            \D*         # optional separator
-            (\d*)       # extension is optional and can be any number of digits
-            $           # end of string
-            ''', re.VERBOSE)
+# don't match beginning of string, number can start anywhere
+(\d{3}) # area code is 3 digits (e.g. '800')
+\D* # optional separator is any number of non-digits
+(\d{3}) # trunk is 3 digits (e.g. '555')
+\D* # optional separator
+(\d{4}) # rest of number is 4 digits (e.g. '1212')
+\D* # optional separator
+(\d*) # extension is optional and can be any number of digits
+$ # end of string
+''', re.VERBOSE)
             phonedict = phonePattern.search(cellphone).groups()
             cellphone = "".join(phonedict)
             newUser = User(firstname = firstname, lastname = lastname, email = email, dob = date_obj, sex = sex, password = password, cellphone = cellphone, user_type = driver)
@@ -119,7 +122,7 @@ def signup(request):
                         newDriverInfo.save()
                         #print "the driver was saved!"
                     except Exception, err:
-                        print str(err) 
+                        print str(err)
                         User.objects.get(id=newUser.id).delete()
                         resp = {"errCode:" : ERR_UNKOWN_IN_SIGNUP}
                 else:
@@ -133,7 +136,7 @@ def signup(request):
 
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
-def  sanitizeSignupData(rdata): 
+def sanitizeSignupData(rdata):
     firstname = rdata.get("firstname", "")
     lastname = rdata.get("lastname", "")
     email = rdata.get("email", None)
@@ -174,11 +177,11 @@ def  sanitizeSignupData(rdata):
       #validate phone us phone number
         
       '''
-      phonePattern = re.match(r'^\d{3}-\d{3}-\d{4}$',cellphone)
-      phonePattern2 = re.match(r'^\d{10}$',cellphone)
-      if phonePattern == None and phonePattern2 == None:
-        resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
-      '''
+phonePattern = re.match(r'^\d{3}-\d{3}-\d{4}$',cellphone)
+phonePattern2 = re.match(r'^\d{10}$',cellphone)
+if phonePattern == None and phonePattern2 == None:
+resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
+'''
       #validate if driver boolean type
       if (type(driver) is not int) and (driver not in [0,1]):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
@@ -205,7 +208,7 @@ def driver_check(rdata):
         resp["errCode"] = ERR_BAD_INPUT_OR_LENGTH
         #print "car_type bad input"
     try:
-        exp_date=datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date() 
+        exp_date=datetime.strptime("".join(license_exp.split("-")),'%m%d%Y').date()
         #print "expiration date :" + exp_date
         #print "now :" + present
         #print "exp_date " +str(exp_date)
@@ -225,10 +228,10 @@ def driver_check(rdata):
     #print present
     #if exp_date < present:
     #print "license expired"
-    '''    print exp_date
-        print present
-        resp["errCode"] = ERR_EXPIRED_LICENSE
-    '''
+    ''' print exp_date
+print present
+resp["errCode"] = ERR_EXPIRED_LICENSE
+'''
     
     if type(car_mileage) is not int:
         #print "problem with mileage"
@@ -283,6 +286,7 @@ def check_credentials(rdata):
 
   return resp
 
+
 @csrf_exempt
 def search(request):
     resp = {"errCode":SUCCESS}
@@ -300,7 +304,7 @@ def search(request):
     departloc = rdata.get("depart-loc", {})
     destloc = rdata.get("dest-loc", {})
     print rdata
-    print departloc 
+    print departloc
     print destloc
     date = rdata.get("date", "")
     departtime = rdata.get("time-depart", "")
@@ -449,7 +453,7 @@ def changePassword(request):
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
 
-def  sanitizeChangeUserInfoData(rdata): 
+def sanitizeChangeUserInfoData(rdata):
     firstname = rdata.get("firstname", "")
     lastname = rdata.get("lastname", "")
     email = rdata.get("email", None)
@@ -504,16 +508,16 @@ def changeUserInfo(request):
             date_obj = datetime.strptime("".join(dob.split("-")),'%m%d%Y').date()
 
             phonePattern = re.compile(r'''
-                    # don't match beginning of string, number can start anywhere
-            (\d{3})     # area code is 3 digits (e.g. '800')
-            \D*         # optional separator is any number of non-digits
-            (\d{3})     # trunk is 3 digits (e.g. '555')
-            \D*         # optional separator
-            (\d{4})     # rest of number is 4 digits (e.g. '1212')
-            \D*         # optional separator
-            (\d*)       # extension is optional and can be any number of digits
-            $           # end of string
-            ''', re.VERBOSE)
+# don't match beginning of string, number can start anywhere
+(\d{3}) # area code is 3 digits (e.g. '800')
+\D* # optional separator is any number of non-digits
+(\d{3}) # trunk is 3 digits (e.g. '555')
+\D* # optional separator
+(\d{4}) # rest of number is 4 digits (e.g. '1212')
+\D* # optional separator
+(\d*) # extension is optional and can be any number of digits
+$ # end of string
+''', re.VERBOSE)
             phonedict = phonePattern.search(cellphone).groups()
             cellphone = "".join(phonedict)
 
@@ -564,7 +568,7 @@ def getTestDriver(request):
     #resp = {}
     #estDriver = testLib.makeRequest("/signup", method="POST", data = {'firstname':'AJ','lastname':'Cihla','email':'alex.samuel@yahoo.com','dob':'04-17-1992','sex':'male','password':'password','cellphone':'510-459-3078','driver':1,'license_no':'blahblahbla','license_exp':'05-15-2017','car_make':'','car_type':'sedan','car_mileage':100000,'max_passengers':2} )
     #resp["apikey"] = testDriver.apikey
-    try: 
+    try:
         testDriver = User.objects.get(email = "alex.samuel@yahoo.com")
         resp["apikey"] = testDriver.apikey
     except User.DoesNotExist:
@@ -597,11 +601,11 @@ def addroute(request):
             departDate = datetime.strptime("".join(departDate.split("-")),'%m%d%Y')
             hhmm = departTime.split(':')
             date_obj = departDate + timedelta(hours= int(hhmm[0]), minutes= int(hhmm[1]))
-            #date_obj =  datetime.combine(departDate, departTime)
+            #date_obj = datetime.combine(departDate, departTime)
         except Exception, err:
             print str(err)
             print departDate
-            print departTime 
+            print departTime
 
         validDatums = handleRouteData(user.id, departLocLong, departLocLat, destinationLocLong, destinationLocLat)
         if (validDatums != 1):
@@ -610,7 +614,7 @@ def addroute(request):
         else:
             try:
                 driver_info = DriverInfo.objects.get(driver= User.objects.get(apikey=apikey))
-                newRoute = Route(driver_info = driver_info, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = "valid", available_seats = int(driver_info.max_passengers)) #maps_info = directions, 
+                newRoute = Route(driver_info = driver_info, depart_lat = departLocLat, depart_lg = departLocLong, arrive_lat = destinationLocLat, arrive_lg = destinationLocLong, depart_time = date_obj, status = "valid", available_seats = int(driver_info.max_passengers)) #maps_info = directions,
                 newRoute.save()
                 resp = {"errCode" : SUCCESS}
 
@@ -635,37 +639,34 @@ def addroute(request):
         
         
     """
-        try:
+try:
 
-            
-            currentRoute = gmaps.directions(start, end)
-            directions= ""
-            route = currentRoute['routes'][0]
-            legs = route['legs']
+currentRoute = gmaps.directions(start, end)
+directions= ""
+route = currentRoute['routes'][0]
+legs = route['legs']
 
-            #dealing with possible multiple legs due to utilization of a waypoint
-            for trip in legs:
-                #print primRoute['routes'][end_location]
-                #printing time and distance of route
-                routeTime = trip['duration']['value'] / 60
-                routeDist = trip['distance']['value'] * 0.000621371
-                #formatting and printing each step
-                
-                
-                #for adding turn by turn directions later
-                for step in trip['steps']:
-                    indstep = step['html_instructions']
-                    indstep = indstep.replace('</b>', '')
-                    indstep = indstep.replace('<b>', '')
-                    indstep = indstep.replace('/<wbr/>', '')
-                    indstep = indstep.replace('<div style="font-size:0.9em">', ' *** ')
-                    indstep = indstep.replace('<div class="">', ' *** ')
-                    indstep = indstep.replace('<div class="google_note">', ' *** ')
-                    indstep = indstep.replace('</div>', ' *** ')
-                    directions += indstep 
-        except Exception, err:
-            resp = {"errCode" : err}
-        """
+#dealing with possible multiple legs due to utilization of a waypoint
+for trip in legs:
+#print primRoute['routes'][end_location]
+#printing time and distance of route
+routeTime = trip['duration']['value'] / 60
+routeDist = trip['distance']['value'] * 0.000621371
+#formatting and printing each step
+#for adding turn by turn directions later
+for step in trip['steps']:
+indstep = step['html_instructions']
+indstep = indstep.replace('</b>', '')
+indstep = indstep.replace('<b>', '')
+indstep = indstep.replace('/<wbr/>', '')
+indstep = indstep.replace('<div style="font-size:0.9em">', ' *** ')
+indstep = indstep.replace('<div class="">', ' *** ')
+indstep = indstep.replace('<div class="google_note">', ' *** ')
+indstep = indstep.replace('</div>', ' *** ')
+directions += indstep
+except Exception, err:
+resp = {"errCode" : err}
+"""
     
     
     return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
@@ -674,7 +675,7 @@ def addroute(request):
 @csrf_exempt
 def select_ride(request):
     try:
-        data = json.loads(request.raw_post_data)
+        data = json.loads(request.body)
         apikey = data.get("apikey", "")
         user = None
         route_id = data.get("route_id",-1)
@@ -690,8 +691,8 @@ def select_ride(request):
         destlong = destloc.get("long", "")
         #print route_id
         rider_departtime = data.get("rider_depart_time", "")
-        rider_departlat = rider_departloc.get("rider_d_lat", "") 
-        rider_departlong = rider_departloc.get("rider_d_long", "") 
+        rider_departlat = rider_departloc.get("rider_d_lat", "")
+        rider_departlong = rider_departloc.get("rider_d_long", "")
         rider_destlat = rider_arriveloc.get("rider_a_lat", "")
         rider_destlong = rider_arriveloc.get("rider_a_long", "")
         print str(rider_departtime)
@@ -717,7 +718,7 @@ def select_ride(request):
             driver_info =route.driver_info
             driver_email = driver_info.driver.email
             driver_firstname = driver_info.driver.firstname
-            driver_lastname  = driver_info.driver.lastname
+            driver_lastname = driver_info.driver.lastname
 
         except Route.DoesNotExist:
             err = ERR_UNKNOWN_ROUTE
@@ -735,13 +736,21 @@ def select_ride(request):
                 noUrl = url + "&response=0"
                 message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
 
+                loc_url = "http://127.0.0.1:8000/driver/accept"
+                loc_url += "?from=" + apikey
+                loc_url += "&to=" + str(driver_info.driver_id)
+                loc_url += "&route_id=" + str(route_id)
+                loc_yesUrl = loc_url + "&response=1"
+                loc_noUrl = loc_url + "&response=0"
+                loc_message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + loc_yesUrl + "\n to deny click, \n" + loc_noUrl
+
 
             else:
                 return HttpResponse(json.dumps({'errCode':ERR_REQUEST_EXISTS}),content_type="application/json")
 
 
         except ride_request.DoesNotExist:
-            status='Pending' 
+            status='Pending'
             request_ride(apikey,route_id,str(rider_departlat),str(rider_departlong),str(rider_destlat),str(rider_destlong),str(rider_departtime),status)
             url = "http://carpool1691.herokuapp.com/driver/accept"
             url += "?from=" + apikey
@@ -750,6 +759,14 @@ def select_ride(request):
             yesUrl = url + "&response=1"
             noUrl = url + "&response=0"
             message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
+            loc_url = "http://127.0.0.1:8000/driver/accept"
+
+            loc_url += "?from=" + apikey
+            loc_url += "&to=" + str(driver_info.driver_id)
+            loc_url += "&route_id=" + str(route_id)
+            loc_yesUrl = loc_url + "&response=1"
+            loc_noUrl = loc_url + "&response=0"
+            loc_message = rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + loc_yesUrl + "\n to deny click, \n" + loc_noUrl
 
     except KeyError:
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
@@ -757,24 +774,25 @@ def select_ride(request):
     try:
         send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[driver_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
+        send_mail('Carpool Ride Notification',loc_message,'carpoolcs169@gmail.com',[driver_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+
     except BadHeaderError:
         print "my fault is this"
         return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="application/json")
 
     return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
 
-
-    
 @csrf_exempt
 def accept_ride(request):
+    print "in accept_ride"
     try:
-        print "at the begining of accept_ride"
         r = request.GET
         route_id = r.get("route_id", -1)
         response = r.get("response", "") #-1) What is going on here? this is request right? Why do we have a response segment?
-        rider_id= r.get("from","")
+        rider_apikey= r.get("from","")
         driver_id =r.get("to","")
-        rider =User.objects.get(id=rider_id)
+        rider =User.objects.get(apikey=rider_apikey)
+        print 'rider_apikey: ' + rider_apikey
         rider_email = rider.email
         rider_firstname = rider.firstname
         rider_lastname= rider.lastname
@@ -785,55 +803,44 @@ def accept_ride(request):
         print "response: " + str(response)
         print "rider_email:" + rider_email
         print "rider_firstname:" + rider_firstname
-        print "rider_lastname:" +  rider_lastname
+        print "rider_lastname:" + rider_lastname
         print "driver_firstname:"+ driver_firstname
-        print "driver_lastname:" + driver_lastname    
+        print "driver_lastname:" + driver_lastname
         route = Route.objects.get(id=route_id)
         print route
-        print "let me see"
         if response == "1":
-            print "ok response is true"
-            route.status="True"
-            route.save()
             message = "Congratulation " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that your trip is now confirmed with \n" + driver_firstname + " "+ driver_lastname
 
-            comment = "I am really excited to have this ride"
-            status  = 'Accepted'
-            rq = ride_request.objects.get(rider =rider,route_id=route_id)
+            status = 'Accepted'
+            rq = ride_request.objects.get(rider_apikey =rider_apikey,route_id=route_id)
             rq.status = status
-            rq.comment = comment
             rq.save()
-            send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+            send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
         elif response == "0":
-            route.status = "False"
-            route.save()
             message = "Sorry " + rider_firstname +" " +rider_lastname+"\n" +"We would like to inform you that the trip you selected with \n" + driver_firstname + " " +driver_lastname + "was denied please select another ride\n"
-            comment = "I am sorry but I cannot ride with you"
-            status  = 'Denied'
-            rq = ride_request.objects.get(rider =rider,route_id=route_id)
+            status = 'Denied'
+            rq = ride_request.objects.get(rider_apikey =rider_apikey,route_id=route_id)
             rq.status = status
-            rq.comment = comment
             rq.save()
         
-            send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+            send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',['aimechicago@berkeley.edu',rider_email],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
         else:
             raise Exception("Invalid response" + str(response))
     
     except Exception, err:
-        print "so i return bad response"
         print str(err)
         return HttpResponse(json.dumps({'errCode':ERR_BAD_SERVER_RESPONSE}),content_type="application/json")
 
-    return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")  
-
+    return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json") 
+ 
 def rides_accepted(request):
     try:
         print "in the begining of accepted"
         data = json.loads(request.raw_post_data)
         rider_id = data['rider_id']
-        r_r = ride_request.objects.filter(rider_id=rider_id,status='Accepted') 
+        r_r = ride_request.objects.filter(rider_id=rider_id,status='Accepted')
         dic_route ={}
         for a in r_r:
             r= Route.objects.get(pk=a.route_id)
@@ -861,7 +868,7 @@ def rides_denied(request):
     try:
         data = json.loads(request.raw_post_data)
         rider_id = data['rider_id']
-        r_r = ride_request.objects.filter(rider_id=rider_id,status='Denied') 
+        r_r = ride_request.objects.filter(rider_id=rider_id,status='Denied')
         dic_route ={}
         for a in r_r:
             r= Route.objects.get(pk=a.route_id)
@@ -888,7 +895,7 @@ def rides_pending(request):
     #import pdb;pdb.set_trace()
     #return HttpResponse("Pending")
     
-    print 'begining of pending' 
+    print 'begining of pending'
     try:
         print "in pending rides"
         data = json.loads(request.raw_post_data)
@@ -937,18 +944,18 @@ def delete_route(request):
         route_to_delete = Route.objects.get(id = route_id)
         if (route_to_delete.driver_info.driver.apikey == apikey):
             '''affected_riders = ride_request.objects.get(route_id = route_id)
-            for rr in affected_riders:
-                #send email to riders that have requests to this cancelled ride
-                rider_to_notify = User.objects.get(apikey = rr.rider_apikey)
-                rider_email = rider_to_notify.email
-                message = "A route that you have requested has been cancelled by the driver! We are sorry for any inconvenience that this may have caused you. Please check your scheduled rendezvous and find a new ride." #rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
-                try:
-                    send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
+for rr in affected_riders:
+#send email to riders that have requests to this cancelled ride
+rider_to_notify = User.objects.get(apikey = rr.rider_apikey)
+rider_email = rider_to_notify.email
+message = "A route that you have requested has been cancelled by the driver! We are sorry for any inconvenience that this may have caused you. Please check your scheduled rendezvous and find a new ride." #rider.firstname +" "+rider.lastname+ "would like a ride from you to accept, please click on the following link \n" + yesUrl + "\n to deny click, \n" + noUrl
+try:
+send_mail('Carpool Ride Notification',message,'carpoolcs169@gmail.com',[rider_email,'aimechicago@berkeley.edu'],fail_silently=False,auth_user=None ,auth_password=None, connection=None)
 
-                except BadHeaderError:
-                    print "The delete route notification system has failed"
-                    return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="application/json")
-            '''
+except BadHeaderError:
+print "The delete route notification system has failed"
+return HttpResponse(json.dumps({'errCode':ERR_BAD_HEADER}),content_type="application/json")
+'''
             route_to_delete.delete()
             resp["errCode"] = SUCCESS
         else:
@@ -958,7 +965,7 @@ def delete_route(request):
 
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
 
-    except Exception,err: 
+    except Exception,err:
         print(err)
         resp["errCode"] = ERR_BAD_APIKEY
         return HttpResponse(json.dumps(resp, cls=DjangoJSONEncoder), content_type = "application/json")
@@ -1077,7 +1084,7 @@ def leave_feedback(request):
         try:
             route= Route.objects.get(id=route_id)
             driver_info = route.driver_info
-            driver =driver_info.driver 
+            driver =driver_info.driver
             owner_apikey = driver.apikey
         except Route.DoesNotExist:
             err = ERR_UNKNOWN_ROUTE
@@ -1106,3 +1113,10 @@ def leave_feedback(request):
         return HttpResponse(json.dumps({'errCode':ERR_DATABASE_SEARCH_ERROR}),content_type="application/json")
     
     return HttpResponse(json.dumps({'errCode':SUCCESS}),content_type="application/json")
+
+
+
+
+
+
+
